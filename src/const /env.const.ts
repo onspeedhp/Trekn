@@ -1,0 +1,1 @@
+export const REACT_APP_MAP_API = process.env.REACT_APP_MAP_API || "";
