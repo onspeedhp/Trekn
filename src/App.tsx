@@ -11,7 +11,6 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import './index.css';
 import { AuthProvider } from './context/AuthContext';
 import {
-  BackpackWalletAdapter,
   PhantomWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
@@ -32,7 +31,7 @@ function App({
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
   const wallets = useMemo(
-    () => [new PhantomWalletAdapter(), new BackpackWalletAdapter()],
+    () => [new PhantomWalletAdapter()],
     [network]
   );
 

@@ -14,32 +14,32 @@ function Map({ data, coordsNow }: MapProps) {
             lng: data?.longitude,
           }}
           yesIWantToUseGoogleMapApiInternals
-          onGoogleApiLoaded={({ map }) => {
-            new google.maps.Circle({
-              strokeColor: 'green',
-              strokeOpacity: 0.6,
-              strokeWeight: 2,
-              fillColor: 'green',
-              fillOpacity: 0.1,
-              map,
-              center: {
-                lat: data?.latitude,
-                lng: data?.longitude,
-              },
-              radius: data?.radius,
-            });
-            new google.maps.Marker({
-              position: {
-                lat: coordsNow.lat,
-                lng: coordsNow.log,
-              },
-              map: map,
-              icon: {
-                url: '/marker.png',
-                scaledSize: new google.maps.Size(50, 50),
-              },
-            });
-          }}
+          // onGoogleApiLoaded={({ map }) => {
+          //   new google.maps.Circle({
+          //     strokeColor: 'green',
+          //     strokeOpacity: 0.6,
+          //     strokeWeight: 2,
+          //     fillColor: 'green',
+          //     fillOpacity: 0.1,
+          //     map,
+          //     center: {
+          //       lat: data?.latitude,
+          //       lng: data?.longitude,
+          //     },
+          //     radius: data?.radius,
+          //   });
+          //   new google.maps.Marker({
+          //     position: {
+          //       lat: coordsNow.lat,
+          //       lng: coordsNow.log,
+          //     },
+          //     map: map,
+          //     icon: {
+          //       url: '/marker.png',
+          //       scaledSize: new google.maps.Size(50, 50),
+          //     },
+          //   });
+          // }}
         />
       )}
     </div>
