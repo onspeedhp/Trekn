@@ -114,9 +114,16 @@ export const SelectLocation: React.FC = () => {
               <Radio.Group
                 name='radiogroup'
                 defaultValue={0}
-                onChange={(e: RadioChangeEvent) =>
-                  setLocation(locations[e.target.value])
-                }
+                onChange={(e: RadioChangeEvent) => {
+                  setLocation(locations[e.target.value]);
+
+                  setMetadata({
+                    ...metadata,
+                    location: location,
+                  });
+
+                  navigate('/drop-onboarding/add-description');
+                }}
               >
                 {filteredLocations.map((location: any, index: any) => (
                   <div className='mb-5' key={index}>
@@ -127,20 +134,7 @@ export const SelectLocation: React.FC = () => {
                 ))}
               </Radio.Group>
             </div>
-            <div
-              onClick={() => {
-                setMetadata({
-                  ...metadata,
-                  location: location,
-                });
-
-                
-
-                navigate('/drop-onboarding/add-description');
-              }}
-            >
-              Add a new location
-            </div>
+            <div>Add a new location</div>
           </div>
         </div>
       </div>
