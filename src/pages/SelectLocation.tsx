@@ -25,7 +25,6 @@ export const SelectLocation: React.FC = () => {
     'Dai hoc Back khoa',
     'Ho Hoan Kiem',
   ];
-  const [location, setLocation] = useState('');
 
   const handleError = () => {
     const modal = Modal.error({
@@ -118,8 +117,6 @@ export const SelectLocation: React.FC = () => {
               <Radio.Group
                 name='radiogroup'
                 onChange={(e: RadioChangeEvent) => {
-                  setLocation(locations[e.target.value]);
-
                   setMetadata({
                     ...metadata,
                     location: locations[e.target.value],

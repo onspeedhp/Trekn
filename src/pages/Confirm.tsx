@@ -3,10 +3,26 @@ import { useAuthContext } from '../context/AuthContext';
 import { Button, Modal } from 'antd';
 import { useEffect, useState } from 'react';
 import { createDrop } from '../middleware/data/drop';
+import { PublicKey } from '@solana/web3.js';
+import RPC from '../utils/solanaRPC';
 
 export const Confirm: React.FC = () => {
   const navigate = useNavigate();
-  const { metadata, setMetadata } = useAuthContext();
+  const { metadata, setMetadata, loggedIn, provider } = useAuthContext();
+  const [address, setAddress] = useState<PublicKey>();
+  
+  const getAddress = async () => {
+    if (!provider) {
+      return;
+    }
+    const rpc = new RPC(provider);
+    const address = await rpc.getAccounts();
+    setAddress(new PublicKey(address[0]));
+  };
+
+  useEffect(() => {
+    getAddress();
+  }, [loggedIn]);
 
   const [name, setName] = useState(metadata.name);
   const [image, setImage] = useState(metadata.image_link);

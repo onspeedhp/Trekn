@@ -31,4 +31,5 @@ export interface IDrop {
   image_link: string;
   location: string;
   desc: string;
+  // who: string;
 }

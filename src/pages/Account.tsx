@@ -8,7 +8,7 @@ import { FaLock } from 'react-icons/fa6';
 
 export const Account = () => {
   const navigate = useNavigate();
-  const { loggedIn, provider, web3auth } = useAuthContext();
+  const { loggedIn, provider } = useAuthContext();
   const [address, setAddress] = useState<PublicKey>();
 
   const [current, setCurrent] = useState('item1');
