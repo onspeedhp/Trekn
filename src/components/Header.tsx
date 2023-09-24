@@ -59,7 +59,7 @@ const Header = () => {
   return (
     <>
       <div className='m-5 flex items-center justify-between'>
-        <a href='/home'>
+        <a href='/connect-wallet'>
           <img src='./Logo.png' alt='' />
         </a>
         <div className='grid'>{loggedIn ? loggedInView : unloggedInView}</div>
