@@ -51,7 +51,7 @@ function ConnectWallet() {
           <div
             className='w-full h-[48px] relative items-center justify-center rounded-3xl bg-black text-white text-base font-semibold px-[32px] mt-6 flex sm:hidden'
             onClick={() => {
-              navigate('/map-view');
+              navigate('/drop-onboarding');
             }}
           >
             <p className='absolute flex items-center'>
@@ -62,7 +62,9 @@ function ConnectWallet() {
           <div
             className='w-full h-[48px] relative items-center justify-center rounded-3xl bg-white text-black text-base font-semibold px-[32px] mt-4 flex sm:hidden'
             style={{ border: '1px solid gray' }}
-            onClick={() => {}}
+            onClick={() => {
+              navigate('/view-map');
+            }}
           >
             <p className='absolute flex items-center'>
               <FaMap size={24} className='mr-2' /> View map
