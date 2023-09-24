@@ -122,7 +122,7 @@ export const SelectLocation: React.FC = () => {
 
                   setMetadata({
                     ...metadata,
-                    location: location,
+                    location: locations[e.target.value],
                   });
 
                   navigate('/drop-onboarding/add-description');
