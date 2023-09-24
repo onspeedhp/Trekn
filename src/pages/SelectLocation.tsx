@@ -9,6 +9,10 @@ export const SelectLocation: React.FC = () => {
   const { metadata, setMetadata } = useAuthContext();
 
   const locations = [
+    'Orange Space',
+    'Trường đại học Bách khoa Hà Nội',
+    'Trường đại học Kinh tế quốc dân',
+    'Trường đại học Xây dựng',
     'Trấn Quốc Pagoda',
     'Tây Hồ Temple',
     'Ciputra Hanoi',
