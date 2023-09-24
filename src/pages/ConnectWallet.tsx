@@ -63,7 +63,7 @@ function ConnectWallet() {
             className='w-full h-[48px] relative items-center justify-center rounded-3xl bg-white text-black text-base font-semibold px-[32px] mt-4 flex sm:hidden'
             style={{ border: '1px solid gray' }}
             onClick={() => {
-              navigate('/view-map');
+              navigate('/map-view');
             }}
           >
             <p className='absolute flex items-center'>

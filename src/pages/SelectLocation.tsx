@@ -25,7 +25,7 @@ export const SelectLocation: React.FC = () => {
     'Dai hoc Back khoa',
     'Ho Hoan Kiem',
   ];
-  const [location, setLocation] = useState(locations[0]);
+  const [location, setLocation] = useState('');
 
   const handleError = () => {
     const modal = Modal.error({
@@ -117,7 +117,6 @@ export const SelectLocation: React.FC = () => {
             <div className='overflow-scroll' style={{ height: 396 }}>
               <Radio.Group
                 name='radiogroup'
-                defaultValue={0}
                 onChange={(e: RadioChangeEvent) => {
                   setLocation(locations[e.target.value]);
 
