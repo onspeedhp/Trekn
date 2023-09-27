@@ -64,7 +64,12 @@ export const DropSuccess = () => {
             src={image}
             alt='Uploaded'
             className='rounded-xl mb-3'
-            style={{ width: 339, height: 339 }}
+            style={{
+              width: 339,
+              height: 339,
+              objectFit: 'cover',
+              objectPosition: 'center',
+            }}
           />
         </div>
 

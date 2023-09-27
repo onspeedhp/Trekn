@@ -8,7 +8,6 @@ import { FaPlus, FaMap } from 'react-icons/fa6';
 import { useNavigate } from 'react-router';
 import { Modal } from 'antd';
 require('@solana/wallet-adapter-react-ui/styles.css');
-
 const ReachableContext = createContext<string | null>(null);
 const UnreachableContext = createContext<string | null>(null);
 

@@ -56,16 +56,15 @@ function Details() {
     setOpenMintDrawer(true);
     setStatusMint('minting');
     if (walletAddress.publicKey) {
-      const res = await request.post('nft/mint', {
-        address: walletAddress.publicKey?.toString(),
-        locationId: id,
-      });
-
-      if (res.status === 200) {
-        handleMint(res.data);
-      } else {
-        handleSetDataPopup('mintFailed', MetalCoinImg);
-      }
+      // const res = await request.post('nft/mint', {
+      //   address: walletAddress.publicKey?.toString(),
+      //   locationId: id,
+      // });
+      // if (res.status === 200) {
+      //   handleMint(res.data);
+      // } else {
+      //   handleSetDataPopup('mintFailed', MetalCoinImg);
+      // }
     } else {
       handleSetDataPopup(
         'connectWallet',

@@ -11,20 +11,14 @@ export const createDrop = async ({
   onSuccess?: (data: any) => void;
   onError?: (error: any) => void;
 }) => {
-  const imageUri = await createImageUri(drop.image_link);
-  let new_drop: IDrop = { ...drop };
-  new_drop.image_link = imageUri;
+  const { data, error } = await supabase
+    .from('drop_test')
+    .insert({ ...drop })
+    .select('*');
 
-  console.log(imageUri);
-
-  // const { data, error } = await supabase
-  //   .from('drop_test')
-  //   .insert(new_drop)
-  //   .select('*');
-
-  // if (!error) {
-  //   onSuccess(data);
-  // } else {
-  //   onError('');
-  // }
+  if (!error) {
+    onSuccess(data);
+  } else {
+    onError('');
+  }
 };

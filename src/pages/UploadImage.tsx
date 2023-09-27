@@ -1,12 +1,14 @@
 import { useNavigate, useParams } from 'react-router';
 import { FaUpload } from 'react-icons/fa';
 import { useEffect, useRef, useState } from 'react';
-import { Button, Modal } from 'antd';
+import { Button, Modal, Spin } from 'antd';
 import { BsCardImage } from 'react-icons/bs';
 import { useAuthContext } from '../context/AuthContext';
+import { supabase } from '../utils/supabaseClients';
 
 export const UploadImage = () => {
   const [selectedImage, setSelectedImage] = useState<any>(null);
+  const [fileName, setFileName] = useState<string>('');
   const { metadata, setMetadata } = useAuthContext();
 
   const handleError = () => {
@@ -38,6 +40,13 @@ export const UploadImage = () => {
         setSelectedImage(event.target?.result);
       };
       reader.readAsDataURL(e.target.files[0]);
+
+      const file = e.target?.files[0];
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const newFilePath = `${fileName}`;
+      setFileName(fileName);
+      await supabase.storage.from('drop_image').upload(newFilePath, file);
     }
   };
 
@@ -134,7 +143,12 @@ export const UploadImage = () => {
                     src={selectedImage}
                     alt='Uploaded'
                     className='rounded-xl mb-3'
-                    style={{ width: 303, height: 303 }}
+                    style={{
+                      width: 303,
+                      height: 303,
+                      objectFit: 'cover',
+                      objectPosition: 'center',
+                    }}
                     onClick={handleReplaceClick}
                   />
                   <div
@@ -165,7 +179,7 @@ export const UploadImage = () => {
               onClick={() => {
                 setMetadata({
                   ...metadata,
-                  image_link: selectedImage,
+                  image_link: `${process.env.REACT_APP_SUPABASE_URL}/storage/v1/object/public/drop_image/${fileName}`,
                 });
                 navigate(`/drop-onboarding/select-location`);
               }}
