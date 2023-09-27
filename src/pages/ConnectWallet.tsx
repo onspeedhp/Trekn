@@ -1,16 +1,37 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from 'react';
+import React, { useEffect, createContext } from 'react';
 import { ListDetail } from '../components/ListDetail';
 import { useWindowSize } from '../hooks/useWindownSize';
 import { useAuthContext } from '../context/AuthContext';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { FaPlus, FaMap } from 'react-icons/fa6';
 import { useNavigate } from 'react-router';
+import { Modal } from 'antd';
 require('@solana/wallet-adapter-react-ui/styles.css');
+
+const ReachableContext = createContext<string | null>(null);
+const UnreachableContext = createContext<string | null>(null);
+
+const config = {
+  title: 'Use Hook!',
+  content: (
+    <>
+      <ReachableContext.Consumer>
+        {(name) => `Reachable: ${name}!`}
+      </ReachableContext.Consumer>
+      <br />
+      <UnreachableContext.Consumer>
+        {(name) => `Unreachable: ${name}!`}
+      </UnreachableContext.Consumer>
+    </>
+  ),
+};
 
 function ConnectWallet() {
   const { width } = useWindowSize();
-  const { getListLocation, listLocation, coordsNow } = useAuthContext();
+  const { getListLocation, listLocation, coordsNow, loggedIn } =
+    useAuthContext();
+
   const navigate = useNavigate();
   useEffect(() => {
     getListLocation();
@@ -51,7 +72,15 @@ function ConnectWallet() {
           <div
             className='w-full h-[48px] relative items-center justify-center rounded-3xl bg-black text-white text-base font-semibold px-[32px] mt-6 flex sm:hidden'
             onClick={() => {
-              navigate('/drop-onboarding');
+              if (loggedIn) {
+                navigate('/drop-onboarding');
+              } else {
+                // Modal.error({
+                //   title: 'Error',
+                //   content: 'You need to sign in first',
+                // });
+                Modal.error(config);
+              }
             }}
           >
             <p className='absolute flex items-center'>
@@ -63,7 +92,14 @@ function ConnectWallet() {
             className='w-full h-[48px] relative items-center justify-center rounded-3xl bg-white text-black text-base font-semibold px-[32px] mt-4 flex sm:hidden'
             style={{ border: '1px solid gray' }}
             onClick={() => {
-              navigate('/map-view');
+              if (loggedIn) {
+                navigate('/map-view');
+              } else {
+                Modal.error({
+                  title: 'Error',
+                  content: 'You need to sign in first',
+                });
+              }
             }}
           >
             <p className='absolute flex items-center'>

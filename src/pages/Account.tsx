@@ -3,12 +3,13 @@ import { useEffect, useState } from 'react';
 import { useAuthContext } from '../context/AuthContext';
 import RPC from '../utils/solanaRPC';
 import { PublicKey } from '@solana/web3.js';
-import { Button, Menu } from 'antd';
+import { Button, Modal } from 'antd';
 import { FaLock } from 'react-icons/fa6';
 
 export const Account = () => {
   const navigate = useNavigate();
-  const { loggedIn, provider } = useAuthContext();
+  const { loggedIn, provider, web3auth, setProvider, setLoggedIn } =
+    useAuthContext();
   const [address, setAddress] = useState<PublicKey>();
 
   const [current, setCurrent] = useState('item1');
@@ -20,6 +21,16 @@ export const Account = () => {
     const rpc = new RPC(provider);
     const address = await rpc.getAccounts();
     setAddress(new PublicKey(address[0]));
+  };
+
+  const logout = async () => {
+    if (!web3auth) {
+      console.log('web3auth not initialized yet');
+      return;
+    }
+    await web3auth.logout();
+    setProvider(null);
+    setLoggedIn(false);
   };
 
   useEffect(() => {
@@ -151,7 +162,7 @@ export const Account = () => {
             </div>
 
             <div className='flex items-center justify-center mb-4 font-semibold'>
-              Undefine
+              Undefined
             </div>
 
             <div className='flex items-center justify-center mb-4 font-normal'>
@@ -159,12 +170,23 @@ export const Account = () => {
               {address?.toString().slice(-6, -1)}
             </div>
 
-            <div className='flex items-center justify-center mb-4 font-normal'>
+            <div className='flex items-center justify-center font-normal'>
               <Button className='bg-[#323232] text-white flex items-center justify-center border-0'>
                 <FaLock className='opacity-70 mr-1' />
                 <span className='font-normal'>Copy seed phrase </span>
               </Button>
             </div>
+          </div>
+
+          <div className='flex items-center justify-center mb-4 font-normal'>
+            <Button
+              className='text-white'
+              onClick={() => {
+                logout();
+              }}
+            >
+              Log out
+            </Button>
           </div>
 
           <div className='collection-detail'>

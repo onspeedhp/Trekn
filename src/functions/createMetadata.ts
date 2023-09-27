@@ -1,16 +1,14 @@
 import { Keypair } from '@solana/web3.js';
 import base58 from 'bs58';
 import { WrappedConnection } from './wrappedConnection';
-import fs from 'fs';
 import {
   Metaplex,
   keypairIdentity,
   bundlrStorage,
   toMetaplexFile,
 } from '@metaplex-foundation/js';
-const dotenv = require('dotenv');
-dotenv.config();
 
+// Parsing the env file
 const dataURLToArrayBuffer = (dataURL: any) => {
   const base64 = dataURL.split(',')[1];
   const binaryString = atob(base64);
@@ -22,8 +20,9 @@ const dataURLToArrayBuffer = (dataURL: any) => {
   return bytes.buffer;
 };
 
-export const createMetadata = async (dataURL: any, drop: any) => {
-  const secretKey = process.env.REACT_SERVER_SECRET_KEY;
+export const createImageUri = async (dataURL: any) => {
+  const secretKey = process.env.REACT_APP_SERVER_SECRET_KEY;
+
   if (!secretKey) {
     throw new Error(
       'Wallet secret key must be provided via SECRET_KEY env var'
@@ -50,7 +49,7 @@ export const createMetadata = async (dataURL: any, drop: any) => {
     .use(
       bundlrStorage({
         address: 'http://node1.bundlr.network',
-        providerUrl: 'https://api.mainnet-beta.solana.com',
+        providerUrl: process.env.REACT_APP_HELIUS_RPC_URL!,
         timeout: 60000,
       })
     );
@@ -60,30 +59,32 @@ export const createMetadata = async (dataURL: any, drop: any) => {
 
   const imageUri = await metaplex.storage().upload(file);
 
-  const { uri } = await metaplex.nfts().uploadMetadata({
-    name: drop.name,
-    symbol: 'cNFT',
-    description: drop.desc,
-    image: imageUri,
-    attributes: [
-      {
-        trait_type: 'Drop name',
-        value: drop.name,
-      },
-      {
-        trait_type: 'Collected time',
-        value: drop.created_at,
-      },
-      {
-        trait_type: 'Drop location',
-        value: drop.location,
-      },
-      {
-        trait_type: 'Drop desc',
-        value: drop.desc,
-      },
-    ],
-  });
+  return imageUri;
 
-  return uri;
+  // const { uri } = await metaplex.nfts().uploadMetadata({
+  //   name: drop.name,
+  //   symbol: 'cNFT',
+  //   description: drop.desc,
+  //   image: imageUri,
+  //   attributes: [
+  //     {
+  //       trait_type: 'Drop name',
+  //       value: drop.name,
+  //     },
+  //     {
+  //       trait_type: 'Collected time',
+  //       value: drop.created_at,
+  //     },
+  //     {
+  //       trait_type: 'Drop location',
+  //       value: drop.location,
+  //     },
+  //     {
+  //       trait_type: 'Drop desc',
+  //       value: drop.desc,
+  //     },
+  //   ],
+  // });
+
+  // return uri;
 };

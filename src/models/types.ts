@@ -13,7 +13,7 @@ export interface LocationDetail {
   shortDescription: string;
   nftMintedCount: number;
   isDeleted: boolean;
-  __v: number;
+  __v?: number;
   createdAt: string;
   updatedAt: string;
   distance?: number;

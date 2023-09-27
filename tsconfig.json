@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": ["node"],
+    "types": ["node", "googlemaps"],
     "target": "esnext",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
