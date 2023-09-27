@@ -31,48 +31,48 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const handleGetListLocation = async (valueSearch = '') => {
     const { log, lat } = coordsNow;
-    // const res = await request.post('location/list', {
-    //   search: valueSearch,
-    //   longitude: log,
-    //   latitude: lat,
-    //   size: 100,
-    // });
-    // if (res.status === 200) {
-    //   const resData = res.data;
-    //   setListLocation(resData.locations);
-    // } else {
-    //   alert(res.data);
-    // }
+    const res = await request.post('location/list', {
+      search: valueSearch,
+      longitude: log,
+      latitude: lat,
+      size: 100,
+    });
+    if (res.status === 200) {
+      const resData = res.data;
+      setListLocation(resData.locations);
+    } else {
+      alert(res.data);
+    }
   };
 
   const handleGetListLocationNearBy = async () => {
     const { log, lat } = coordsNow;
-    // const res = await request.post('location/nearby', {
-    //   longitude: log,
-    //   latitude: lat,
-    //   size: 100,
-    // });
-    // if (res.status === 200) {
-    //   const resData = res.data;
-    //   setListLocationNearBy(resData.locations);
-    // } else {
-    //   alert(res.data);
-    // }
+    const res = await request.post('location/nearby', {
+      longitude: log,
+      latitude: lat,
+      size: 100,
+    });
+    if (res.status === 200) {
+      const resData = res.data;
+      setListLocationNearBy(resData.locations);
+    } else {
+      alert(res.data);
+    }
   };
 
   const handleGetLocationDetail = async (locationId: string) => {
     const { log, lat } = coordsNow;
-    // const res = await request.post('location/info', {
-    //   locationId: locationId,
-    //   longitude: log,
-    //   latitude: lat,
-    // });
-    // if (res.status === 200) {
-    //   const resData = res.data;
-    //   setLocationDetail(resData);
-    // } else {
-    //   alert(res.data);
-    // }
+    const res = await request.post('location/info', {
+      locationId: locationId,
+      longitude: log,
+      latitude: lat,
+    });
+    if (res.status === 200) {
+      const resData = res.data;
+      setLocationDetail(resData);
+    } else {
+      alert(res.data);
+    }
   };
 
   useEffect(() => {

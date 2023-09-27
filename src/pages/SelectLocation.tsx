@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router';
 import { useAuthContext } from '../context/AuthContext';
 import { ConfigProvider, Modal, Radio, RadioChangeEvent } from 'antd';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { LoadScript } from '@react-google-maps/api';
 
@@ -20,11 +20,10 @@ const LocationSearch = () => {
     service.getPlacePredictions(
       {
         input: query,
-        componentRestrictions: { country: 'vn' }, // Restrict search to Vietnam
+        componentRestrictions: { country: 'vn' },
       },
       (predictions, status) => {
         if (status !== window.google.maps.places.PlacesServiceStatus.OK) {
-          console.error(status);
           return;
         }
 
@@ -53,12 +52,33 @@ const LocationSearch = () => {
           <Radio.Group
             name='radiogroup'
             onChange={(e: RadioChangeEvent) => {
-              setMetadata({
-                ...metadata,
-                location: locations[e.target.value].description,
-              });
+              const service = new window.google.maps.places.PlacesService(
+                document.createElement('div')
+              );
+              const placeId = locations[e.target.value].place_id;
+              service.getDetails({ placeId }, (place: any, status: any) => {
+                if (
+                  status !== window.google.maps.places.PlacesServiceStatus.OK ||
+                  !place.geometry ||
+                  !place.geometry.location
+                ) {
+                  console.error(status);
+                  return;
+                }
 
-              navigate('/drop-onboarding/add-description');
+                setMetadata({
+                  ...metadata,
+                  location:
+                    locations[e.target.value].structured_formatting
+                      .secondary_text,
+                  location_name:
+                    locations[e.target.value].structured_formatting.main_text,
+                  lat: place.geometry.location.lat(),
+                  lng: place.geometry.location.lng(),
+                });
+
+                navigate('/drop-onboarding/add-description');
+              });
             }}
           >
             {locations && (

@@ -26,10 +26,11 @@ export const Confirm: React.FC = () => {
     getAddress();
   }, [loggedIn]);
 
-  const [name, setName] = useState(metadata.name);
-  const [image, setImage] = useState(metadata.image_link);
-  const [location, setLocation] = useState(metadata.location);
-  const [desc, setDesc] = useState(metadata.desc);
+  const [name, setName] = useState('');
+  const [image, setImage] = useState('');
+  const [location, setLocation] = useState('');
+  const [locationName, setLocationName] = useState('');
+  const [desc, setDesc] = useState('');
 
   const handleError = () => {
     const modal = Modal.error({
@@ -49,17 +50,19 @@ export const Confirm: React.FC = () => {
       !metadata.name ||
       !metadata.image_link ||
       !metadata.location ||
+      !metadata.location_name ||
       !metadata.desc
     ) {
       handleError();
     } else {
       setName(metadata.name);
       setImage(metadata.image_link);
+      setLocationName(metadata.location_name);
       setLocation(metadata.location);
       setDesc(metadata.desc);
       setMetadata({ ...metadata, creator_address: address?.toString() });
     }
-  });
+  }, []);
 
   return (
     <div className='bg-black absolute w-full' style={{ height: 812 }}>
@@ -116,7 +119,9 @@ export const Confirm: React.FC = () => {
         <div className='flex items-center mb-6'>
           <div className='flex-col mr-4' style={{ width: 268 }}>
             <div className='text-[#BDBDBA] text-[13px]'>Drop location</div>
-            <div>{location}</div>
+            <div>
+              {locationName}, {location}
+            </div>
           </div>
           <div
             className='flex bg-[#373737] rounded-full items-center justify-center'

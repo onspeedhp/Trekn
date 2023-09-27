@@ -29,7 +29,10 @@ interface ILocationPhotos {
 export interface IDrop {
   name: string;
   image_link: string;
+  location_name: string;
   location: string;
   desc: string;
   creator_addess: string;
+  lat: number;
+  lng: number;
 }

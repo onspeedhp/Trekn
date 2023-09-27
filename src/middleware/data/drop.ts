@@ -22,3 +22,19 @@ export const createDrop = async ({
     onError('');
   }
 };
+
+export const getAllDrops = async ({
+  onSuccess = () => {},
+  onError = () => {},
+}: {
+  onSuccess?: (data: any) => void;
+  onError?: (error: any) => void;
+}) => {
+  const { data, error } = await supabase.from('drop_test').select('*');
+
+  if (!error) {
+    onSuccess(data);
+  } else {
+    onError('');
+  }
+};
