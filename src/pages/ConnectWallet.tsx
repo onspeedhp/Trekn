@@ -11,21 +11,6 @@ require('@solana/wallet-adapter-react-ui/styles.css');
 const ReachableContext = createContext<string | null>(null);
 const UnreachableContext = createContext<string | null>(null);
 
-const config = {
-  title: 'Use Hook!',
-  content: (
-    <>
-      <ReachableContext.Consumer>
-        {(name) => `Reachable: ${name}!`}
-      </ReachableContext.Consumer>
-      <br />
-      <UnreachableContext.Consumer>
-        {(name) => `Unreachable: ${name}!`}
-      </UnreachableContext.Consumer>
-    </>
-  ),
-};
-
 function ConnectWallet() {
   const { width } = useWindowSize();
   const { getListLocation, listLocation, coordsNow, loggedIn } =
@@ -74,11 +59,10 @@ function ConnectWallet() {
               if (loggedIn) {
                 navigate('/drop-onboarding');
               } else {
-                // Modal.error({
-                //   title: 'Error',
-                //   content: 'You need to sign in first',
-                // });
-                Modal.error(config);
+                Modal.error({
+                  title: 'Error',
+                  content: 'You need to sign in first',
+                });
               }
             }}
           >
