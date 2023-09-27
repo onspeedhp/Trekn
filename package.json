@@ -10,6 +10,7 @@
     "@metaplex-foundation/mpl-bubblegum": "^0.7.0",
     "@metaplex-foundation/mpl-token-metadata": "^2.13.0",
     "@project-serum/anchor": "^0.26.0",
+    "@react-google-maps/api": "^2.19.2",
     "@solana/spl-account-compression": "^0.1.10",
     "@solana/spl-token": "^0.3.8",
     "@solana/wallet-adapter-base": "^0.9.23",

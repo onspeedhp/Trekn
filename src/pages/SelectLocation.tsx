@@ -1,30 +1,95 @@
 import { useNavigate } from 'react-router';
 import { useAuthContext } from '../context/AuthContext';
 import { ConfigProvider, Modal, Radio, RadioChangeEvent } from 'antd';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
+import { LoadScript } from '@react-google-maps/api';
+
+const LocationSearch = () => {
+  const [query, setQuery] = useState('');
+  const [locations, setLocations] = useState<any>([]);
+  const { metadata, setMetadata } = useAuthContext();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (query === '') {
+      setLocations([]);
+      return;
+    }
+    const service = new window.google.maps.places.AutocompleteService();
+    service.getPlacePredictions(
+      {
+        input: query,
+        componentRestrictions: { country: 'vn' }, // Restrict search to Vietnam
+      },
+      (predictions, status) => {
+        if (status !== window.google.maps.places.PlacesServiceStatus.OK) {
+          console.error(status);
+          return;
+        }
+
+        setLocations(predictions);
+      }
+    );
+  }, [query]);
+
+  return (
+    <>
+      <div className='relative mb-6'>
+        <input
+          placeholder='Search a nearby location'
+          className='text-white bg-[#202020] w-full rounded-xl text-base h-14 font-normal pr-10 focus:outline-none pl-10'
+          type='text'
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+        <span className='absolute inset-y-0 left-0 flex items-center ml-4'>
+          <FaSearch size={16} className='text-white opacity-70' />
+        </span>
+      </div>
+
+      <div className='flex-col text-[#FFFFFF]'>
+        <div className='overflow-scroll' style={{ height: 396 }}>
+          <Radio.Group
+            name='radiogroup'
+            onChange={(e: RadioChangeEvent) => {
+              setMetadata({
+                ...metadata,
+                location: locations[e.target.value].description,
+              });
+
+              navigate('/drop-onboarding/add-description');
+            }}
+          >
+            {locations && (
+              <>
+                {locations.map((location: any, index: any) => (
+                  <div className='mb-5' key={index}>
+                    <Radio value={index} className='text-white text-[15px]'>
+                      {location.description}
+                    </Radio>
+                  </div>
+                ))}
+              </>
+            )}
+          </Radio.Group>
+        </div>
+        <div>Add a new location</div>
+      </div>
+    </>
+  );
+};
 
 export const SelectLocation: React.FC = () => {
   const navigate = useNavigate();
   const { metadata, setMetadata } = useAuthContext();
+  const [scriptLoaded, setScriptLoaded] = useState(false);
 
-  const locations = [
-    'Orange Space',
-    'Trường đại học Bách khoa Hà Nội',
-    'Trường đại học Kinh tế quốc dân',
-    'Trường đại học Xây dựng',
-    'Trấn Quốc Pagoda',
-    'Tây Hồ Temple',
-    'Ciputra Hanoi',
-    'Quảng An Flower Market',
-    'Võng Thị Street',
-    'InterContinental Hanoi Westlake',
-    'West Lake Water Park',
-    'Lotte Center Hanoi',
-    'Mac Plaza Ha Dong',
-    'Dai hoc Back khoa',
-    'Ho Hoan Kiem',
-  ];
+  useEffect(() => {
+    if (window.google && window.google.maps && window.google.maps.places) {
+      setScriptLoaded(true);
+    }
+  }, []);
 
   const handleError = () => {
     const modal = Modal.error({
@@ -44,20 +109,6 @@ export const SelectLocation: React.FC = () => {
       handleError();
     }
   }, []);
-
-  // State to hold the current search term
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const removeDiacritics = (str: string) => {
-    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  };
-
-  // Filtered locations based on the search term
-  const filteredLocations = locations.filter((location) =>
-    removeDiacritics(location)
-      .toLowerCase()
-      .includes(removeDiacritics(searchTerm).toLowerCase())
-  );
 
   return (
     <ConfigProvider
@@ -100,42 +151,15 @@ export const SelectLocation: React.FC = () => {
             </div>
           </div>
 
-          <div className='relative mb-6'>
-            <input
-              placeholder='Search a nearby location'
-              className='text-white bg-[#202020] w-full rounded-xl text-base h-14 font-normal pr-10 focus:outline-none pl-10'
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+          {scriptLoaded ? (
+            <LocationSearch />
+          ) : (
+            <LoadScript
+              googleMapsApiKey={`${process.env.REACT_APP_JAVASCRIPT_API_KEY}`}
+              libraries={['places']}
+              onLoad={() => setScriptLoaded(true)}
             />
-            <span className='absolute inset-y-0 left-0 flex items-center ml-4'>
-              <FaSearch size={16} className='text-white opacity-70' />
-            </span>
-          </div>
-
-          <div className='flex-col text-[#FFFFFF]'>
-            <div className='overflow-scroll' style={{ height: 396 }}>
-              <Radio.Group
-                name='radiogroup'
-                onChange={(e: RadioChangeEvent) => {
-                  setMetadata({
-                    ...metadata,
-                    location: locations[e.target.value],
-                  });
-
-                  navigate('/drop-onboarding/add-description');
-                }}
-              >
-                {filteredLocations.map((location: any, index: any) => (
-                  <div className='mb-5' key={index}>
-                    <Radio value={index} className='text-white text-[15px]'>
-                      {location}
-                    </Radio>
-                  </div>
-                ))}
-              </Radio.Group>
-            </div>
-            <div>Add a new location</div>
-          </div>
+          )}
         </div>
       </div>
     </ConfigProvider>

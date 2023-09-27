@@ -1,8 +1,7 @@
-import { Button, Image } from 'antd';
+import { Button, Image, Input } from 'antd';
 import { FaPlus } from 'react-icons/fa6';
 import { useNavigate } from 'react-router';
 import { useAuthContext } from '../context/AuthContext';
-import NewMap from '../components/NewMap';
 import GoogleMap from '../components/GoogleMap';
 import LOS_ANGELES_CENTER from '../const/la_center';
 import { useEffect, useState } from 'react';
@@ -71,7 +70,7 @@ const handleApiLoaded = (
 
 export const MapView = () => {
   const navigate = useNavigate();
-  const { coordsNow, locationDetail } = useAuthContext();
+  const { coordsNow } = useAuthContext();
 
   const data_1 = { lng: 105.7753814, lat: 20.980762 };
   const [places, setPlaces] = useState<any>([]);
@@ -81,25 +80,12 @@ export const MapView = () => {
       .then((response) => response.json())
       .then((data) => {
         data.results.forEach((result: any) => {
-          result.show = false; // eslint-disable-line no-param-reassign
+          result.show = false;
         });
 
         setPlaces(data.results);
       });
   }, []);
-
-  const data = places.map((place: any) => ({
-    lat: place.geometry.location.lat,
-    lng: place.geometry.location.lng,
-    weight: Math.floor(Math.random() * Math.floor(5)),
-  }));
-  const heatmapData = {
-    positions: data,
-    options: {
-      radius: 20,
-      opacity: 1,
-    },
-  };
 
   return (
     <>
@@ -128,14 +114,14 @@ export const MapView = () => {
         >
           <GoogleMap
             defaultZoom={16}
-            defaultCenter={LOS_ANGELES_CENTER}
+            defaultCenter={data_1}
             bootstrapURLKeys={{
               key: process.env.REACT_APP_JAVASCRIPT_API_KEY!,
             }}
             yesIWantToUseGoogleMapApiInternals
-            onGoogleApiLoaded={({ map, maps }: { map: any; maps: any }) =>
-              handleApiLoaded(map, maps, places)
-            }
+            onGoogleApiLoaded={({ map, maps }: { map: any; maps: any }) => {
+              // handleApiLoaded(map, maps, places);
+            }}
           />
         </div>
       </div>
