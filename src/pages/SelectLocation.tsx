@@ -3,7 +3,7 @@ import { useAuthContext } from '../context/AuthContext';
 import { ConfigProvider, Modal, Radio, RadioChangeEvent } from 'antd';
 import { useEffect, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
-import { LoadScript } from '@react-google-maps/api';
+import { LoadScript, useJsApiLoader } from '@react-google-maps/api';
 
 const LocationSearch = () => {
   const [query, setQuery] = useState('');
@@ -16,20 +16,22 @@ const LocationSearch = () => {
       setLocations([]);
       return;
     }
-    const service = new window.google.maps.places.AutocompleteService();
-    service.getPlacePredictions(
-      {
-        input: query,
-        componentRestrictions: { country: 'vn' },
-      },
-      (predictions, status) => {
-        if (status !== window.google.maps.places.PlacesServiceStatus.OK) {
-          return;
-        }
 
-        setLocations(predictions);
-      }
-    );
+    if (window.google && window.google.maps && window.google.maps.places) {
+      const service = new window.google.maps.places.AutocompleteService();
+      service.getPlacePredictions(
+        {
+          input: query,
+          componentRestrictions: { country: 'vn' },
+        },
+        (predictions, status) => {
+          if (status !== window.google.maps.places.PlacesServiceStatus.OK) {
+            return;
+          }
+          setLocations(predictions);
+        }
+      );
+    }
   }, [query]);
 
   return (
@@ -105,11 +107,21 @@ export const SelectLocation: React.FC = () => {
   const { metadata, setMetadata } = useAuthContext();
   const [scriptLoaded, setScriptLoaded] = useState(false);
 
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: `${process.env.REACT_APP_JAVASCRIPT_API_KEY}`,
+    libraries: ['places'],
+  });
+
   useEffect(() => {
-    if (window.google && window.google.maps && window.google.maps.places) {
+    // if (window.google && window.google.maps && window.google.maps.places) {
+    //   setScriptLoaded(true);
+    // }
+
+    if (isLoaded) {
       setScriptLoaded(true);
     }
-  }, []);
+  }, [isLoaded]);
 
   const handleError = () => {
     const modal = Modal.error({
@@ -131,57 +143,45 @@ export const SelectLocation: React.FC = () => {
   }, []);
 
   return (
-    <ConfigProvider
-      theme={{
-        components: {
-          Radio: {
-            buttonBg: 'green',
-            buttonCheckedBg: 'green',
-            buttonColor: 'green',
-          },
-        },
-      }}
-    >
-      <div className='bg-black absolute' style={{ height: 812 }}>
-        <div className='m-5 text-white font-semibold'>
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            width='17'
-            height='16'
-            viewBox='0 0 17 16'
-            fill='none'
-            className='mb-6'
-            onClick={() => {
-              navigate('/drop-onboarding/upload-image');
-            }}
-          >
-            <path
-              d='M9.21347 13.9093L8.51972 14.6031C8.22597 14.8968 7.75097 14.8968 7.46035 14.6031L1.38535 8.5312C1.0916 8.23745 1.0916 7.76245 1.38535 7.47183L7.46035 1.39683C7.7541 1.10308 8.2291 1.10308 8.51972 1.39683L9.21347 2.09058C9.51035 2.38745 9.5041 2.87183 9.20097 3.16245L5.43535 6.74995H14.4166C14.8322 6.74995 15.1666 7.08433 15.1666 7.49995V8.49995C15.1666 8.91558 14.8322 9.24996 14.4166 9.24996H5.43535L9.20097 12.8375C9.50722 13.1281 9.51347 13.6125 9.21347 13.9093Z'
-              fill='white'
-              fillOpacity='0.7'
-            />
-          </svg>
+    <div className='bg-black absolute' style={{ height: 812 }}>
+      <div className='m-5 text-white font-semibold'>
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          width='17'
+          height='16'
+          viewBox='0 0 17 16'
+          fill='none'
+          className='mb-6'
+          onClick={() => {
+            navigate('/drop-onboarding/upload-image');
+          }}
+        >
+          <path
+            d='M9.21347 13.9093L8.51972 14.6031C8.22597 14.8968 7.75097 14.8968 7.46035 14.6031L1.38535 8.5312C1.0916 8.23745 1.0916 7.76245 1.38535 7.47183L7.46035 1.39683C7.7541 1.10308 8.2291 1.10308 8.51972 1.39683L9.21347 2.09058C9.51035 2.38745 9.5041 2.87183 9.20097 3.16245L5.43535 6.74995H14.4166C14.8322 6.74995 15.1666 7.08433 15.1666 7.49995V8.49995C15.1666 8.91558 14.8322 9.24996 14.4166 9.24996H5.43535L9.20097 12.8375C9.50722 13.1281 9.51347 13.6125 9.21347 13.9093Z'
+            fill='white'
+            fillOpacity='0.7'
+          />
+        </svg>
 
-          <div className='mb-12'>
-            <div className='text-white text-2xl font-bold mb-2'>
-              Drop this somewhere
-            </div>
-            <div className='text-white text-lg opacity-70'>
-              Select a nearby location to drop your experience.
-            </div>
+        <div className='mb-12'>
+          <div className='text-white text-2xl font-bold mb-2'>
+            Drop this somewhere
           </div>
-
-          {scriptLoaded ? (
-            <LocationSearch />
-          ) : (
-            <LoadScript
-              googleMapsApiKey={`${process.env.REACT_APP_JAVASCRIPT_API_KEY}`}
-              libraries={['places']}
-              onLoad={() => setScriptLoaded(true)}
-            />
-          )}
+          <div className='text-white text-lg opacity-70'>
+            Select a nearby location to drop your experience.
+          </div>
         </div>
+
+        {scriptLoaded ? (
+          <LocationSearch />
+        ) : (
+          <LoadScript
+            googleMapsApiKey={`${process.env.REACT_APP_JAVASCRIPT_API_KEY}`}
+            libraries={['places']}
+            onLoad={() => setScriptLoaded(true)}
+          />
+        )}
       </div>
-    </ConfigProvider>
+    </div>
   );
 };
