@@ -114,10 +114,6 @@ export const SelectLocation: React.FC = () => {
   });
 
   useEffect(() => {
-    // if (window.google && window.google.maps && window.google.maps.places) {
-    //   setScriptLoaded(true);
-    // }
-
     if (isLoaded) {
       setScriptLoaded(true);
     }
