@@ -152,7 +152,7 @@ export const MapView = () => {
             style={{
               padding: 0,
             }}
-            className='fixed bg-black top-0 right-0 rounded-full w-10 h10 text-white flex justify-center items-center m-5 z-10'
+            className='fixed bg-black top-0 right-0 rounded-full w-9 h-9 text-white flex justify-center items-center m-5 z-10'
           >
             <FaHome size={16} />
           </Button>
