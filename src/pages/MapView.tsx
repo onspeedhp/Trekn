@@ -1,4 +1,4 @@
-import { Button, Drawer, Image, Input, Modal } from 'antd';
+import { Button, Drawer } from 'antd';
 import { FaPlus } from 'react-icons/fa6';
 import { useNavigate } from 'react-router';
 import { useAuthContext } from '../context/AuthContext';
@@ -45,11 +45,15 @@ function deepEqual(obj1: any, obj2: any): boolean {
 
 export const MapView = () => {
   const navigate = useNavigate();
-  const { metadata } = useAuthContext();
+  const { metadata, coordsNow } = useAuthContext();
+  const coords = {
+    lat: coordsNow.lat,
+    lng: coordsNow.log,
+  };
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<any>(null);
   const [drawerHeight, setDrawerHeight] = useState(600);
-  const coordsNow = { lng: 105.7753814, lat: 20.980762 };
+  // const coordsNow = { lng: 105.7753814, lat: 20.980762 };
 
   const [distance, setDistance] = useState(0);
 
@@ -71,7 +75,7 @@ export const MapView = () => {
 
   const onGoogleApiLoaded = ({ map, maps }: { map: any; maps: any }) => {
     new maps.Marker({
-      position: { lat: coordsNow.lat, lng: coordsNow.lng },
+      position: { lat: coords.lat, lng: coords.lng },
       map,
       title: 'Location now',
       icon: {
@@ -89,7 +93,6 @@ export const MapView = () => {
           url: '/location.png',
           scaledSize: new maps.Size(38, 38),
         },
-        name: 'Haha',
       });
 
       marker.addListener('click', () => {
@@ -104,8 +107,8 @@ export const MapView = () => {
       setDistance(
         Math.ceil(
           calculateDistance(
-            coordsNow.lat,
-            coordsNow.lng,
+            coords.lat,
+            coords.lng,
             selectedLocation.lat,
             selectedLocation.lng
           )
@@ -126,7 +129,7 @@ export const MapView = () => {
           {locations && locations.length > 0 && (
             <GoogleMap
               defaultZoom={16}
-              defaultCenter={coordsNow}
+              defaultCenter={coords}
               bootstrapURLKeys={{
                 key: process.env.REACT_APP_JAVASCRIPT_API_KEY!,
               }}
@@ -138,7 +141,7 @@ export const MapView = () => {
           {selectedLocation && (
             <Drawer
               placement='bottom'
-              closable={true}
+              closable={false}
               onClose={onClose}
               open={isDrawerVisible}
               height={drawerHeight}
