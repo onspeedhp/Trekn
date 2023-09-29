@@ -37,8 +37,10 @@ export const Confirm: React.FC = () => {
       title: 'Error',
       content: 'Info of this drop is missing',
       okButtonProps: {
+        type: 'default',
         style: {
           background: 'red',
+          color: 'white',
         },
       },
     });

@@ -24,8 +24,10 @@ const Header = () => {
         title: 'Error',
         content: 'web3auth not initialized yet',
         okButtonProps: {
+          type: 'default',
           style: {
             background: 'red',
+            color: 'white',
           },
         },
       });

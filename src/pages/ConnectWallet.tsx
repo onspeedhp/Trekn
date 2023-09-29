@@ -87,8 +87,10 @@ function ConnectWallet() {
                   title: 'Error',
                   content: 'You need to sign in first',
                   okButtonProps: {
+                    type: 'default',
                     style: {
                       background: 'red',
+                      color: 'white',
                     },
                   },
                 });

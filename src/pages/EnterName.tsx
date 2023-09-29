@@ -64,8 +64,10 @@ export const EnterName = () => {
                       title: 'Error',
                       content: 'Need to fill up cNFT name',
                       okButtonProps: {
+                        type: 'default',
                         style: {
                           background: 'red',
+                          color: 'white',
                         },
                       },
                     });

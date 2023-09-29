@@ -6,15 +6,16 @@ import { useEffect, useState } from 'react';
 export const AddDescription: React.FC = () => {
   const navigate = useNavigate();
   const { metadata, setMetadata } = useAuthContext();
-  
 
   const handleError = () => {
     const modal = Modal.error({
       title: 'Error',
       content: 'Name, image or location of this drop is missing',
       okButtonProps: {
+        type: 'default',
         style: {
           background: 'red',
+          color: 'white',
         },
       },
     });
@@ -86,8 +87,10 @@ export const AddDescription: React.FC = () => {
                     title: 'Error',
                     content: 'Need to fill up cNFT desc',
                     okButtonProps: {
+                      type: 'default',
                       style: {
                         background: 'red',
+                        color: 'white',
                       },
                     },
                   });

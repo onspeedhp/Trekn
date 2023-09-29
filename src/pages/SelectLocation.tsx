@@ -118,8 +118,10 @@ export const SelectLocation: React.FC = () => {
       title: 'Error',
       content: 'Name or image of this drop is missing',
       okButtonProps: {
+        type: 'default',
         style: {
           background: 'red',
+          color: 'white',
         },
       },
     });

@@ -14,8 +14,10 @@ export const DropSuccess = () => {
       title: 'Error',
       content: 'Info of this drop is missing',
       okButtonProps: {
+        type: 'default',
         style: {
           background: 'red',
+          color: 'white',
         },
       },
     });

@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 import { useAuthContext } from '../context/AuthContext';
 import GoogleMap from '../components/GoogleMap';
 import React, { useEffect, useRef, useState, TouchEvent } from 'react';
-import { FaUserFriends } from 'react-icons/fa';
+import { FaUserFriends, FaHome } from 'react-icons/fa';
 import { FaDollarSign } from 'react-icons/fa6';
 import { GroupIcon } from '../icons';
 import {
@@ -145,6 +145,18 @@ export const MapView = () => {
             width: '100%',
           }}
         >
+          <Button
+            onClick={() => {
+              navigate('/connect-wallet');
+            }}
+            style={{
+              padding: 0,
+            }}
+            className='fixed bg-black top-0 right-0 rounded-full w-10 h10 text-white flex justify-center items-center m-5 z-10'
+          >
+            <FaHome size={16} />
+          </Button>
+
           {locations && locations.length > 0 && (
             <GoogleMap
               defaultZoom={16}
@@ -154,6 +166,9 @@ export const MapView = () => {
               }}
               yesIWantToUseGoogleMapApiInternals
               onGoogleApiLoaded={onGoogleApiLoaded}
+              options={{
+                disableDefaultUI: true,
+              }}
             />
           )}
 
