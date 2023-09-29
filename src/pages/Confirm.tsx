@@ -1,11 +1,10 @@
 import { useNavigate } from 'react-router';
 import { useAuthContext } from '../context/AuthContext';
-import { Button, Modal, Spin } from 'antd';
+import { Button, Modal } from 'antd';
 import { useEffect, useState } from 'react';
 import { createDrop } from '../middleware/data/drop';
 import { PublicKey } from '@solana/web3.js';
 import RPC from '../utils/solanaRPC';
-import request from '../axios';
 
 export const Confirm: React.FC = () => {
   const navigate = useNavigate();
@@ -196,31 +195,30 @@ export const Confirm: React.FC = () => {
           </div>
         </div>
 
-        <Spin tip='Loading...' spinning={isLoading}>
-          <Button
-            className='bg-[#2E2E2E] text-white border-0  w-full h-12 rounded-3xl font-semibold text-base'
-            onClick={async () => {
-              setIsLoading(true);
+        <Button
+          className='bg-[#2E2E2E] text-white border-0  w-full h-12 rounded-3xl font-semibold text-base'
+          loading={isLoading}
+          onClick={async () => {
+            setIsLoading(true);
 
-              try {
-                await createDrop({
-                  drop: metadata,
-                  onSuccess: (data) => {
-                    console.log(data);
-                  },
-                });
-              } catch (e) {
-                console.error('Error during drop', e);
-              } finally {
-                setIsLoading(false);
-              }
+            try {
+              await createDrop({
+                drop: metadata,
+                onSuccess: (data) => {
+                  console.log(data);
+                },
+              });
+            } catch (e) {
+              console.error('Error during drop', e);
+            } finally {
+              setIsLoading(false);
+            }
 
-              navigate('/drop-onboarding/success');
-            }}
-          >
-            Confirm to drop
-          </Button>
-        </Spin>
+            navigate('/drop-onboarding/success');
+          }}
+        >
+          Confirm to drop
+        </Button>
       </div>
     </div>
   );
