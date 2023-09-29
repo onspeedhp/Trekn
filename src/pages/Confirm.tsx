@@ -36,6 +36,11 @@ export const Confirm: React.FC = () => {
     const modal = Modal.error({
       title: 'Error',
       content: 'Info of this drop is missing',
+      okButtonProps: {
+        style: {
+          background: 'red',
+        },
+      },
     });
 
     setTimeout(() => {

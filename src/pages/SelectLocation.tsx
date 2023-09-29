@@ -117,6 +117,11 @@ export const SelectLocation: React.FC = () => {
     const modal = Modal.error({
       title: 'Error',
       content: 'Name or image of this drop is missing',
+      okButtonProps: {
+        style: {
+          background: 'red',
+        },
+      },
     });
 
     setTimeout(() => {

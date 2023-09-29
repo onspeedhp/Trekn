@@ -15,6 +15,11 @@ export const UploadImage = () => {
     const modal = Modal.error({
       title: 'Error',
       content: 'Name of this drop is missing',
+      okButtonProps: {
+        style: {
+          background: 'red',
+        },
+      },
     });
 
     setTimeout(() => {

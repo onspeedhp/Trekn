@@ -62,6 +62,11 @@ function ConnectWallet() {
                 Modal.error({
                   title: 'Error',
                   content: 'You need to sign in first',
+                  okButtonProps: {
+                    style: {
+                      background: 'red',
+                    },
+                  },
                 });
               }
             }}
@@ -81,6 +86,11 @@ function ConnectWallet() {
                 Modal.error({
                   title: 'Error',
                   content: 'You need to sign in first',
+                  okButtonProps: {
+                    style: {
+                      background: 'red',
+                    },
+                  },
                 });
               }
             }}

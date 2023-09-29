@@ -63,6 +63,11 @@ export const EnterName = () => {
                     Modal.error({
                       title: 'Error',
                       content: 'Need to fill up cNFT name',
+                      okButtonProps: {
+                        style: {
+                          background: 'red',
+                        },
+                      },
                     });
                   }
                 }

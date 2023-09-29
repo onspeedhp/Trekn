@@ -12,6 +12,11 @@ export const AddDescription: React.FC = () => {
     const modal = Modal.error({
       title: 'Error',
       content: 'Name, image or location of this drop is missing',
+      okButtonProps: {
+        style: {
+          background: 'red',
+        },
+      },
     });
 
     setTimeout(() => {
@@ -80,6 +85,11 @@ export const AddDescription: React.FC = () => {
                   Modal.error({
                     title: 'Error',
                     content: 'Need to fill up cNFT desc',
+                    okButtonProps: {
+                      style: {
+                        background: 'red',
+                      },
+                    },
                   });
                 }
               }

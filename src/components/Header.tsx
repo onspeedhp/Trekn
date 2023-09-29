@@ -23,6 +23,11 @@ const Header = () => {
       Modal.error({
         title: 'Error',
         content: 'web3auth not initialized yet',
+        okButtonProps: {
+          style: {
+            background: 'red',
+          },
+        },
       });
       return;
     }
