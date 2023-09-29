@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router';
 import { useAuthContext } from '../context/AuthContext';
-import { ConfigProvider, Modal, Radio, RadioChangeEvent } from 'antd';
+import { Modal, Radio, RadioChangeEvent } from 'antd';
 import { useEffect, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
-import { LoadScript, useJsApiLoader } from '@react-google-maps/api';
+import React from 'react';
 
 const LocationSearch = () => {
   const [query, setQuery] = useState('');
@@ -107,17 +107,11 @@ export const SelectLocation: React.FC = () => {
   const { metadata, setMetadata } = useAuthContext();
   const [scriptLoaded, setScriptLoaded] = useState(false);
 
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: `${process.env.REACT_APP_JAVASCRIPT_API_KEY}`,
-    libraries: ['places'],
-  });
-
   useEffect(() => {
-    if (isLoaded) {
+    if (window.google) {
       setScriptLoaded(true);
     }
-  }, [isLoaded]);
+  }, []);
 
   const handleError = () => {
     const modal = Modal.error({
@@ -168,15 +162,7 @@ export const SelectLocation: React.FC = () => {
           </div>
         </div>
 
-        {scriptLoaded ? (
-          <LocationSearch />
-        ) : (
-          <LoadScript
-            googleMapsApiKey={`${process.env.REACT_APP_JAVASCRIPT_API_KEY}`}
-            libraries={['places']}
-            onLoad={() => setScriptLoaded(true)}
-          />
-        )}
+        {scriptLoaded && <LocationSearch />}
       </div>
     </div>
   );
