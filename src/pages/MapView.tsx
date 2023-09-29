@@ -71,7 +71,7 @@ export const MapView = () => {
     const newHeight = drawerHeight + (touchStart - touchY);
 
     if (newHeight >= 400 && newHeight < heightScreen * 0.98) {
-      setDrawerHeight(heightScreen * 0.98);
+      setDrawerHeight(636);
     }
   };
 
