@@ -25,6 +25,12 @@ export const Confirm: React.FC = () => {
     getAddress();
   }, [loggedIn]);
 
+  useEffect(() => {
+    if (address) {
+      setMetadata({ ...metadata, creator_address: address?.toString() });
+    }
+  }, [address]);
+
   const [name, setName] = useState('');
   const [image, setImage] = useState('');
   const [location, setLocation] = useState('');
@@ -66,6 +72,8 @@ export const Confirm: React.FC = () => {
       setLocationName(metadata.location_name);
       setLocation(metadata.location);
       setDesc(metadata.desc);
+      console.log(address);
+
       setMetadata({ ...metadata, creator_address: address?.toString() });
     }
   }, []);

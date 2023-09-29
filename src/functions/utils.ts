@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { WrappedConnection } from './wrappedConnection';
-import { PublicKey, Transaction } from '@solana/web3.js';
+import {
+  Connection,
+  Keypair,
+  PublicKey,
+  Transaction,
+  clusterApiUrl,
+  sendAndConfirmTransaction,
+} from '@solana/web3.js';
 import { BN } from '@project-serum/anchor';
 import {
   createMintToCollectionV1Instruction,
@@ -100,4 +107,65 @@ export const getCompressedNftId = async (
     BUBBLEGUM_PROGRAM_ID
   );
   return assetId;
+};
+
+export const createCompressNftTnx = async (
+  connection: WrappedConnection,
+  nftArgs: MetadataArgs,
+  serverKeypair: Keypair,
+  userAddress: PublicKey,
+  treeAddress: PublicKey,
+  collectionMint: PublicKey,
+  collectionMetadata: PublicKey,
+  collectionMasterEditionAccount: PublicKey
+) => {
+  const [treeAuthority, _bump] = await PublicKey.findProgramAddress(
+    [treeAddress.toBuffer()],
+    BUBBLEGUM_PROGRAM_ID
+  );
+  const [bgumSigner, __] = await PublicKey.findProgramAddress(
+    [Buffer.from('collection_cpi', 'utf8')],
+    BUBBLEGUM_PROGRAM_ID
+  );
+  const mintIx = createMintToCollectionV1Instruction(
+    {
+      merkleTree: treeAddress,
+      treeAuthority: treeAuthority,
+      treeDelegate: serverKeypair.publicKey,
+      payer: serverKeypair.publicKey,
+      leafDelegate: userAddress,
+      leafOwner: userAddress,
+      compressionProgram: SPL_ACCOUNT_COMPRESSION_PROGRAM_ID,
+      logWrapper: SPL_NOOP_PROGRAM_ID,
+      collectionAuthority: serverKeypair.publicKey,
+      collectionAuthorityRecordPda: BUBBLEGUM_PROGRAM_ID,
+      collectionMint: collectionMint,
+      collectionMetadata: collectionMetadata,
+      editionAccount: collectionMasterEditionAccount,
+      bubblegumSigner: bgumSigner,
+      tokenMetadataProgram: TOKEN_METADATA_PROGRAM_ID,
+    },
+    {
+      metadataArgs: Object.assign(nftArgs, {
+        collection: { key: collectionMint, verified: false },
+      }),
+    }
+  );
+  const tx = new Transaction().add(mintIx);
+  tx.feePayer = serverKeypair.publicKey;
+  try {
+    const sig = await sendAndConfirmTransaction(
+      connection,
+      tx,
+      [serverKeypair],
+      {
+        commitment: 'confirmed',
+        skipPreflight: true,
+      }
+    );
+    return sig;
+  } catch (e) {
+    console.error('Failed to mint compressed NFT', e);
+    throw e;
+  }
 };

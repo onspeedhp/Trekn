@@ -1,18 +1,17 @@
-import { IDrop } from '../../models/types';
 import { supabase } from '../../utils/supabaseClients';
 
-export const createDrop = async ({
-  drop,
+export const createMinted = async ({
+  minted,
   onSuccess = () => {},
   onError = () => {},
 }: {
-  drop: IDrop;
+  minted: any;
   onSuccess?: (data: any) => void;
   onError?: (error: any) => void;
 }) => {
   const { data, error } = await supabase
-    .from('drop')
-    .insert({ ...drop })
+    .from('minted')
+    .insert({ ...minted })
     .select('*');
 
   if (!error) {
@@ -22,23 +21,7 @@ export const createDrop = async ({
   }
 };
 
-export const getAllDrops = async ({
-  onSuccess = () => {},
-  onError = () => {},
-}: {
-  onSuccess?: (data: any) => void;
-  onError?: (error: any) => void;
-}) => {
-  const { data, error } = await supabase.from('drop').select('*');
-
-  if (!error) {
-    onSuccess(data);
-  } else {
-    onError('');
-  }
-};
-
-export const getDropByUserAddress = async ({
+export const getMintedByUserAddress = async ({
   userAddress,
   onSuccess = () => {},
   onError = () => {},
@@ -48,9 +31,9 @@ export const getDropByUserAddress = async ({
   onError?: (error: any) => void;
 }) => {
   const { data, error } = await supabase
-    .from('drop')
-    .select('*')
-    .eq('creator_address', userAddress);
+    .from('minted')
+    .select(`*, drop(*)`)
+    .eq('who', userAddress);
 
   if (!error) {
     onSuccess(data);
@@ -59,19 +42,19 @@ export const getDropByUserAddress = async ({
   }
 };
 
-export const getDropByID = async ({
-  dropId,
+export const getMintedById = async ({
+  mintedId,
   onSuccess = () => {},
   onError = () => {},
 }: {
-  dropId: string;
+  mintedId: string;
   onSuccess?: (data: any) => void;
   onError?: (error: any) => void;
 }) => {
   const { data, error } = await supabase
-    .from('drop')
-    .select('*')
-    .eq('id', dropId);
+    .from('minted')
+    .select(`*, drop(*)`)
+    .eq('id', mintedId);
 
   if (!error) {
     onSuccess(data);

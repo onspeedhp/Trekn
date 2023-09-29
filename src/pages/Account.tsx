@@ -3,16 +3,20 @@ import { useEffect, useState } from 'react';
 import { useAuthContext } from '../context/AuthContext';
 import RPC from '../utils/solanaRPC';
 import { PublicKey } from '@solana/web3.js';
-import { Button, Modal } from 'antd';
+import { Button } from 'antd';
 import { FaLock } from 'react-icons/fa6';
+import { FaSignOutAlt } from 'react-icons/fa';
+import { getDropByUserAddress } from '../middleware/data/drop';
+import { getMintedByUserAddress } from '../middleware/data/minted';
 
 export const Account = () => {
   const navigate = useNavigate();
   const { loggedIn, provider, web3auth, setProvider, setLoggedIn } =
     useAuthContext();
   const [address, setAddress] = useState<PublicKey>();
-
   const [current, setCurrent] = useState('item1');
+  const [userDrops, setUserDrops] = useState<any[]>([]);
+  const [userMinteds, setUserMinteds] = useState<any[]>([]);
 
   const getAddress = async () => {
     if (!provider) {
@@ -41,10 +45,29 @@ export const Account = () => {
     getAddress();
   }, [loggedIn]);
 
+  useEffect(() => {
+    if (address) {
+      getDropByUserAddress({
+        userAddress: address.toString(),
+        onSuccess: (data: any) => {
+          setUserDrops(data);
+        },
+      });
+
+      getMintedByUserAddress({
+        userAddress: address.toString(),
+        onSuccess: (data: any) => {
+          setUserMinteds(data);
+          console.log(data);
+        },
+      });
+    }
+  }, [address]);
+
   return (
     <>
-      <div className='bg-black absolute w-full h-screen'>
-        <div className='m-5 font-semibold'>
+      <div className='bg-black absolute w-full h-screen overflow-scroll'>
+        <div className='m-4 font-semibold'>
           <svg
             xmlns='http://www.w3.org/2000/svg'
             width='17'
@@ -63,6 +86,15 @@ export const Account = () => {
             />
           </svg>
 
+          <div
+            className='m-5 absolute top-0 right-0 text-white flex items-center justify-center'
+            onClick={() => {
+              logout();
+            }}
+          >
+            <FaSignOutAlt size={16} className='opacity-70 mr-1' />
+            <span>Log out</span>
+          </div>
           <div className='user-info mb-9 text-white'>
             <div className='flex items-center justify-center mb-4'>
               <svg
@@ -178,17 +210,6 @@ export const Account = () => {
             </div>
           </div>
 
-          <div className='flex items-center justify-center mb-4 font-normal'>
-            <Button
-              className='text-white'
-              onClick={() => {
-                logout();
-              }}
-            >
-              Log out
-            </Button>
-          </div>
-
           <div className='collection-detail'>
             <div className='bg-[#323232] w-full h-16 rounded-2xl flex items-center justify-center'>
               <div
@@ -223,6 +244,116 @@ export const Account = () => {
                 Drops
               </div>
             </div>
+            {current === 'item1' ? (
+              <>
+                {userMinteds.length !== 0 ? (
+                  <>
+                    <div className='flex flex-wrap mt-9' style={{ width: 356 }}>
+                      {userMinteds.map((minted: any, index: any) => (
+                        <div
+                          className='relative'
+                          key={index}
+                          onClick={() => {
+                            navigate(`/details/minted/${minted.id}`);
+                          }}
+                        >
+                          <img
+                            src={`${minted.drop.image_link}`}
+                            className='rounded-xl mr-3'
+                            style={{
+                              width: 165,
+                              height: 165,
+                              marginBottom: 21,
+                            }}
+                          />
+
+                          <div
+                            className='absolute left-0 bottom-0 text-white p-2 text-[13px] font-semibold flex-wrap'
+                            style={{
+                              background: 'rgba(46, 46, 46, 0.70)',
+                              marginBottom: 27,
+                              marginLeft: 6,
+                              marginRight: 18,
+                              borderRadius: 6,
+                            }}
+                          >
+                            {minted.drop.name}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <div
+                    className='text-white opacity-70 w-full font-semibold'
+                    style={{ marginTop: 102 }}
+                  >
+                    <div className='flex justify-center items-center mb-2'>
+                      No Collected Experience Yet!
+                    </div>
+                    <div className='flex justify-center items-center text-center'>
+                      You haven't collected any experience yet. Start your
+                      journey of discovery and ownership today ;)
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                {userDrops.length !== 0 ? (
+                  <>
+                    <div className='flex flex-wrap mt-9' style={{ width: 356 }}>
+                      {userDrops.map((drop: any, index: any) => (
+                        <div
+                          className='relative'
+                          key={index}
+                          onClick={() => {
+                            navigate(`/details/drop/${drop.id}`);
+                          }}
+                        >
+                          <img
+                            src={`${drop.image_link}`}
+                            alt={`drop_${index}`}
+                            className='rounded-xl mr-3'
+                            style={{
+                              width: 165,
+                              height: 165,
+                              marginBottom: 21,
+                            }}
+                          />
+
+                          <div
+                            className='absolute left-0 bottom-0 text-white p-2 text-[13px] font-semibold flex-wrap'
+                            style={{
+                              background: 'rgba(46, 46, 46, 0.70)',
+                              marginBottom: 27,
+                              marginLeft: 6,
+                              marginRight: 18,
+                              borderRadius: 6,
+                            }}
+                          >
+                            {drop.name}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <div
+                    className='text-white opacity-70 w-full font-semibold'
+                    style={{ marginTop: 102 }}
+                  >
+                    <div className='flex justify-center items-center mb-2'>
+                      No Created Drops
+                    </div>
+                    <div className='flex justify-center items-center text-center'>
+                      Start sharing your experience to everyone by dropping
+                      experience today ;)
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>

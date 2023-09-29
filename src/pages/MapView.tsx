@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-import { Button, Drawer } from 'antd';
+import { Button, Drawer, Modal } from 'antd';
 import { FaPlus } from 'react-icons/fa6';
 import { useNavigate } from 'react-router';
 import { useAuthContext } from '../context/AuthContext';
@@ -13,6 +13,9 @@ import {
   convertDistance,
 } from '../functions/calculateDistance';
 import { getAllDrops } from '../middleware/data/drop';
+import { mintCompressedNFT } from '../functions/mintCompressedNFT';
+import { PublicKey } from '@solana/web3.js';
+import RPC from '../utils/solanaRPC';
 
 function deepEqual(obj1: any, obj2: any): boolean {
   if (obj1 === obj2) {
@@ -46,22 +49,33 @@ function deepEqual(obj1: any, obj2: any): boolean {
 
 export const MapView = () => {
   const navigate = useNavigate();
-  const { coordsNow } = useAuthContext();
+  const { coordsNow, provider, loggedIn } = useAuthContext();
   const coords = {
     lat: coordsNow.lat,
     lng: coordsNow.log,
   };
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+  const [address, setAddress] = useState<PublicKey>();
   const [selectedLocation, setSelectedLocation] = useState<any>(null);
   const [drawerHeight, setDrawerHeight] = useState(0);
   const refDrawer = useRef<HTMLDivElement>(null);
   const [distance, setDistance] = useState(0);
+  const [sig, setSig] = useState('');
 
   const handleTouchStart = (event: TouchEvent<HTMLDivElement>) => {
     const touchY = event.touches[0].clientY;
     if (refDrawer.current) {
       refDrawer.current.dataset.touchStart = touchY.toString();
     }
+  };
+
+  const getAddress = async () => {
+    if (!provider) {
+      return;
+    }
+    const rpc = new RPC(provider);
+    const address = await rpc.getAccounts();
+    setAddress(new PublicKey(address[0]));
   };
 
   const handleTouchMove = (event: TouchEvent<HTMLDivElement>) => {
@@ -80,6 +94,14 @@ export const MapView = () => {
   };
 
   const [locations, setLocations] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!loggedIn) {
+      navigate('/');
+    }
+
+    getAddress();
+  }, [loggedIn]);
 
   useEffect(() => {
     getAllDrops({
@@ -205,7 +227,7 @@ export const MapView = () => {
                         <path
                           d='M10.0488 19.1811C9.73779 19.4921 9.73145 20.0444 10.0552 20.3681C10.3853 20.6918 10.9375 20.6855 11.2422 20.3808L15 16.623L18.7515 20.3745C19.0688 20.6918 19.6147 20.6918 19.9385 20.3681C20.2622 20.038 20.2622 19.4985 19.9448 19.1811L16.1934 15.4296L19.9448 11.6718C20.2622 11.3544 20.2686 10.8085 19.9385 10.4848C19.6147 10.1611 19.0688 10.1611 18.7515 10.4785L15 14.2299L11.2422 10.4785C10.9375 10.1674 10.3789 10.1547 10.0552 10.4848C9.73145 10.8085 9.73779 11.3671 10.0488 11.6718L13.8003 15.4296L10.0488 19.1811Z'
                           fill='#3C3C43'
-                          fill-opacity='0.6'
+                          fillOpacity='0.6'
                         />
                       </g>
                       <defs>
@@ -216,10 +238,10 @@ export const MapView = () => {
                           width='138.731'
                           height='138.731'
                           filterUnits='userSpaceOnUse'
-                          color-interpolation-filters='sRGB'
+                          colorInterpolationFilters='sRGB'
                         >
                           <feFlood
-                            flood-opacity='0'
+                            floodOpacity='0'
                             result='BackgroundImageFix'
                           />
                           <feGaussianBlur
@@ -389,15 +411,7 @@ export const MapView = () => {
                   </div>
 
                   <div className='font-medium	text-black opacity-50 mb-20'>
-                    The Mid-Autumn Festival in Hanoi is a vibrant tapestry of
-                    tradition and modernity, where the city comes alive under
-                    the glow of the full moon. The air is filled with the sweet
-                    aroma of mooncakes, a customary delicacy, and the laughter
-                    of children as they parade colorful lanterns through the
-                    streets. Families gather around intricately laid-out altars
-                    to offer fruits and other treats to the Moon Goddess, while
-                    folklore performances and dragon dances captivate audiences
-                    young and old...
+                    {selectedLocation.desc}
                   </div>
 
                   <div
@@ -409,6 +423,32 @@ export const MapView = () => {
                     <Button
                       className='h-12 rounded-3xl bg-black text-white'
                       style={{ width: 335 }}
+                      onClick={async () => {
+                        if (distance <= selectedLocation.radius) {
+                          if (address) {
+                            await mintCompressedNFT({
+                              dropId: selectedLocation.id,
+                              userAddress: address,
+                              onSuccess: (data: any) => {
+                                setSig(data);
+                              },
+                              onError: () => {
+                                Modal.error({
+                                  title: 'Error',
+                                  content: 'Cannot mint this NFT',
+                                  okButtonProps: {
+                                    type: 'default',
+                                    style: {
+                                      background: 'red',
+                                      color: 'white',
+                                    },
+                                  },
+                                });
+                              },
+                            });
+                          }
+                        }
+                      }}
                       disabled={
                         distance <= selectedLocation.radius ? false : true
                       }

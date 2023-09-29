@@ -13,6 +13,7 @@ import { AddDescription } from '../pages/AddDescription';
 import { Confirm } from '../pages/Confirm';
 import { DropSuccess } from '../pages/DropSuccess';
 import { Account } from '../pages/Account';
+import { NftDetails } from '../pages/NftDetails';
 
 const AppRoutes = () => (
   <BrowserRouter basename='/'>
@@ -40,9 +41,7 @@ const AppRoutes = () => (
 
       <Route
         path='/drop-onboarding/upload-image'
-        element={
-          <App header={Header} hideHeader={true} layout={UploadImage} />
-        }
+        element={<App header={Header} hideHeader={true} layout={UploadImage} />}
       ></Route>
 
       <Route
@@ -66,14 +65,22 @@ const AppRoutes = () => (
 
       <Route
         path='/drop-onboarding/success'
-        element={
-          <App header={Header} hideHeader={true} layout={DropSuccess} />
-        }
+        element={<App header={Header} hideHeader={true} layout={DropSuccess} />}
       ></Route>
 
       <Route
         path='/account'
         element={<App header={Header} hideHeader={true} layout={Account} />}
+      ></Route>
+
+      <Route
+        path='/details/minted/:mintedId'
+        element={<App header={Header} hideHeader={true} layout={NftDetails} />}
+      ></Route>
+
+      <Route
+        path='/details/drop/:dropId'
+        element={<App header={Header} hideHeader={true} layout={NftDetails} />}
       ></Route>
 
       <Route

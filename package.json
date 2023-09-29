@@ -37,6 +37,7 @@
     "embla-carousel-react": "^8.0.0-rc11",
     "fs": "^0.0.1-security",
     "google-map-react": "^2.2.1",
+    "moment": "^2.29.4",
     "nstall": "^0.2.0",
     "path": "^0.12.7",
     "react": "^18.2.0",
