@@ -426,26 +426,26 @@ export const MapView = () => {
                       onClick={async () => {
                         if (distance <= selectedLocation.radius) {
                           if (address) {
-                            // await mintCompressedNFT({
-                            //   dropId: selectedLocation.id,
-                            //   userAddress: address,
-                            //   onSuccess: (data: any) => {
-                            //     setSig(data);
-                            //   },
-                            //   onError: () => {
-                            //     Modal.error({
-                            //       title: 'Error',
-                            //       content: 'Cannot mint this NFT',
-                            //       okButtonProps: {
-                            //         type: 'default',
-                            //         style: {
-                            //           background: 'red',
-                            //           color: 'white',
-                            //         },
-                            //       },
-                            //     });
-                            //   },
-                            // });
+                            await mintCompressedNFT({
+                              drop: selectedLocation,
+                              userAddress: address,
+                              onSuccess: (data: any) => {
+                                setSig(data);
+                              },
+                              onError: () => {
+                                Modal.error({
+                                  title: 'Error',
+                                  content: 'Cannot mint this NFT',
+                                  okButtonProps: {
+                                    type: 'default',
+                                    style: {
+                                      background: 'red',
+                                      color: 'white',
+                                    },
+                                  },
+                                });
+                              },
+                            });
                           }
                         }
                       }}

@@ -7,6 +7,7 @@ import {
   bundlrStorage,
   toMetaplexFile,
 } from '@metaplex-foundation/js';
+import moment from 'moment';
 
 // Parsing the env file
 const dataURLToArrayBuffer = (dataURL: any) => {
@@ -20,7 +21,7 @@ const dataURLToArrayBuffer = (dataURL: any) => {
   return bytes.buffer;
 };
 
-export const createImageUri = async (dataURL: any) => {
+export const createImageUri = async (drop: any) => {
   const secretKey = process.env.REACT_APP_SERVER_SECRET_KEY;
 
   if (!secretKey) {
@@ -54,37 +55,37 @@ export const createImageUri = async (dataURL: any) => {
       })
     );
 
-  const buffer = dataURLToArrayBuffer(dataURL);
-  const file = toMetaplexFile(buffer, 'image.png');
+  // const buffer = dataURLToArrayBuffer(dataURL);
+  // const file = toMetaplexFile(buffer, 'image.png');
 
-  const imageUri = await metaplex.storage().upload(file);
+  // const imageUri = await metaplex.storage().upload(file);
 
-  return imageUri;
+  // return imageUri;
 
-  // const { uri } = await metaplex.nfts().uploadMetadata({
-  //   name: drop.name,
-  //   symbol: 'cNFT',
-  //   description: drop.desc,
-  //   image: imageUri,
-  //   attributes: [
-  //     {
-  //       trait_type: 'Drop name',
-  //       value: drop.name,
-  //     },
-  //     {
-  //       trait_type: 'Collected time',
-  //       value: drop.created_at,
-  //     },
-  //     {
-  //       trait_type: 'Drop location',
-  //       value: drop.location,
-  //     },
-  //     {
-  //       trait_type: 'Drop desc',
-  //       value: drop.desc,
-  //     },
-  //   ],
-  // });
+  const { uri } = await metaplex.nfts().uploadMetadata({
+    name: drop.name,
+    symbol: 'TNFT',
+    description: drop.desc,
+    image: drop.image_link,
+    attributes: [
+      {
+        trait_type: 'Collected time',
+        value: moment().format('MMMM Do YYYY, h:mm:ss a'),
+      },
+      {
+        trait_type: 'Drop name',
+        value: drop.name,
+      },
+      {
+        trait_type: 'Drop location',
+        value: drop.location_name,
+      },
+      {
+        trait_type: 'Drop desc',
+        value: drop.desc,
+      },
+    ],
+  });
 
-  // return uri;
+  return uri;
 };

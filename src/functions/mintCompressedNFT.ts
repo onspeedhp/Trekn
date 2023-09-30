@@ -8,14 +8,16 @@ import {
 import { createCompressNftTnx } from './utils';
 import { WrappedConnection } from './wrappedConnection';
 import { createMinted } from '../middleware/data/minted';
+import { createImageUri } from './createMetadata';
+import { updateDrop } from '../middleware/data/drop';
 
 export const mintCompressedNFT = async ({
-  dropId,
+  drop,
   userAddress,
   onSuccess,
   onError = () => {},
 }: {
-  dropId: number;
+  drop: any;
   userAddress: PublicKey;
   onSuccess: (data: any) => void;
   onError: (error: any) => void;
@@ -43,10 +45,26 @@ export const mintCompressedNFT = async ({
     verified: false,
     key: collectionMint,
   };
+
+  let uri;
+  if (drop.uri) {
+    uri = drop.uri;
+  } else {
+    uri = await createImageUri({ ...drop });
+
+    // change the data in drop
+    await updateDrop({
+      dropId: drop.id,
+      uri: uri,
+    });
+    console.log('Create uri success fully');
+    console.log(uri);
+  }
+
   const nftArgs = {
-    name: 'Imperial Citadel of Thang Long',
-    symbol: 'CSI',
-    uri: 'https://arweave.net/kDRgLIHeVP4kko_UXv4CSJGkniVtHwylc4o3FoOOWc8',
+    name: drop.name,
+    symbol: 'TNFT',
+    uri: uri,
     creators: [],
     editionNonce: 253,
     tokenProgramVersion: TokenProgramVersion.Original,
@@ -58,36 +76,38 @@ export const mintCompressedNFT = async ({
     isMutable: false,
   };
 
-  const sig = await createCompressNftTnx(
-    connection,
-    nftArgs,
-    serverKeypair,
-    userAddress,
-    treeAddress,
-    collectionMint,
-    collectionMetadataAccount,
-    collectionMasterEditionAccount
-  );
+  console.log(nftArgs);
 
-  // web 2 side
+  // const sig = await createCompressNftTnx(
+  //   connection,
+  //   nftArgs,
+  //   serverKeypair,
+  //   userAddress,
+  //   treeAddress,
+  //   collectionMint,
+  //   collectionMetadataAccount,
+  //   collectionMasterEditionAccount
+  // );
 
-  if (sig) {
-    await createMinted({
-      minted: {
-        who: userAddress.toString(),
-        drop_id: dropId,
-      },
-      onSuccess: (data) => {
-        onSuccess({
-          sig,
-          data,
-        });
-      },
-      onError: () => {
-        onError('');
-      },
-    });
-  } else {
-    onError('');
-  }
+  // // web 2 side
+
+  // if (sig) {
+  //   await createMinted({
+  //     minted: {
+  //       who: userAddress.toString(),
+  //       drop_id: drop.id,
+  //     },
+  //     onSuccess: (data) => {
+  //       onSuccess({
+  //         sig,
+  //         data,
+  //       });
+  //     },
+  //     onError: () => {
+  //       onError('');
+  //     },
+  //   });
+  // } else {
+  //   onError('');
+  // }
 };
