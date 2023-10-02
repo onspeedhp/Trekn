@@ -7,7 +7,7 @@ export const DropSuccess = () => {
   const navigate = useNavigate();
   const { metadata, setMetadata } = useAuthContext();
 
-  const [image, setImage] = useState(metadata.image_link);
+  const [image, setImage] = useState(metadata.image);
 
   const handleError = () => {
     const modal = Modal.error({
@@ -32,13 +32,13 @@ export const DropSuccess = () => {
   useEffect(() => {
     if (
       !metadata.name ||
-      !metadata.image_link ||
+      !metadata.image ||
       !metadata.location ||
-      !metadata.desc
+      !metadata.description
     ) {
       handleError();
     } else {
-      setImage(metadata.image_link);
+      setImage(metadata.image);
     }
   });
 

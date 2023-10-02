@@ -20,7 +20,7 @@ export const DropOnboarding = () => {
             fill='none'
             className='mb-6'
             onClick={() => {
-              navigate('/connect-wallet');
+              navigate('/home');
             }}
           >
             <path

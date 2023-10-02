@@ -1,4 +1,4 @@
-import { Connection, Keypair, PublicKey } from '@solana/web3.js';
+import { Keypair, PublicKey } from '@solana/web3.js';
 import base58 from 'bs58';
 import {
   Collection,
@@ -8,8 +8,6 @@ import {
 import { createCompressNftTnx } from './utils';
 import { WrappedConnection } from './wrappedConnection';
 import { createMinted } from '../middleware/data/minted';
-import { createImageUri } from './createMetadata';
-import { updateDrop } from '../middleware/data/drop';
 
 export const mintCompressedNFT = async ({
   drop,
@@ -46,20 +44,7 @@ export const mintCompressedNFT = async ({
     key: collectionMint,
   };
 
-  let uri;
-  if (drop.uri) {
-    uri = drop.uri;
-  } else {
-    uri = await createImageUri({ ...drop });
-
-    // change the data in drop
-    await updateDrop({
-      dropId: drop.id,
-      uri: uri,
-    });
-    console.log('Create uri success fully');
-    console.log(uri);
-  }
+  let uri = `${process.env.REACT_APP_BACKEND}/drop/get-uri/${drop.id}`;
 
   const nftArgs = {
     name: drop.name,
@@ -76,38 +61,36 @@ export const mintCompressedNFT = async ({
     isMutable: false,
   };
 
-  console.log(nftArgs);
+  const sig = await createCompressNftTnx(
+    connection,
+    nftArgs,
+    serverKeypair,
+    userAddress,
+    treeAddress,
+    collectionMint,
+    collectionMetadataAccount,
+    collectionMasterEditionAccount
+  );
 
-  // const sig = await createCompressNftTnx(
-  //   connection,
-  //   nftArgs,
-  //   serverKeypair,
-  //   userAddress,
-  //   treeAddress,
-  //   collectionMint,
-  //   collectionMetadataAccount,
-  //   collectionMasterEditionAccount
-  // );
+  // web 2 side
 
-  // // web 2 side
-
-  // if (sig) {
-  //   await createMinted({
-  //     minted: {
-  //       who: userAddress.toString(),
-  //       drop_id: drop.id,
-  //     },
-  //     onSuccess: (data) => {
-  //       onSuccess({
-  //         sig,
-  //         data,
-  //       });
-  //     },
-  //     onError: () => {
-  //       onError('');
-  //     },
-  //   });
-  // } else {
-  //   onError('');
-  // }
+  if (sig) {
+    await createMinted({
+      minted: {
+        who: userAddress.toString(),
+        drop_id: drop.id,
+      },
+      onSuccess: (data) => {
+        onSuccess({
+          sig,
+          data,
+        });
+      },
+      onError: () => {
+        onError('');
+      },
+    });
+  } else {
+    onError('');
+  }
 };

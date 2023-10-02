@@ -185,7 +185,7 @@ export const UploadImage = () => {
               onClick={() => {
                 setMetadata({
                   ...metadata,
-                  image_link: `${process.env.REACT_APP_SUPABASE_URL}/storage/v1/object/public/drop_image/${fileName}`,
+                  image: `${process.env.REACT_APP_SUPABASE_URL}/storage/v1/object/public/drop_image/${fileName}`,
                 });
                 navigate(`/drop-onboarding/select-location`);
               }}

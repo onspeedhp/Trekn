@@ -60,18 +60,18 @@ export const Confirm: React.FC = () => {
   useEffect(() => {
     if (
       !metadata.name ||
-      !metadata.image_link ||
+      !metadata.image ||
       !metadata.location ||
       !metadata.location_name ||
-      !metadata.desc
+      !metadata.description
     ) {
       handleError();
     } else {
       setName(metadata.name);
-      setImage(metadata.image_link);
+      setImage(metadata.image);
       setLocationName(metadata.location_name);
       setLocation(metadata.location);
-      setDesc(metadata.desc);
+      setDesc(metadata.description);
       console.log(address);
 
       setMetadata({ ...metadata, creator_address: address?.toString() });

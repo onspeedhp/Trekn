@@ -10,6 +10,14 @@ export const createDrop = async ({
   onSuccess?: (data: any) => void;
   onError?: (error: any) => void;
 }) => {
+  const newDrop = {
+    ...drop,
+    attributes: {
+      'Drop name': drop.name,
+      'Drop location': drop.location_name,
+      'Drop description': drop.description,
+    },
+  };
   const { data, error } = await supabase
     .from('drop')
     .insert({ ...drop })

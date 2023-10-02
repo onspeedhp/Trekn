@@ -258,7 +258,7 @@ export const Account = () => {
                           }}
                         >
                           <img
-                            src={`${minted.drop.image_link}`}
+                            src={`${minted.drop.image}`}
                             className='rounded-xl mr-3'
                             style={{
                               width: 165,
@@ -312,7 +312,7 @@ export const Account = () => {
                           }}
                         >
                           <img
-                            src={`${drop.image_link}`}
+                            src={`${drop.image}`}
                             alt={`drop_${index}`}
                             className='rounded-xl mr-3'
                             style={{

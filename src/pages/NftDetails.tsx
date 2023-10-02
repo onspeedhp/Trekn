@@ -22,12 +22,12 @@ export const NftDetails = () => {
         onSuccess: (data: any) => {
           const minted = data[0];
           setData({
-            image_link: minted.drop.image_link,
+            image: minted.drop.image,
             created_at: minted.created_at,
             name: minted.drop.name,
             location_name: minted.drop.location_name,
             location: minted.drop.location,
-            desc: minted.drop.desc,
+            desc: minted.drop.description,
           });
         },
       });
@@ -66,7 +66,7 @@ export const NftDetails = () => {
             <>
               <div className='flex-col'>
                 <img
-                  src={`${data.image_link}`}
+                  src={`${data.image}`}
                   style={{ width: 335, height: 335 }}
                   className='rounded-xl'
                 />
@@ -405,7 +405,7 @@ export const NftDetails = () => {
                   <div className='text-[#BDBDBA] text-[13px] font-medium'>
                     Drop discription
                   </div>
-                  <div className='text-white font-semibold'>{data.desc}</div>
+                  <div className='text-white font-semibold'>{data.description}</div>
                 </div>
               </div>
             </>

@@ -169,7 +169,7 @@ export const MapView = () => {
         >
           <Button
             onClick={() => {
-              navigate('/connect-wallet');
+              navigate('/home');
             }}
             style={{
               padding: 0,
@@ -375,7 +375,7 @@ export const MapView = () => {
 
                   <div className='flex items-center justify-center mb-3'>
                     <img
-                      src={selectedLocation.image_link}
+                      src={selectedLocation.image}
                       alt='Uploaded'
                       className='rounded-xl'
                       style={{
@@ -411,7 +411,7 @@ export const MapView = () => {
                   </div>
 
                   <div className='font-medium	text-black opacity-50 mb-20'>
-                    {selectedLocation.desc}
+                    {selectedLocation.description}
                   </div>
 
                   <div
@@ -424,7 +424,7 @@ export const MapView = () => {
                       className='h-12 rounded-3xl bg-black text-white'
                       style={{ width: 335 }}
                       onClick={async () => {
-                        if (distance <= selectedLocation.radius) {
+                        // if (distance <= selectedLocation.radius) {
                           if (address) {
                             await mintCompressedNFT({
                               drop: selectedLocation,
@@ -447,11 +447,11 @@ export const MapView = () => {
                               },
                             });
                           }
-                        }
+                        // }
                       }}
-                      disabled={
-                        distance <= selectedLocation.radius ? false : true
-                      }
+                      // disabled={
+                      //   distance <= selectedLocation.radius ? false : true
+                      // }
                     >
                       {distance <= selectedLocation.radius
                         ? 'Collect this'

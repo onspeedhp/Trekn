@@ -134,7 +134,7 @@ export const SelectLocation: React.FC = () => {
   };
 
   useEffect(() => {
-    if (!metadata.image_link || !metadata.name) {
+    if (!metadata.image || !metadata.name) {
       handleError();
     }
   }, []);

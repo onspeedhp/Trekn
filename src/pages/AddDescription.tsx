@@ -28,11 +28,11 @@ export const AddDescription: React.FC = () => {
   };
 
   useEffect(() => {
-    if (metadata.desc) {
-      setDesc(metadata.desc);
+    if (metadata.description) {
+      setDesc(metadata.description);
     }
 
-    if (!metadata.image_link || !metadata.name || !metadata.location) {
+    if (!metadata.image || !metadata.name || !metadata.location) {
       handleError();
     }
   });

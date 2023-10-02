@@ -1,7 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import App from '../App';
 import Home from '../pages/Home';
-import ConnectWallet from '../pages/ConnectWallet';
 import Details from '../pages/Details';
 import Header from '../components/Header';
 import { MapView } from '../pages/MapView';
@@ -18,8 +17,8 @@ import { NftDetails } from '../pages/NftDetails';
 const AppRoutes = () => (
   <BrowserRouter basename='/'>
     <Routes>
-      <Route path='/' element={<App layout={ConnectWallet} header={Header} />}>
-        <Route path='connect-wallet' element={<ConnectWallet />} />
+      <Route path='/' element={<App layout={Home} header={Header} />}>
+        <Route path='home' element={<Home />} />
       </Route>
 
       <Route
@@ -81,11 +80,6 @@ const AppRoutes = () => (
       <Route
         path='/details/drop/:dropId'
         element={<App header={Header} hideHeader={true} layout={NftDetails} />}
-      ></Route>
-
-      <Route
-        path='/home'
-        element={<App header={Header} layout={Home} />}
       ></Route>
 
       <Route

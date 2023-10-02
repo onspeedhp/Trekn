@@ -19,60 +19,54 @@ export const useAuthContext = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [coordsNow, setCoordsNow] = useState({ log: -1, lat: -1 } as ICoords);
-  const [listLocation, setListLocation] = useState([] as Array<LocationDetail>);
-  const [listLocationNearBy, setListLocationNearBy] = useState(
-    [] as Array<LocationDetail>
-  );
-  const [locationDetail, setLocationDetail] = useState({} as LocationDetail);
   const [nftMetada, setNFTMetadata] = useState<IDrop>({} as IDrop);
-  const { id } = useParams();
 
   const routerLocation = useLocation();
 
   const handleGetListLocation = async (valueSearch = '') => {
-    const { log, lat } = coordsNow;
-    const res = await request.post('location/list', {
-      search: valueSearch,
-      longitude: log,
-      latitude: lat,
-      size: 100,
-    });
-    if (res.status === 200) {
-      const resData = res.data;
-      setListLocation(resData.locations);
-    } else {
-      alert(res.data);
-    }
+    // const { log, lat } = coordsNow;
+    // const res = await request.post('location/list', {
+    //   search: valueSearch,
+    //   longitude: log,
+    //   latitude: lat,
+    //   size: 100,
+    // });
+    // if (res.status === 200) {
+    //   const resData = res.data;
+    //   setListLocation(resData.locations);
+    // } else {
+    //   alert(res.data);
+    // }
   };
 
   const handleGetListLocationNearBy = async () => {
-    const { log, lat } = coordsNow;
-    const res = await request.post('location/nearby', {
-      longitude: log,
-      latitude: lat,
-      size: 100,
-    });
-    if (res.status === 200) {
-      const resData = res.data;
-      setListLocationNearBy(resData.locations);
-    } else {
-      alert(res.data);
-    }
+    // const { log, lat } = coordsNow;
+    // const res = await request.post('location/nearby', {
+    //   longitude: log,
+    //   latitude: lat,
+    //   size: 100,
+    // });
+    // if (res.status === 200) {
+    //   const resData = res.data;
+    //   setListLocationNearBy(resData.locations);
+    // } else {
+    //   alert(res.data);
+    // }
   };
 
   const handleGetLocationDetail = async (locationId: string) => {
-    const { log, lat } = coordsNow;
-    const res = await request.post('location/info', {
-      locationId: locationId,
-      longitude: log,
-      latitude: lat,
-    });
-    if (res.status === 200) {
-      const resData = res.data;
-      setLocationDetail(resData);
-    } else {
-      alert(res.data);
-    }
+    // const { log, lat } = coordsNow;
+    // const res = await request.post('location/info', {
+    //   locationId: locationId,
+    //   longitude: log,
+    //   latitude: lat,
+    // });
+    // if (res.status === 200) {
+    //   const resData = res.data;
+    //   setLocationDetail(resData);
+    // } else {
+    //   alert(res.data);
+    // }
   };
 
   useEffect(() => {
@@ -81,11 +75,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setCoordsNow({ log: longitude, lat: latitude });
       }
     );
-  }, [id]);
-
-  useEffect(() => {
-    setLocationDetail({} as LocationDetail);
-  }, [routerLocation]);
+  }, []);
 
   const clientId = process.env.REACT_APP_CLIENT_ID_WEB3_AUTH!;
   const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null);
@@ -162,12 +152,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         coordsNow: coordsNow,
         metadata: nftMetada,
         setMetadata: setNFTMetadata,
-        listLocationNearBy: listLocationNearBy,
-        listLocation: listLocation,
-        locationDetail: locationDetail,
-        getListLocation: handleGetListLocation,
-        getListLocationNearBy: handleGetListLocationNearBy,
-        getLocationDetail: handleGetLocationDetail,
         web3auth: web3auth,
         provider: provider,
         setProvider: setProvider,
@@ -188,12 +172,6 @@ interface AuthContextProps {
   coordsNow: ICoords;
   metadata: IDrop;
   setMetadata: (metadata: any) => void;
-  listLocationNearBy: Array<LocationDetail>;
-  listLocation: Array<LocationDetail>;
-  locationDetail: LocationDetail;
-  getListLocation: (valueSearch?: string) => void;
-  getLocationDetail: (locationId: string) => void;
-  getListLocationNearBy: () => void;
   web3auth: Web3Auth | null;
   provider: IProvider | null;
   setProvider: (provider: IProvider | null) => void;
