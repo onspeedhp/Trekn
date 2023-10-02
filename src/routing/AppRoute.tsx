@@ -13,6 +13,7 @@ import { Confirm } from '../pages/Confirm';
 import { DropSuccess } from '../pages/DropSuccess';
 import { Account } from '../pages/Account';
 import { NftDetails } from '../pages/NftDetails';
+import { MintSuccess } from '../pages/MintSuccess';
 
 const AppRoutes = () => (
   <BrowserRouter basename='/'>
@@ -24,7 +25,9 @@ const AppRoutes = () => (
       <Route
         path='/map-view'
         element={<App header={Header} hideHeader={true} layout={MapView} />}
-      ></Route>
+      >
+        <Route path=':dropId' element={<Home />} />
+      </Route>
 
       <Route
         path='/drop-onboarding'
@@ -80,6 +83,11 @@ const AppRoutes = () => (
       <Route
         path='/details/drop/:dropId'
         element={<App header={Header} hideHeader={true} layout={NftDetails} />}
+      ></Route>
+
+      <Route
+        path='/collect-success'
+        element={<App header={Header} hideHeader={true} layout={MintSuccess} />}
       ></Route>
 
       <Route

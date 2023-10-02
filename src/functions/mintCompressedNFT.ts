@@ -46,31 +46,20 @@ export const mintCompressedNFT = async ({
 
   let uri = `${process.env.REACT_APP_BACKEND}/drop/get-uri/${drop.id}`;
 
-  const nftArgs = {
-    name: drop.name,
-    symbol: 'TNFT',
-    uri: uri,
-    creators: [],
-    editionNonce: 253,
-    tokenProgramVersion: TokenProgramVersion.Original,
-    tokenStandard: TokenStandard.NonFungible,
-    uses: null,
-    collection: collection,
-    primarySaleHappened: false,
-    sellerFeeBasisPoints: 0,
-    isMutable: false,
-  };
-
-  console.log(
-    connection,
-    nftArgs,
-    serverKeypair,
-    userAddress,
-    treeAddress,
-    collectionMint,
-    collectionMetadataAccount,
-    collectionMasterEditionAccount
-  );
+  // const nftArgs = {
+  //   name: drop.name,
+  //   symbol: 'TNFT',
+  //   uri: uri,
+  //   creators: [],
+  //   editionNonce: 253,
+  //   tokenProgramVersion: TokenProgramVersion.Original,
+  //   tokenStandard: TokenStandard.NonFungible,
+  //   uses: null,
+  //   collection: collection,
+  //   primarySaleHappened: false,
+  //   sellerFeeBasisPoints: 0,
+  //   isMutable: false,
+  // };
 
   // const sig = await createCompressNftTnx(
   //   connection,
@@ -83,7 +72,7 @@ export const mintCompressedNFT = async ({
   //   collectionMasterEditionAccount
   // );
 
-  // // web 2 side
+  // // // web 2 side
 
   // if (sig) {
   //   await createMinted({
@@ -104,4 +93,6 @@ export const mintCompressedNFT = async ({
   // } else {
   //   onError('');
   // }
+
+  onSuccess('hehe');
 };

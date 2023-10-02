@@ -20,24 +20,28 @@ export const useAuthContext = () => useContext(AuthContext);
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [coordsNow, setCoordsNow] = useState({ log: -1, lat: -1 } as ICoords);
   const [nftMetada, setNFTMetadata] = useState<IDrop>({} as IDrop);
+  const clientId = process.env.REACT_APP_CLIENT_ID_WEB3_AUTH!;
+  const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null);
+  const [provider, setProvider] = useState<IProvider | null>(null);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const routerLocation = useLocation();
 
-  const handleGetListLocation = async (valueSearch = '') => {
-    // const { log, lat } = coordsNow;
-    // const res = await request.post('location/list', {
-    //   search: valueSearch,
-    //   longitude: log,
-    //   latitude: lat,
-    //   size: 100,
-    // });
-    // if (res.status === 200) {
-    //   const resData = res.data;
-    //   setListLocation(resData.locations);
-    // } else {
-    //   alert(res.data);
-    // }
+  const handleGetListLocation = async (lat: number, log: number) => {
+    const res = await request.post('drop/getReadyToCollect', {
+      lat: lat,
+      lng: log,
+    });
   };
+
+  useEffect(() => {
+    const { log, lat } = coordsNow;
+    if (log !== -1 && lat !== -1) {
+      console.log(lat);
+
+      handleGetListLocation(lat, log);
+    }
+  }, [coordsNow]);
 
   const handleGetListLocationNearBy = async () => {
     // const { log, lat } = coordsNow;
@@ -76,11 +80,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
     );
   }, []);
-
-  const clientId = process.env.REACT_APP_CLIENT_ID_WEB3_AUTH!;
-  const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null);
-  const [provider, setProvider] = useState<IProvider | null>(null);
-  const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     const init = async () => {

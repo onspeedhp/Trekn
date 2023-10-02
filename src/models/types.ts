@@ -27,6 +27,7 @@ interface ILocationPhotos {
 }
 
 export interface IDrop {
+  id?: number;
   name: string;
   image: string;
   location_name: string;
@@ -36,4 +37,7 @@ export interface IDrop {
   lat: number;
   lng: number;
   attributes?: any;
+  symbol?: any;
+  sig?: any;
+  distance?: number;
 }

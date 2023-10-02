@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, createContext } from 'react';
+import React, { useEffect, createContext, useState } from 'react';
 import { ListDetail } from '../components/ListDetail';
 import { useWindowSize } from '../hooks/useWindownSize';
 import { useAuthContext } from '../context/AuthContext';
@@ -7,13 +7,33 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { FaPlus, FaMap } from 'react-icons/fa6';
 import { useNavigate } from 'react-router';
 import { Modal } from 'antd';
-require('@solana/wallet-adapter-react-ui/styles.css');
+import request from '../axios';
+import { IDrop } from '../models/types';
+import { Carousel } from 'react-responsive-carousel';
+import { ReadyToCollectSlider } from '../components/ReadyToCollectSlider';
 
 function Home() {
   const { width } = useWindowSize();
   const { coordsNow, loggedIn } = useAuthContext();
+  const [readyToCollect, setReadyToCollect] = useState<IDrop[]>([]);
 
   const navigate = useNavigate();
+
+  const handleGetListLocation = async (lat: number, log: number) => {
+    const res = await request.post('drop/getReadyToCollect', {
+      lat: lat,
+      lng: log,
+    });
+
+    setReadyToCollect(res.data.data);
+  };
+
+  useEffect(() => {
+    const { log, lat } = coordsNow;
+    if (log !== -1 && lat !== -1) {
+      handleGetListLocation(lat, log);
+    }
+  }, [coordsNow]);
 
   return (
     <>
@@ -31,6 +51,19 @@ function Home() {
             <div className='text-[34px] font-bold leading-10'>
               Discover Local Hidden Gems
             </div>
+            {readyToCollect ? (
+              <>{/* <ReadyToCollectSlider data={readyToCollect} /> */}</>
+            ) : (
+              <>
+                <div className='flex items-center justify-center mt-7'>
+                  <img src='./Route_search.png' alt='' />
+                </div>
+                <div className='text-center text-[20px] font-semibold text-black opacity-50'>
+                  Go further to discover or drop something in the area
+                </div>
+              </>
+            )}
+            <div className='flex'></div>
             <div className='w-full h-[48px] relative items-center justify-center rounded-3xl bg-[#00A868] text-white text-base font-semibold px-[32px] mt-[25px] hidden sm:flex'>
               <p className='absolute'>Connect wallet to start explore</p>
               <WalletMultiButton
@@ -94,6 +127,10 @@ function Home() {
             <p className='absolute flex items-center'>
               <FaMap size={24} className='mr-2' /> View map
             </p>
+          </div>
+
+          <div style={{ marginTop: 43 }}>
+            {readyToCollect && <ListDetail data={readyToCollect} />}
           </div>
         </div>
       </div>

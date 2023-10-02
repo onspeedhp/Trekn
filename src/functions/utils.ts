@@ -151,6 +151,7 @@ export const createCompressNftTnx = async (
       }),
     }
   );
+
   const tx = new Transaction().add(mintIx);
   tx.feePayer = serverKeypair.publicKey;
   try {

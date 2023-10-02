@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-globals */
 import { Button, Drawer, Modal } from 'antd';
 import { FaPlus } from 'react-icons/fa6';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useAuthContext } from '../context/AuthContext';
 import GoogleMap from '../components/GoogleMap';
 import React, { useEffect, useRef, useState, TouchEvent } from 'react';
@@ -49,7 +49,7 @@ function deepEqual(obj1: any, obj2: any): boolean {
 
 export const MapView = () => {
   const navigate = useNavigate();
-  const { coordsNow, provider, loggedIn } = useAuthContext();
+  const { coordsNow, provider, loggedIn, setMetadata } = useAuthContext();
   const coords = {
     lat: coordsNow.lat,
     lng: coordsNow.log,
@@ -60,7 +60,8 @@ export const MapView = () => {
   const [drawerHeight, setDrawerHeight] = useState(0);
   const refDrawer = useRef<HTMLDivElement>(null);
   const [distance, setDistance] = useState(0);
-  const [sig, setSig] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { dropId } = useParams();
 
   const handleTouchStart = (event: TouchEvent<HTMLDivElement>) => {
     const touchY = event.touches[0].clientY;
@@ -112,6 +113,19 @@ export const MapView = () => {
       },
     });
   }, [locations]);
+
+  useEffect(() => {
+    if (dropId) {
+      getAllDrops({
+        onSuccess: (data: any) => {
+          const drop = data.find((drop: any) => drop.id === Number(dropId));
+          setSelectedLocation(drop);
+          setIsDrawerVisible(true);
+          setDrawerHeight(443);
+        },
+      });
+    }
+  }, []);
 
   const onGoogleApiLoaded = ({ map, maps }: { map: any; maps: any }) => {
     new maps.Marker({
@@ -423,39 +437,48 @@ export const MapView = () => {
                     <Button
                       className='h-12 rounded-3xl bg-black text-white'
                       style={{ width: 335 }}
+                      loading={loading}
                       onClick={async () => {
                         // if (distance <= selectedLocation.radius) {
-                          if (address) {
-                            await mintCompressedNFT({
-                              drop: selectedLocation,
-                              userAddress: address,
-                              onSuccess: (data: any) => {
-                                setSig(data);
-                              },
-                              onError: () => {
-                                Modal.error({
-                                  title: 'Error',
-                                  content: 'Cannot mint this NFT',
-                                  okButtonProps: {
-                                    type: 'default',
-                                    style: {
-                                      background: 'red',
-                                      color: 'white',
-                                    },
+                        if (address) {
+                          setLoading(true);
+                          await mintCompressedNFT({
+                            drop: selectedLocation,
+                            userAddress: address,
+                            onSuccess: (data: any) => {
+                              setMetadata({
+                                image: selectedLocation.image,
+                                sig: data,
+                              });
+
+                              navigate('/collect-success');
+                            },
+                            onError: () => {
+                              Modal.error({
+                                title: 'Error',
+                                content: 'Cannot mint this NFT',
+                                okButtonProps: {
+                                  type: 'default',
+                                  style: {
+                                    background: 'red',
+                                    color: 'white',
                                   },
-                                });
-                              },
-                            });
-                          }
+                                },
+                              });
+                            },
+                          });
+                          setLoading(false);
+                        }
                         // }
                       }}
                       // disabled={
                       //   distance <= selectedLocation.radius ? false : true
                       // }
                     >
-                      {distance <= selectedLocation.radius
+                      {/* {distance <= selectedLocation.radius
                         ? 'Collect this'
-                        : 'Move closer to collect'}
+                        : 'Move closer to collect'} */}
+                      Collect this
                     </Button>
                   </div>
                 </div>
