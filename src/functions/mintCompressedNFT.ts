@@ -61,7 +61,7 @@ export const mintCompressedNFT = async ({
     isMutable: false,
   };
 
-  const sig = await createCompressNftTnx(
+  console.log(
     connection,
     nftArgs,
     serverKeypair,
@@ -72,25 +72,36 @@ export const mintCompressedNFT = async ({
     collectionMasterEditionAccount
   );
 
-  // web 2 side
+  // const sig = await createCompressNftTnx(
+  //   connection,
+  //   nftArgs,
+  //   serverKeypair,
+  //   userAddress,
+  //   treeAddress,
+  //   collectionMint,
+  //   collectionMetadataAccount,
+  //   collectionMasterEditionAccount
+  // );
 
-  if (sig) {
-    await createMinted({
-      minted: {
-        who: userAddress.toString(),
-        drop_id: drop.id,
-      },
-      onSuccess: (data) => {
-        onSuccess({
-          sig,
-          data,
-        });
-      },
-      onError: () => {
-        onError('');
-      },
-    });
-  } else {
-    onError('');
-  }
+  // // web 2 side
+
+  // if (sig) {
+  //   await createMinted({
+  //     minted: {
+  //       who: userAddress.toString(),
+  //       drop_id: drop.id,
+  //     },
+  //     onSuccess: (data) => {
+  //       onSuccess({
+  //         sig,
+  //         data,
+  //       });
+  //     },
+  //     onError: () => {
+  //       onError('');
+  //     },
+  //   });
+  // } else {
+  //   onError('');
+  // }
 };
