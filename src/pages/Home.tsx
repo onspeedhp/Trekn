@@ -46,6 +46,7 @@ function Home() {
     }
   }, [coordsNow]);
 
+  
   return (
     <>
       <div className='w-[375px] px-[20px] sm:px-0'>
