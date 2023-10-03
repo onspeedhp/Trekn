@@ -1,41 +1,35 @@
 import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router';
-import { getStatusLocation } from '../utils/common.utils';
+import { getLabelLocation } from '../utils/common.utils';
 import { LocationDetail } from '../models/types';
+import parse from 'html-react-parser';
 
-export const DetailCard = ({ data }: { data: any }) => {
+export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
   const navigate = useNavigate();
 
-  const { Icon, label, status } = useMemo(() => {
-    return getStatusLocation(data?.distance, data?.radius);
-  }, [data]);
+  // const { Icon, label } = useMemo(() => {
+  //   return getStatusLocation(data?.distance, data?.radius);
+  // }, [data]);
+  const { Icon, label } = getLabelLocation(status, data?.distance);
 
   return (
     <div
-      className='w-full flex justify-center items-center rounded-xl relative my-2 cursor-pointer overflow-hidden'
+      className='w-full flex justify-center items-center rounded-xl relative my-2 cursor-pointer rounded-xl'
       style={{
-        height: status === 'readyToMint' ? 338 : 338,
+        width: status === 'ReadyToCollect' ? 300 : 335,
+        height: 338,
         backgroundColor: '#525252',
+        marginRight: status === 'ReadyToCollect' ? 12 : 0,
       }}
       onClick={() => {
         navigate(`/map-view/${data.id}`);
       }}
     >
-      {/* <img
-        src={`${data.image}`}
-        style={{
-          width: 335,
-          height: 338,
-          objectFit: 'cover',
-          objectPosition: 'center',
-        }}
-        alt=''
-      /> */}
       <div className='relative'>
         <div
           className='rounded-xl'
           style={{
-            width: 335,
+            width: status === 'ReadyToCollect' ? 300 : 335,
             height: 338,
             objectFit: 'cover',
             objectPosition: 'center',
@@ -44,8 +38,9 @@ export const DetailCard = ({ data }: { data: any }) => {
           <img
             src={`${data.image}`}
             style={{
-              width: '100%',
-              height: '100%',
+              width: status === 'ReadyToCollect' ? 300 : 335,
+              height: 338,
+              borderRadius: 12,
             }}
           />
           <div
@@ -53,34 +48,20 @@ export const DetailCard = ({ data }: { data: any }) => {
             style={{
               backgroundImage:
                 'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 34.71%, rgba(0, 0, 0, 0.60) 77.95%)',
+              borderRadius: 12,
             }}
           ></div>
         </div>
       </div>
 
-      <div className='flex w-auto h-8 items-center justify-center text-sm text-black bg-white rounded-[60px] border-[1px] border-solid border-black absolute px-[12px] z-10 top-[12px] left-[16px]'>
-        {/* <Icon style={{ marginRight: '5px', color: 'black' }} /> */}
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          width='12'
-          height='12'
-          viewBox='0 0 12 12'
-          fill='none'
-          className='mr-1'
-        >
-          <g clipPath='url(#clip0_342_413)'>
-            <path
-              d='M6.87503 2.25C7.49612 2.25 8.00003 1.74609 8.00003 1.125C8.00003 0.503906 7.49612 0 6.87503 0C6.25393 0 5.75003 0.503906 5.75003 1.125C5.75003 1.74609 6.25393 2.25 6.87503 2.25ZM9.08987 5.74453L8.54378 5.46797L8.31643 4.77891C7.9719 3.73359 7.01096 3.00234 5.92112 3C5.07737 2.99766 4.61096 3.23672 3.7344 3.59062C3.22815 3.79453 2.81331 4.18125 2.56956 4.67344L2.41252 4.99219C2.22971 5.3625 2.37737 5.8125 2.74534 5.99766C3.11096 6.18281 3.55628 6.03281 3.74143 5.6625L3.89846 5.34375C3.98049 5.17969 4.11643 5.05078 4.28518 4.98281L4.91331 4.72969L4.55706 6.15234C4.43518 6.63984 4.56643 7.15781 4.90628 7.53047L6.31018 9.06328C6.47893 9.24844 6.59846 9.47109 6.6594 9.7125L7.08831 11.4305C7.18909 11.8313 7.5969 12.0773 7.99768 11.9766C8.39846 11.8758 8.64456 11.468 8.54378 11.0672L8.02346 8.98125C7.96253 8.73984 7.843 8.51484 7.67425 8.33203L6.60784 7.16719L7.01096 5.55703L7.13987 5.94375C7.26409 6.32109 7.53128 6.63281 7.88284 6.81094L8.42893 7.0875C8.79456 7.27266 9.23987 7.12266 9.42503 6.75234C9.6055 6.38438 9.45784 5.92969 9.08987 5.74453V5.74453ZM3.72503 9.04219C3.65002 9.23203 3.53753 9.40312 3.39221 9.54609L2.22034 10.7203C1.92737 11.0133 1.92737 11.4891 2.22034 11.782C2.51331 12.075 2.98674 12.075 3.27971 11.782L4.6719 10.3898C4.81487 10.2469 4.92737 10.0758 5.00471 9.88594L5.32112 9.09375C4.02503 7.68047 4.41409 8.11406 4.21018 7.83516L3.72503 9.04219V9.04219Z'
-              fill='black'
-            />
-          </g>
-          <defs>
-            <clipPath id='clip0_342_413'>
-              <rect width='12' height='12' fill='white' />
-            </clipPath>
-          </defs>
-        </svg>
-        <div>{label}</div>
+      <div
+        className='flex w-auto h-8 items-center justify-center text-sm text-black rounded-[60px] border-[1px] border-solid border-black absolute px-[12px] z-10 top-[12px] left-[16px]'
+        style={{
+          backgroundColor: status === 'ReadyToCollect' ? '#99FF48' : 'white',
+        }}
+      >
+        {parse(Icon)}
+        <div className='ml-1'>{label}</div>
       </div>
       <div className='flex-col text-white absolute bottom-[16px] left-[16px]'>
         <div className='font-medium	text-[13px] flex items-center'>

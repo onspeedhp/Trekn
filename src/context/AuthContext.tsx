@@ -9,7 +9,7 @@ import { IDrop, LocationDetail } from '../models/types';
 import request from '../axios';
 import { useParams } from 'react-router';
 import { useLocation } from 'react-router';
-import { CHAIN_NAMESPACES, IProvider, log } from '@web3auth/base';
+import { CHAIN_NAMESPACES, IProvider } from '@web3auth/base';
 import { Web3Auth } from '@web3auth/modal';
 import { SolanaWalletConnectorPlugin } from '@web3auth/solana-wallet-connector-plugin';
 import { PhantomAdapter } from '@web3auth/phantom-adapter';
@@ -37,7 +37,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     const { log, lat } = coordsNow;
     if (log !== -1 && lat !== -1) {
-      console.log(lat);
 
       handleGetListLocation(lat, log);
     }

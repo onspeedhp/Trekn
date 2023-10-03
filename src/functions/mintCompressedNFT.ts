@@ -46,53 +46,54 @@ export const mintCompressedNFT = async ({
 
   let uri = `${process.env.REACT_APP_BACKEND}/drop/get-uri/${drop.id}`;
 
-  // const nftArgs = {
-  //   name: drop.name,
-  //   symbol: 'TNFT',
-  //   uri: uri,
-  //   creators: [],
-  //   editionNonce: 253,
-  //   tokenProgramVersion: TokenProgramVersion.Original,
-  //   tokenStandard: TokenStandard.NonFungible,
-  //   uses: null,
-  //   collection: collection,
-  //   primarySaleHappened: false,
-  //   sellerFeeBasisPoints: 0,
-  //   isMutable: false,
-  // };
+  const nftArgs = {
+    name: drop.name,
+    symbol: 'TNFT',
+    uri: uri,
+    creators: [],
+    editionNonce: 253,
+    tokenProgramVersion: TokenProgramVersion.Original,
+    tokenStandard: TokenStandard.NonFungible,
+    uses: null,
+    collection: collection,
+    primarySaleHappened: false,
+    sellerFeeBasisPoints: 0,
+    isMutable: false,
+  };
+  try {
+    const sig = await createCompressNftTnx(
+      connection,
+      nftArgs,
+      serverKeypair,
+      userAddress,
+      treeAddress,
+      collectionMint,
+      collectionMetadataAccount,
+      collectionMasterEditionAccount
+    );
 
-  // const sig = await createCompressNftTnx(
-  //   connection,
-  //   nftArgs,
-  //   serverKeypair,
-  //   userAddress,
-  //   treeAddress,
-  //   collectionMint,
-  //   collectionMetadataAccount,
-  //   collectionMasterEditionAccount
-  // );
+    // // web 2 side
 
-  // // // web 2 side
-
-  // if (sig) {
-  //   await createMinted({
-  //     minted: {
-  //       who: userAddress.toString(),
-  //       drop_id: drop.id,
-  //     },
-  //     onSuccess: (data) => {
-  //       onSuccess({
-  //         sig,
-  //         data,
-  //       });
-  //     },
-  //     onError: () => {
-  //       onError('');
-  //     },
-  //   });
-  // } else {
-  //   onError('');
-  // }
-
-  onSuccess('hehe');
+    if (sig) {
+      await createMinted({
+        minted: {
+          who: userAddress.toString(),
+          drop_id: drop.id,
+        },
+        onSuccess: (data) => {
+          onSuccess({
+            sig,
+            data,
+          });
+        },
+        onError: () => {
+          onError('');
+        },
+      });
+    } else {
+      onError('');
+    }
+  } catch (error) {
+    onError(error);
+  }
 };

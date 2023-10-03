@@ -9,17 +9,18 @@ import { useNavigate } from 'react-router';
 import { Modal } from 'antd';
 import request from '../axios';
 import { IDrop } from '../models/types';
-import { Carousel } from 'react-responsive-carousel';
-import { ReadyToCollectSlider } from '../components/ReadyToCollectSlider';
+import Slider from '../components/Slider';
+import { DetailCard } from '../components/DetailCard';
 
 function Home() {
   const { width } = useWindowSize();
   const { coordsNow, loggedIn } = useAuthContext();
   const [readyToCollect, setReadyToCollect] = useState<IDrop[]>([]);
+  const [nearBy, setNearBy] = useState<IDrop[]>([]);
 
   const navigate = useNavigate();
 
-  const handleGetListLocation = async (lat: number, log: number) => {
+  const getReadyToCollect = async (lat: number, log: number) => {
     const res = await request.post('drop/getReadyToCollect', {
       lat: lat,
       lng: log,
@@ -28,38 +29,54 @@ function Home() {
     setReadyToCollect(res.data.data);
   };
 
+  const getNearBy = async (lat: number, log: number) => {
+    const res = await request.post('drop/getNearBy', {
+      lat: lat,
+      lng: log,
+    });
+
+    setNearBy(res.data.data);
+  };
+
   useEffect(() => {
     const { log, lat } = coordsNow;
     if (log !== -1 && lat !== -1) {
-      handleGetListLocation(lat, log);
+      getReadyToCollect(lat, log);
+      getNearBy(lat, log);
     }
   }, [coordsNow]);
 
   return (
     <>
-      <div className='w-full px-[20px] sm:px-0 '>
-        <div
-          className='w-full sm:h-[704px] flex items-end bg-cover mt-[40px]'
-          style={{
-            backgroundImage:
-              width >= 640
-                ? "url('https://vapa.vn/wp-content/uploads/2022/12/anh-canh-dep-001-1.jpg')"
-                : '',
-          }}
-        >
-          <div className='max-w-[673px]  flex flex-col rounded-tr-[24px] sm:h-[336px] sm:bg-white sm:py-[40px] sm:pl-[142px] sm:pr-[48px] '>
-            <div className='text-[34px] font-bold leading-10'>
+      <div className='w-[375px] px-[20px] sm:px-0'>
+        <div className='w-[375px] sm:h-[704px] flex items-end bg-cover mt-[40px]'>
+          <div className='flex flex-col rounded-tr-[24px] sm:h-[336px] sm:bg-white sm:py-[40px] sm:pl-[142px] sm:pr-[48px] '>
+            <div className='text-[34px] font-bold leading-10 w-[335px]'>
               Discover Local Hidden Gems
             </div>
-            {readyToCollect ? (
-              <>{/* <ReadyToCollectSlider data={readyToCollect} /> */}</>
+            {readyToCollect.length !== 0 ? (
+              <>
+                <div className='w-[355px]'>
+                  <Slider>
+                    {readyToCollect.map((item: any, index: any) => (
+                      <DetailCard
+                        key={index}
+                        data={item}
+                        status={'ReadyToCollect'}
+                      />
+                    ))}
+                  </Slider>
+                </div>
+              </>
             ) : (
               <>
-                <div className='flex items-center justify-center mt-7'>
-                  <img src='./Route_search.png' alt='' />
-                </div>
-                <div className='text-center text-[20px] font-semibold text-black opacity-50'>
-                  Go further to discover or drop something in the area
+                <div className='w-[335px]'>
+                  <div className='flex items-center justify-center mt-7'>
+                    <img src='./Route_search.png' alt='' />
+                  </div>
+                  <div className='text-center text-[20px] font-semibold text-black opacity-50'>
+                    Go further to discover or drop something in the area
+                  </div>
                 </div>
               </>
             )}
@@ -130,7 +147,9 @@ function Home() {
           </div>
 
           <div style={{ marginTop: 43 }}>
-            {readyToCollect && <ListDetail data={readyToCollect} />}
+            {nearBy.length !== 0 && (
+              <ListDetail status={'Nearby'} data={nearBy} />
+            )}
           </div>
         </div>
       </div>
