@@ -1,7 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import App from '../App';
 import Home from '../pages/Home';
-import Details from '../pages/Details';
 import Header from '../components/Header';
 import { MapView } from '../pages/MapView';
 import { DropOnboarding } from '../pages/DropOnboarding';
@@ -90,10 +89,6 @@ const AppRoutes = () => (
         element={<App header={Header} hideHeader={true} layout={MintSuccess} />}
       ></Route>
 
-      <Route
-        path='/details/:id'
-        element={<App header={Header} layout={Details} />}
-      ></Route>
     </Routes>
   </BrowserRouter>
 );
