@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { getLabelLocation } from '../utils/common.utils';
-import { LocationDetail } from '../models/types';
 import parse from 'html-react-parser';
 
 export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
@@ -175,7 +174,3 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
     </div>
   );
 };
-
-export interface DetailCardProps {
-  data: LocationDetail;
-}

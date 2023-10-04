@@ -21,6 +21,7 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
+    "@toruslabs/solana-embed": "^2.0.0",
     "@types/googlemaps": "^3.43.3",
     "@types/jest": "^27.0.1",
     "@types/node": "^20.6.4",
@@ -58,7 +59,7 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
-    "dev": "react-app-rewired start",
+    "dev": "set HTTPS=true&&react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject"

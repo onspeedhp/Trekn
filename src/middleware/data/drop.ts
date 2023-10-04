@@ -20,7 +20,7 @@ export const createDrop = async ({
   };
   const { data, error } = await supabase
     .from('drop')
-    .insert({ ...drop })
+    .insert(newDrop)
     .select('*');
 
   if (!error) {

@@ -15,7 +15,6 @@ import {
 import { getAllDrops } from '../middleware/data/drop';
 import { mintCompressedNFT } from '../functions/mintCompressedNFT';
 import { PublicKey } from '@solana/web3.js';
-import RPC from '../utils/solanaRPC';
 
 function deepEqual(obj1: any, obj2: any): boolean {
   if (obj1 === obj2) {
@@ -49,34 +48,35 @@ function deepEqual(obj1: any, obj2: any): boolean {
 
 export const MapView = () => {
   const navigate = useNavigate();
-  const { coordsNow, provider, loggedIn, setMetadata } = useAuthContext();
+  const {
+    coordsNow,
+    loggedIn,
+    setMetadata,
+    torus,
+    setTorus,
+    setLoggedIn,
+    setUser,
+    user,
+  } = useAuthContext();
   const coords = {
     lat: coordsNow.lat,
     lng: coordsNow.log,
   };
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
-  const [address, setAddress] = useState<PublicKey>();
   const [selectedLocation, setSelectedLocation] = useState<any>(null);
   const [drawerHeight, setDrawerHeight] = useState(0);
   const refDrawer = useRef<HTMLDivElement>(null);
   const [distance, setDistance] = useState(0);
   const [loading, setLoading] = useState(false);
   const { dropId } = useParams();
+  const [mintStatus, setMintStatus] = useState('');
+  const [disable, setDisable] = useState(false);
 
   const handleTouchStart = (event: TouchEvent<HTMLDivElement>) => {
     const touchY = event.touches[0].clientY;
     if (refDrawer.current) {
       refDrawer.current.dataset.touchStart = touchY.toString();
     }
-  };
-
-  const getAddress = async () => {
-    if (!provider) {
-      return;
-    }
-    const rpc = new RPC(provider);
-    const address = await rpc.getAccounts();
-    setAddress(new PublicKey(address[0]));
   };
 
   const handleTouchMove = (event: TouchEvent<HTMLDivElement>) => {
@@ -95,14 +95,6 @@ export const MapView = () => {
   };
 
   const [locations, setLocations] = useState<any[]>([]);
-
-  useEffect(() => {
-    if (!loggedIn) {
-      navigate('/');
-    }
-
-    getAddress();
-  }, [loggedIn]);
 
   useEffect(() => {
     getAllDrops({
@@ -169,8 +161,21 @@ export const MapView = () => {
           )
         )
       );
+
+      if (!loggedIn) {
+        setMintStatus('Login to collect');
+        setDisable(false);
+      } else {
+        if (!selectedLocation.radius || distance <= selectedLocation.radius) {
+          setMintStatus('Collect this');
+          setDisable(false);
+        } else {
+          setDisable(true);
+          setMintStatus('Move closer to collect');
+        }
+      }
     }
-  }, [selectedLocation]);
+  }, [selectedLocation, coordsNow, loggedIn]);
 
   return (
     <>
@@ -440,11 +445,11 @@ export const MapView = () => {
                       loading={loading}
                       onClick={async () => {
                         // if (distance <= selectedLocation.radius) {
-                        if (address) {
+                        if (user.address) {
                           setLoading(true);
                           await mintCompressedNFT({
                             drop: selectedLocation,
-                            userAddress: address,
+                            userAddress: new PublicKey(user.address),
                             onSuccess: (data: any) => {
                               setMetadata({
                                 image: selectedLocation.image,
@@ -468,17 +473,56 @@ export const MapView = () => {
                             },
                           });
                           setLoading(false);
+                        } else {
+                          await torus.init({
+                            buildEnv: 'production', // "production", or "developement" are also the option
+                            enableLogging: true, // default: false
+                            network: {
+                              blockExplorerUrl:
+                                'https://explorer.solana.com/?cluster=mainnet', // devnet and mainnet
+                              chainId: '0x1',
+                              displayName: 'Solana Mainnet',
+                              logo: 'solana.svg',
+                              rpcTarget: process.env.REACT_APP_HELIUS_RPC_URL!, // from "@solana/web3.js" package
+                              ticker: 'SOL',
+                              tickerName: 'Solana Token',
+                            },
+                            showTorusButton: false, // default: true
+                            useLocalStorage: false, // default: false to use sessionStorage
+                            buttonPosition: 'top-left', // default: bottom-left
+                            apiKey: process.env.REACT_APP_CLIENT_ID_WEB3_AUTH!, // https://developer.web3auth.io
+                            whiteLabel: {
+                              name: 'Whitelabel Demo',
+                              theme: {
+                                isDark: true,
+                                colors: { torusBrand1: '#00a8ff' },
+                              },
+                              logoDark:
+                                'https://solana-testing.tor.us/img/solana-logo-light.46db0c8f.svg',
+                              logoLight:
+                                'https://solana-testing.tor.us/img/solana-logo-light.46db0c8f.svg',
+                              topupHide: true,
+                            },
+                          });
+
+                          await torus.login();
+
+                          setTorus(torus);
+
+                          const torusInfo = await torus.getUserInfo();
+
+                          setUser({
+                            ...torusInfo,
+                            address: (await torus.getAccounts())[0],
+                          });
+
+                          setLoggedIn(true);
                         }
                         // }
                       }}
-                      // disabled={
-                      //   distance <= selectedLocation.radius ? false : true
-                      // }
+                      disabled={disable}
                     >
-                      {/* {distance <= selectedLocation.radius
-                        ? 'Collect this'
-                        : 'Move closer to collect'} */}
-                      Collect this
+                      {mintStatus}
                     </Button>
                   </div>
                 </div>

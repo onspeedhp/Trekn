@@ -13,7 +13,6 @@ import Slider from '../components/Slider';
 import { DetailCard } from '../components/DetailCard';
 
 function Home() {
-  const { width } = useWindowSize();
   const { coordsNow, loggedIn } = useAuthContext();
   const [readyToCollect, setReadyToCollect] = useState<IDrop[]>([]);
   const [nearBy, setNearBy] = useState<IDrop[]>([]);
@@ -56,7 +55,7 @@ function Home() {
             </div>
             {readyToCollect.length !== 0 ? (
               <>
-                <div className='w-[355px]'>
+                <div className='w-[355px] mt-6'>
                   <Slider>
                     {readyToCollect.map((item: any, index: any) => (
                       <DetailCard
@@ -124,21 +123,7 @@ function Home() {
             className='w-full h-[48px] relative items-center justify-center rounded-3xl bg-white text-black text-base font-semibold px-[32px] mt-4 flex sm:hidden'
             style={{ border: '1px solid gray' }}
             onClick={() => {
-              if (loggedIn) {
-                navigate('/map-view');
-              } else {
-                Modal.error({
-                  title: 'Error',
-                  content: 'You need to sign in first',
-                  okButtonProps: {
-                    type: 'default',
-                    style: {
-                      background: 'red',
-                      color: 'white',
-                    },
-                  },
-                });
-              }
+              navigate('/map-view');
             }}
           >
             <p className='absolute flex items-center'>

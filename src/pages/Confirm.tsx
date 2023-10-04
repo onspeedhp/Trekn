@@ -8,34 +8,14 @@ import RPC from '../utils/solanaRPC';
 
 export const Confirm: React.FC = () => {
   const navigate = useNavigate();
-  const { metadata, setMetadata, loggedIn, provider } = useAuthContext();
-  const [address, setAddress] = useState<PublicKey>();
+  const { metadata, setMetadata, user } = useAuthContext();
   const [isLoading, setIsLoading] = useState(false);
-
-  const getAddress = async () => {
-    if (!provider) {
-      return;
-    }
-    const rpc = new RPC(provider);
-    const address = await rpc.getAccounts();
-    setAddress(new PublicKey(address[0]));
-  };
-
-  useEffect(() => {
-    getAddress();
-  }, [loggedIn]);
-
-  useEffect(() => {
-    if (address) {
-      setMetadata({ ...metadata, creator_address: address?.toString() });
-    }
-  }, [address]);
 
   const [name, setName] = useState('');
   const [image, setImage] = useState('');
   const [location, setLocation] = useState('');
   const [locationName, setLocationName] = useState('');
-  const [desc, setDesc] = useState('');
+  const [description, setDescription] = useState('');
 
   const handleError = () => {
     const modal = Modal.error({
@@ -65,16 +45,17 @@ export const Confirm: React.FC = () => {
       !metadata.location_name ||
       !metadata.description
     ) {
-      handleError();
+      // handleError();
+      console.log(metadata);
+
+      console.log();
     } else {
       setName(metadata.name);
       setImage(metadata.image);
       setLocationName(metadata.location_name);
       setLocation(metadata.location);
-      setDesc(metadata.description);
-      console.log(address);
-
-      setMetadata({ ...metadata, creator_address: address?.toString() });
+      setDescription(metadata.description);
+      setMetadata({ ...metadata, creator_address: user.address });
     }
   }, []);
 
@@ -170,7 +151,7 @@ export const Confirm: React.FC = () => {
         <div className='flex items-˝center' style={{ marginBottom: 113 }}>
           <div className='flex-col mr-4' style={{ width: 268 }}>
             <div className='text-[#BDBDBA] text-[13px]'>Drop desctiption</div>
-            <div>{desc}</div>
+            <div>{description}</div>
           </div>
           <div
             className='flex bg-[#373737] rounded-full items-center justify-center'

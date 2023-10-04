@@ -1,8 +1,6 @@
 import { useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import { useAuthContext } from '../context/AuthContext';
-import RPC from '../utils/solanaRPC';
-import { PublicKey } from '@solana/web3.js';
 import { Button } from 'antd';
 import { FaLock } from 'react-icons/fa6';
 import { FaSignOutAlt } from 'react-icons/fa';
@@ -11,58 +9,34 @@ import { getMintedByUserAddress } from '../middleware/data/minted';
 
 export const Account = () => {
   const navigate = useNavigate();
-  const { loggedIn, provider, web3auth, setProvider, setLoggedIn } =
-    useAuthContext();
-  const [address, setAddress] = useState<PublicKey>();
+  const { loggedIn, setLoggedIn, torus, user } = useAuthContext();
   const [current, setCurrent] = useState('item1');
   const [userDrops, setUserDrops] = useState<any[]>([]);
   const [userMinteds, setUserMinteds] = useState<any[]>([]);
 
-  const getAddress = async () => {
-    if (!provider) {
-      return;
-    }
-    const rpc = new RPC(provider);
-    const address = await rpc.getAccounts();
-    setAddress(new PublicKey(address[0]));
-  };
-
   const logout = async () => {
-    if (!web3auth) {
-      console.log('web3auth not initialized yet');
-      return;
-    }
-    await web3auth.logout();
-    setProvider(null);
+    await torus.logout();
     setLoggedIn(false);
+    navigate('/home');
   };
 
   useEffect(() => {
-    if (!loggedIn) {
-      navigate('/');
-    }
-
-    getAddress();
-  }, [loggedIn]);
-
-  useEffect(() => {
-    if (address) {
+    if (user.address) {
       getDropByUserAddress({
-        userAddress: address.toString(),
+        userAddress: user.address,
         onSuccess: (data: any) => {
           setUserDrops(data);
         },
       });
 
       getMintedByUserAddress({
-        userAddress: address.toString(),
+        userAddress: user.address,
         onSuccess: (data: any) => {
           setUserMinteds(data);
-          console.log(data);
         },
       });
     }
-  }, [address]);
+  }, [user.address]);
 
   return (
     <>
@@ -198,8 +172,8 @@ export const Account = () => {
             </div>
 
             <div className='flex items-center justify-center mb-4 font-normal'>
-              {address?.toString().slice(0, 2)}...
-              {address?.toString().slice(-6, -1)}
+              {user.address.slice(0, 2)}...
+              {user.address.slice(-6, -1)}
             </div>
 
             <div className='flex items-center justify-center font-normal'>

@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { DetailCard } from './DetailCard';
-import { LocationDetail } from '../models/types';
 
 export const ListDetail = ({ data, status }: { data: any; status: any }) => {
   const [amountShowItem, setAmountShowItem] = useState(3);
@@ -20,8 +19,8 @@ export const ListDetail = ({ data, status }: { data: any; status: any }) => {
 
   return (
     <div className='w-full'>
-      <div className='flex items-center text-sm font-semibold text-[#00A868]'>
-        {status === 'Nearby' ? 'Near by' : 'Popular'}
+      <div className='flex items-center text-sm font-semibold text-black'>
+        {status === 'Nearby' ? 'Nearby' : 'Popular'}
       </div>
       <div className='grid grid-cols-1 sm:grid-cols-3 '>
         {data?.slice(0, amountShowItem).map((item: any, index: any) => (
@@ -39,7 +38,3 @@ export const ListDetail = ({ data, status }: { data: any; status: any }) => {
     </div>
   );
 };
-
-interface ListDetailProps {
-  data: LocationDetail[];
-}

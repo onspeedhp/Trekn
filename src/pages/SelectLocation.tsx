@@ -10,7 +10,7 @@ const LocationSearch = () => {
   const [locations, setLocations] = useState<any>([]);
   const { metadata, setMetadata } = useAuthContext();
   const navigate = useNavigate();
-
+  console.log('hehe');
   useEffect(() => {
     if (query === '') {
       setLocations([]);
@@ -18,6 +18,8 @@ const LocationSearch = () => {
     }
 
     if (window.google && window.google.maps && window.google.maps.places) {
+      console.log('haha');
+
       const service = new window.google.maps.places.AutocompleteService();
       service.getPlacePredictions(
         {

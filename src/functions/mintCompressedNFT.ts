@@ -80,11 +80,8 @@ export const mintCompressedNFT = async ({
           who: userAddress.toString(),
           drop_id: drop.id,
         },
-        onSuccess: (data) => {
-          onSuccess({
-            sig,
-            data,
-          });
+        onSuccess: () => {
+          onSuccess(sig);
         },
         onError: () => {
           onError('');

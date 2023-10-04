@@ -27,7 +27,7 @@ export const NftDetails = () => {
             name: minted.drop.name,
             location_name: minted.drop.location_name,
             location: minted.drop.location,
-            desc: minted.drop.description,
+            description: minted.drop.description,
           });
         },
       });

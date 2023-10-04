@@ -29,14 +29,14 @@ export const AddDescription: React.FC = () => {
 
   useEffect(() => {
     if (metadata.description) {
-      setDesc(metadata.description);
+      setDescription(metadata.description);
     }
 
     if (!metadata.image || !metadata.name || !metadata.location) {
       handleError();
     }
   });
-  const [desc, setDesc] = useState('');
+  const [description, setDescription] = useState('');
   return (
     <div className='bg-black absolute' style={{ height: 812 }}>
       <div className='m-5 text-white font-semibold'>
@@ -71,21 +71,21 @@ export const AddDescription: React.FC = () => {
           <input
             placeholder='Type here...'
             className='text-white opacity-50 bg-black w-full text-2xl h-10 font-normal pr-10 focus:outline-none'
-            value={desc}
-            onChange={(e) => setDesc(e.target.value)}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
             onKeyDown={(event) => {
               if (event.key === 'Enter') {
-                if (desc) {
+                if (description) {
                   setMetadata({
                     ...metadata,
-                    desc: desc,
+                    description: description,
                   });
 
                   navigate('/drop-onboarding/confirm');
                 } else {
                   Modal.error({
                     title: 'Error',
-                    content: 'Need to fill up cNFT desc',
+                    content: 'Need to fill up cNFT description',
                     okButtonProps: {
                       type: 'default',
                       style: {
