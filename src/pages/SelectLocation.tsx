@@ -17,11 +17,7 @@ const LocationSearch = () => {
       return;
     }
 
-    console.log('Yes sir');
-
     if (window.google && window.google.maps && window.google.maps.places) {
-      console.log('not good');
-
       const service = new window.google.maps.places.AutocompleteService();
       service.getPlacePredictions(
         {
@@ -112,20 +108,19 @@ export const SelectLocation: React.FC = () => {
   const [scriptLoaded, setScriptLoaded] = useState(false);
 
   useEffect(() => {
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_JAVASCRIPT_API_KEY}&libraries=places`;
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      setScriptLoaded(true);
+    };
+    document.head.appendChild(script);
+
     if (window.google) {
       setScriptLoaded(true);
-    } else {
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_JAVASCRIPT_API_KEY}&libraries=places`;
-      script.async = true;
-      script.defer = true;
-      script.onload = () => {
-        setScriptLoaded(true);
-      };
-      document.head.appendChild(script);
-      console.log('Init map');
     }
-  });
+  }, []);
 
   const handleError = () => {
     const modal = Modal.error({
