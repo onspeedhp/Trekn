@@ -10,7 +10,7 @@ const LocationSearch = () => {
   const [locations, setLocations] = useState<any>([]);
   const { metadata, setMetadata } = useAuthContext();
   const navigate = useNavigate();
-  console.log('hehe');
+
   useEffect(() => {
     if (query === '') {
       setLocations([]);
