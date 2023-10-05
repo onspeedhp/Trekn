@@ -17,14 +17,16 @@ const LocationSearch = () => {
       return;
     }
 
-    if (window.google && window.google.maps && window.google.maps.places) {
-      console.log('haha');
+    console.log('Yes sir');
 
+    if (window.google && window.google.maps && window.google.maps.places) {
+      console.log('not good');
+      
       const service = new window.google.maps.places.AutocompleteService();
       service.getPlacePredictions(
         {
           input: query,
-          componentRestrictions: { country: 'vn' },
+          componentRestrictions: { country: ['vn'] },
         },
         (predictions, status) => {
           if (status !== window.google.maps.places.PlacesServiceStatus.OK) {
@@ -112,8 +114,17 @@ export const SelectLocation: React.FC = () => {
   useEffect(() => {
     if (window.google) {
       setScriptLoaded(true);
+    } else {
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_JAVASCRIPT_API_KEY}&libraries=places`;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        setScriptLoaded(true);
+      };
+      document.head.appendChild(script);
     }
-  }, []);
+  });
 
   const handleError = () => {
     const modal = Modal.error({

@@ -12,11 +12,13 @@ export const createDrop = async ({
 }) => {
   const newDrop = {
     ...drop,
-    attributes: {
-      'Drop name': drop.name,
-      'Drop location': drop.location_name,
-      'Drop description': drop.description,
-    },
+    attributes: [
+      {
+        'Drop name': drop.name,
+        'Drop location': drop.location_name,
+        'Drop description': drop.description,
+      },
+    ],
   };
   const { data, error } = await supabase
     .from('drop')

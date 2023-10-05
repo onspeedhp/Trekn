@@ -31,20 +31,6 @@
     <title>Trekn - Proof of Travel</title>
   </head>
   <body>
-    <script>
-      function loadGoogleMapsScript() {
-        var script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src =
-          'https://maps.googleapis.com/maps/api/js?key=AIzaSyBFqTpP3oVYBikqVoh2UEkXHHVuCKEP2C4&libraries=places';
-        document.body.appendChild(script);
-      }
-      console.log(window.location.pathname);
-      if (window.location.pathname === '/drop-onboarding/select-location') {
-        loadGoogleMapsScript();
-      }
-    </script>
-    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFqTpP3oVYBikqVoh2UEkXHHVuCKEP2C4&libraries=places"></script> -->
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
 

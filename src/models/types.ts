@@ -12,4 +12,6 @@ export interface IDrop {
   symbol?: any;
   sig?: any;
   distance?: number;
+  author?: string;
+  author_image?: string;
 }
