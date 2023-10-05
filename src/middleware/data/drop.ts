@@ -89,24 +89,35 @@ export const getDropByID = async ({
 };
 
 export const updateDrop = async ({
-  uri,
+  value,
   dropId,
   onSuccess = () => {},
   onError = () => {},
 }: {
-  uri: string;
+  value: string;
   dropId: number;
   onSuccess?: (data: any) => void;
   onError?: (error: any) => void;
 }) => {
-  const { data, error } = await supabase
+  const { data: drop, error } = await supabase
     .from('drop')
-    .update({ uri: uri })
+    .select('*')
     .eq('id', dropId);
 
   if (!error) {
-    onSuccess(data);
+    const reaction_counts = drop[0].reaction_counts;
+    reaction_counts[value] += 1;
+    const { error } = await supabase
+      .from('drop')
+      .update({ reaction_counts: reaction_counts })
+      .eq('id', dropId);
+
+    onSuccess('');
+
+    if (error) {
+      onError(error);
+    }
   } else {
-    onError('');
+    onError(error);
   }
 };

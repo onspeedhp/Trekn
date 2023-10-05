@@ -13,6 +13,7 @@ import { DropSuccess } from '../pages/DropSuccess';
 import { Account } from '../pages/Account';
 import { NftDetails } from '../pages/NftDetails';
 import { MintSuccess } from '../pages/MintSuccess';
+import { Reaction } from '../pages/Reaction';
 
 const AppRoutes = () => (
   <BrowserRouter basename='/'>
@@ -89,6 +90,10 @@ const AppRoutes = () => (
         element={<App header={Header} hideHeader={true} layout={MintSuccess} />}
       ></Route>
 
+      <Route
+        path='/reaction-drop'
+        element={<App header={Header} hideHeader={true} layout={Reaction} />}
+      ></Route>
     </Routes>
   </BrowserRouter>
 );

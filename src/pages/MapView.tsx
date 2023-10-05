@@ -1,12 +1,19 @@
 /* eslint-disable no-restricted-globals */
-import { Button, Drawer, Modal } from 'antd';
-import { FaPlus } from 'react-icons/fa6';
+import { Button, ConfigProvider, Divider, Drawer, Modal, Popover } from 'antd';
+import {
+  FaFaceFrown,
+  FaFaceKissWinkHeart,
+  FaFaceLaughBeam,
+  FaFaceMeh,
+  FaFaceSadCry,
+  FaPlus,
+  FaChevronDown,
+} from 'react-icons/fa6';
 import { useNavigate, useParams } from 'react-router';
 import { useAuthContext } from '../context/AuthContext';
 import GoogleMap from '../components/GoogleMap';
 import React, { useEffect, useRef, useState, TouchEvent } from 'react';
 import { FaUserFriends, FaHome } from 'react-icons/fa';
-import { FaDollarSign } from 'react-icons/fa6';
 import { GroupIcon } from '../icons';
 import {
   calculateDistance,
@@ -15,6 +22,7 @@ import {
 import { getAllDrops } from '../middleware/data/drop';
 import { mintCompressedNFT } from '../functions/mintCompressedNFT';
 import { PublicKey } from '@solana/web3.js';
+import './style.css';
 
 function deepEqual(obj1: any, obj2: any): boolean {
   if (obj1 === obj2) {
@@ -71,6 +79,34 @@ export const MapView = () => {
   const { dropId } = useParams();
   const [mintStatus, setMintStatus] = useState('');
   const [disable, setDisable] = useState(false);
+
+  const [open, setOpen] = useState(false);
+
+  const hide = () => {
+    setOpen(false);
+  };
+
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
+  };
+
+  const reactions = [
+    {
+      icon: <FaFaceKissWinkHeart className='text-[#66C61B]' />,
+    },
+    {
+      icon: <FaFaceLaughBeam className='text-[#66C61B]' />,
+    },
+    {
+      icon: <FaFaceMeh className='text-[#66C61B]' />,
+    },
+    {
+      icon: <FaFaceFrown className='text-[#66C61B]' />,
+    },
+    {
+      icon: <FaFaceSadCry className='text-[#66C61B]' />,
+    },
+  ];
 
   const handleTouchStart = (event: TouchEvent<HTMLDivElement>) => {
     const touchY = event.touches[0].clientY;
@@ -179,7 +215,16 @@ export const MapView = () => {
 
   return (
     <>
-      <div className=''>
+      <ConfigProvider
+        theme={{
+          components: {
+            Popover: {
+              width: 97,
+              minWidth: 97,
+            },
+          },
+        }}
+      >
         <div
           className='rounded-xl h-screen'
           style={{
@@ -388,11 +433,11 @@ export const MapView = () => {
                     {selectedLocation.name}
                   </div>
                   <div className='text-[13px] text-[#848484] font-medium mb-4'>
-                    {selectedLocation.location_name} ∙{' '}
+                    {selectedLocation.location_name} ∙
                     {selectedLocation.location}
                   </div>
 
-                  <div className='flex items-center justify-center mb-3'>
+                  <div className='flex items-center justify-center mb-5'>
                     <img
                       src={selectedLocation.image}
                       alt='Uploaded'
@@ -406,20 +451,46 @@ export const MapView = () => {
                     />
                   </div>
 
-                  <div className='flex relative border-b p-5'>
-                    <div className='flex absolute inset-y-0 left-0'>
+                  <div
+                    className='flex relative border-b'
+                    style={{ height: 60 }}
+                  >
+                    <div className='flex h-10 p-3 bg-[#F5F5F5] opacity-70 rounded-full'>
                       <FaUserFriends size={16} />
-                      <span className='text-[13px] font-medium ml-2'>
+                      <span className='text-[13px] font-semibold ml-2'>
                         1290 owned this
                       </span>
                     </div>
 
-                    <div className='absolute inset-y-0 right-0 flex'>
-                      <FaDollarSign size={16} />
-                      <span className='text-[13px] font-medium ml-2'>
-                        Free collect
-                      </span>
-                    </div>
+                    <Popover
+                      content={
+                        <>
+                          {reactions.map((item, index) => (
+                            <div
+                              className='flex items-center justify-center'
+                              key={index}
+                            >
+                              {item.icon}
+                              <span className='text-[13px] font-medium ml-2'>
+                                {selectedLocation.reaction_counts[`${index}`]}
+                              </span>
+                            </div>
+                          ))}
+                        </>
+                      }
+                      trigger='click'
+                      open={open}
+                      onOpenChange={handleOpenChange}
+                      placement='bottom'
+                    >
+                      <div className='flex ml-2 h-10 p-3 bg-[#F5F5F5] opacity-70 rounded-full items-center'>
+                        <FaFaceLaughBeam size={16} className='text-[#66C61B]' />
+                        <span className='text-[13px] font-semibold ml-2'>
+                          {selectedLocation.reaction_counts['2']}
+                        </span>
+                        <FaChevronDown className='ml-2' />
+                      </div>
+                    </Popover>
                   </div>
 
                   <div className='flex items-center mb-[24px] mt-5'>
@@ -444,7 +515,6 @@ export const MapView = () => {
                       style={{ width: 335 }}
                       loading={loading}
                       onClick={async () => {
-                        // if (distance <= selectedLocation.radius) {
                         if (user.address) {
                           setLoading(true);
                           await mintCompressedNFT({
@@ -454,6 +524,7 @@ export const MapView = () => {
                               setMetadata({
                                 image: selectedLocation.image,
                                 sig: data,
+                                id: selectedLocation.id,
                               });
 
                               navigate('/collect-success');
@@ -540,7 +611,7 @@ export const MapView = () => {
             <FaPlus size={24} />
           </Button>
         </div>
-      </div>
+      </ConfigProvider>
     </>
   );
 };

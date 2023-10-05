@@ -9,7 +9,7 @@ import { getMintedByUserAddress } from '../middleware/data/minted';
 
 export const Account = () => {
   const navigate = useNavigate();
-  const { loggedIn, setLoggedIn, torus, user } = useAuthContext();
+  const { loggedIn, setLoggedIn, torus, user, setUser } = useAuthContext();
   const [current, setCurrent] = useState('item1');
   const [userDrops, setUserDrops] = useState<any[]>([]);
   const [userMinteds, setUserMinteds] = useState<any[]>([]);
@@ -17,6 +17,7 @@ export const Account = () => {
   const logout = async () => {
     await torus.logout();
     setLoggedIn(false);
+    setUser({});
     navigate('/home');
   };
 

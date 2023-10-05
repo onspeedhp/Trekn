@@ -35,7 +35,7 @@ function App({
   const Header: any = header;
   return (
     <>
-      <div className='bg-white'>
+      <div className='bg-white font-sans'>
         <AuthProvider>
           <ConnectionProvider endpoint={endpoint}>
             <WalletProvider wallets={wallets} autoConnect>

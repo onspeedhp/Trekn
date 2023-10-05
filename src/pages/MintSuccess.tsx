@@ -49,8 +49,8 @@ export const MintSuccess = () => {
               fill='#66C61B'
             />
           </svg>
-          <div className='text-2xl my-3'>Collected successful</div>
-          <div className='text-black opacity-50'>
+          <div className='text-2xl my-3 font-bold'>Collected successful</div>
+          <div className='text-black opacity-50 font-normal'>
             This experience has been stored in your custodial wallet. Check your
             Profile Assets.
           </div>
@@ -90,8 +90,7 @@ export const MintSuccess = () => {
         <Button
           className='bg-[#2E2E2E] text-white border-0  w-full h-12 rounded-3xl font-semibold text-base'
           onClick={() => {
-            setMetadata({});
-            navigate('/account');
+            navigate('/reaction-drop');
           }}
         >
           Done

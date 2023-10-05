@@ -160,9 +160,9 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
           </svg>
           Undefined
         </div>
-        <div className='font-semibold	text-xl'>{data?.name}</div>
+        <div className='font-semibold	text-xl mb-1 mt-2'>{data?.name}</div>
         <div className='text-sm font-medium	opacity-70'>
-          {data?.location_name}, {data?.location}
+          {data?.location_name}
         </div>
       </div>
       {status === 'readyToMint' && (
