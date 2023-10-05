@@ -21,7 +21,7 @@ const LocationSearch = () => {
 
     if (window.google && window.google.maps && window.google.maps.places) {
       console.log('not good');
-      
+
       const service = new window.google.maps.places.AutocompleteService();
       service.getPlacePredictions(
         {
@@ -123,6 +123,7 @@ export const SelectLocation: React.FC = () => {
         setScriptLoaded(true);
       };
       document.head.appendChild(script);
+      console.log('Init map');
     }
   });
 
