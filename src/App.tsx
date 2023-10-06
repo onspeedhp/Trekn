@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import { Outlet } from 'react-router';
 import {
@@ -33,22 +33,43 @@ function App({
   const Layout: any = layout;
 
   const Header: any = header;
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    function handleResize() {
+      setIsMobile(window.innerWidth <= 768);
+    }
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   return (
     <>
-      <div className='bg-white font-sans'>
-        <AuthProvider>
-          <ConnectionProvider endpoint={endpoint}>
-            <WalletProvider wallets={wallets} autoConnect>
-              <WalletModalProvider>
-                <Header hidden={hideHeader}></Header>
-                <Layout>
-                  <Outlet />
-                </Layout>
-              </WalletModalProvider>
-            </WalletProvider>
-          </ConnectionProvider>
-        </AuthProvider>
-      </div>
+      {isMobile ? (
+        <div className='bg-white font-sans'>
+          <AuthProvider>
+            <ConnectionProvider endpoint={endpoint}>
+              <WalletProvider wallets={wallets} autoConnect>
+                <WalletModalProvider>
+                  <Header hidden={hideHeader}></Header>
+                  <Layout>
+                    <Outlet />
+                  </Layout>
+                </WalletModalProvider>
+              </WalletProvider>
+            </ConnectionProvider>
+          </AuthProvider>
+        </div>
+      ) : (
+        <div className='w-full flex items-center justify-center font-sans font-semibold text-[34px] text-center'>
+          <h1>This website is only available in mobile brower</h1>
+        </div>
+      )}
     </>
   );
 }
