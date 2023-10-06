@@ -4,11 +4,12 @@ import { Modal, Radio, RadioChangeEvent } from 'antd';
 import { useEffect, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import React from 'react';
+import { calculateDistance } from '../functions/calculateDistance';
 
 const LocationSearch = () => {
   const [query, setQuery] = useState('');
   const [locations, setLocations] = useState<any>([]);
-  const { metadata, setMetadata } = useAuthContext();
+  const { metadata, setMetadata, coordsNow } = useAuthContext();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -85,13 +86,50 @@ const LocationSearch = () => {
           >
             {locations && (
               <>
-                {locations.map((location: any, index: any) => (
-                  <div className='mb-5' key={index}>
-                    <Radio value={index} className='text-white text-[15px]'>
-                      {location.description}
-                    </Radio>
-                  </div>
-                ))}
+                {locations.map((location: any, index: any) => {
+                  let disable = false;
+                  // const service = new window.google.maps.places.PlacesService(
+                  //   document.createElement('div')
+                  // );
+                  // const placeId = location.place_id;
+                  // service.getDetails({ placeId }, (place: any, status: any) => {
+                  //   if (
+                  //     status !==
+                  //       window.google.maps.places.PlacesServiceStatus.OK ||
+                  //     !place.geometry ||
+                  //     !place.geometry.location
+                  //   ) {
+                  //     console.error(status);
+                  //     return;
+                  //   }
+                  //   const distance = calculateDistance(
+                  //     coordsNow.lat,
+                  //     coordsNow.log,
+                  //     place.geometry.location.lat(),
+                  //     place.geometry.location.lng()
+                  //   );
+
+                  //   if (distance > 100) {
+                      
+                  //     disable = true;
+                  //   }
+
+                  //   console.log(disable);
+                    
+                  // });
+                  
+                  return (
+                    <div className='mb-5' key={index}>
+                      <Radio
+                        value={index}
+                        className='text-white text-[15px]'
+                        disabled={disable}
+                      >
+                        {location.description}
+                      </Radio>
+                    </div>
+                  );
+                })}
               </>
             )}
           </Radio.Group>
@@ -144,7 +182,7 @@ export const SelectLocation: React.FC = () => {
 
   useEffect(() => {
     if (!metadata.image || !metadata.name) {
-      handleError();
+      // handleError();
     }
   }, []);
 

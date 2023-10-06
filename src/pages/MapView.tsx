@@ -440,10 +440,10 @@ export const MapView = () => {
 
                               navigate('/collect-success');
                             },
-                            onError: () => {
+                            onError: (error) => {
                               Modal.error({
                                 title: 'Error',
-                                content: 'Cannot mint this NFT',
+                                content: error,
                                 okButtonProps: {
                                   type: 'default',
                                   style: {

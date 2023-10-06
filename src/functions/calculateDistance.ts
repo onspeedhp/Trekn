@@ -24,6 +24,6 @@ export function convertDistance(distance: number): string {
   if (distance >= 1000) {
     return (distance / 1000).toFixed(2) + ' km'; // Convert to kilometers and keep 2 decimal places
   } else {
-    return distance + ' m'; // Keep as meters
+    return Math.ceil(distance) + ' m'; // Keep as meters
   }
 }
