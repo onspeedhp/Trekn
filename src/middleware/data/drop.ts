@@ -110,7 +110,10 @@ export const updateDrop = async ({
 
   if (userId !== drop.user.id) {
     if (value === '1' || value === '0') {
-      await supabase.from('user').update({ point: drop.user.point + 1 });
+      await supabase
+        .from('user')
+        .update({ point: drop.user.point + 3 })
+        .eq('id', drop.user.id);
     }
   }
 

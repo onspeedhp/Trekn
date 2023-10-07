@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router';
 import { useAuthContext } from '../context/AuthContext';
 import { Button, Modal } from 'antd';
 import { useEffect, useState } from 'react';
-import parse from 'html-react-parser';
 import {
   FaFaceFrown,
   FaFaceKissWinkHeart,
@@ -117,10 +116,10 @@ export const Reaction = () => {
             <div
               key={index}
               onClick={() => {
-                if (value === index) {
+                if (value === Math.abs(index - 4)) {
                   setValue(undefined);
                 } else {
-                  setValue(index);
+                  setValue(Math.abs(index - 4));
                 }
               }}
               className='mx-2'
@@ -134,6 +133,8 @@ export const Reaction = () => {
           className='bg-[#2E2E2E] text-white border-0  w-full h-12 rounded-3xl font-semibold text-base'
           onClick={async () => {
             if (metadata.id) {
+              console.log(value);
+
               await updateDrop({
                 drop: metadata,
                 value: String(value),
