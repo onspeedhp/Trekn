@@ -94,9 +94,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const torusInfo = await torus.getUserInfo();
 
     const userInfo = {
-      name: torusInfo.name,
+      name: torusInfo.name || 'Undefined',
       email: torusInfo.email,
-      profileImage: torusInfo.profileImage,
+      profileImage:
+        torusInfo.profileImage ||
+        `${process.env.REACT_APP_SUPABASE_URL}/storage/v1/object/public/drop_image/profileImage.svg`,
       address: (await torus.getAccounts())[0],
     };
 

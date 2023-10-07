@@ -165,6 +165,9 @@ function Home() {
                             <div className='font-medium'>{user?.name}</div>
                             <div className='absolute inset-y-0 right-0'>
                               {user.point}
+                              <span className='text-black opacity-50'>
+                                {user.point === 1 ? ' point' : ' points'}
+                              </span>
                             </div>
                           </div>
                         ))}
