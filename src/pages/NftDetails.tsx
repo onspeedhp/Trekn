@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { getMintedById } from '../middleware/data/minted';
 import { getDropByID } from '../middleware/data/drop';
-import moment from 'moment';
+import moment, { min } from 'moment';
 import { useAuthContext } from '../context/AuthContext';
 
 export const NftDetails = () => {
   const { mintedId, dropId } = useParams();
   const navigate = useNavigate();
   const [data, setData] = useState<any>(null);
-  const { loggedIn } = useAuthContext();
+  const { loggedIn, windowSize } = useAuthContext();
 
   useEffect(() => {
     if (!loggedIn) {
@@ -28,6 +28,8 @@ export const NftDetails = () => {
             location_name: minted.drop.location_name,
             location: minted.drop.location,
             description: minted.drop.description,
+            author: minted.drop.author,
+            author_image: minted.drop.author_image,
           });
         },
       });
@@ -36,7 +38,6 @@ export const NftDetails = () => {
         dropId: dropId,
         onSuccess: (data: any) => {
           setData(data[0]);
-          console.log(data[0]);
         },
       });
     }
@@ -67,7 +68,7 @@ export const NftDetails = () => {
               <div className='flex-col'>
                 <img
                   src={`${data.image}`}
-                  style={{ width: 335, height: 335 }}
+                  style={{ width: windowSize.width - 40, height: 335 }}
                   className='rounded-xl'
                 />
 
@@ -76,296 +77,14 @@ export const NftDetails = () => {
                     <div className='text-[#BDBDBA] text-[13px] font-medium'>
                       Author
                     </div>
-                    <div className='text-white font-semibold flex mt-1'>
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        width='24'
-                        height='25'
-                        viewBox='0 0 24 25'
-                        fill='none'
-                      >
-                        <g clipPath='url(#clip0_52_5107)'>
-                          <mask
-                            id='mask0_52_5107'
-                            maskUnits='userSpaceOnUse'
-                            x='0'
-                            y='0'
-                            width='24'
-                            height='25'
-                          >
-                            <path
-                              d='M24 12.4658C24 5.8384 18.6274 0.46582 12 0.46582C5.37258 0.46582 0 5.8384 0 12.4658C0 19.0932 5.37258 24.4658 12 24.4658C18.6274 24.4658 24 19.0932 24 12.4658Z'
-                              fill='white'
-                            />
-                          </mask>
-                          <g mask='url(#mask0_52_5107)'>
-                            <path
-                              d='M9 0.46582H6V3.46582H9V0.46582Z'
-                              fill='#FFAD08'
-                            />
-                            <path
-                              d='M15 0.46582H12V3.46582H15V0.46582Z'
-                              fill='#EDD75A'
-                            />
-                            <path
-                              d='M21 0.46582H18V3.46582H21V0.46582Z'
-                              fill='#EDD75A'
-                            />
-                            <path
-                              d='M6 0.46582H3V3.46582H6V0.46582Z'
-                              fill='#EDD75A'
-                            />
-                            <path
-                              d='M12 0.46582H9V3.46582H12V0.46582Z'
-                              fill='#FFAD08'
-                            />
-                            <path
-                              d='M18 0.46582H15V3.46582H18V0.46582Z'
-                              fill='#EDD75A'
-                            />
-                            <path
-                              d='M24 0.46582H21V3.46582H24V0.46582Z'
-                              fill='#FFAD08'
-                            />
-                            <path
-                              d='M3 3.46582H0V6.46582H3V3.46582Z'
-                              fill='#EDD75A'
-                            />
-                            <path
-                              d='M3 6.46582H0V9.46582H3V6.46582Z'
-                              fill='#73B06F'
-                            />
-                            <path
-                              d='M3 9.46582H0V12.4658H3V9.46582Z'
-                              fill='#FFAD08'
-                            />
-                            <path
-                              d='M3 12.4658H0V15.4658H3V12.4658Z'
-                              fill='#0C8F8F'
-                            />
-                            <path
-                              d='M3 15.4658H0V18.4658H3V15.4658Z'
-                              fill='#EDD75A'
-                            />
-                            <path
-                              d='M3 18.4658H0V21.4658H3V18.4658Z'
-                              fill='#73B06F'
-                            />
-                            <path
-                              d='M3 21.4658H0V24.4658H3V21.4658Z'
-                              fill='#FFAD08'
-                            />
-                            <path
-                              d='M9 3.46582H6V6.46582H9V3.46582Z'
-                              fill='#FFAD08'
-                            />
-                            <path
-                              d='M9 6.46582H6V9.46582H9V6.46582Z'
-                              fill='#EDD75A'
-                            />
-                            <path
-                              d='M9 9.46582H6V12.4658H9V9.46582Z'
-                              fill='#FFAD08'
-                            />
-                            <path
-                              d='M9 12.4658H6V15.4658H9V12.4658Z'
-                              fill='#73B06F'
-                            />
-                            <path
-                              d='M9 15.4658H6V18.4658H9V15.4658Z'
-                              fill='#EDD75A'
-                            />
-                            <path
-                              d='M9 18.4658H6V21.4658H9V18.4658Z'
-                              fill='#FFAD08'
-                            />
-                            <path
-                              d='M9 21.4658H6V24.4658H9V21.4658Z'
-                              fill='#405059'
-                            />
-                            <path
-                              d='M15 3.46582H12V6.46582H15V3.46582Z'
-                              fill='#405059'
-                            />
-                            <path
-                              d='M15 6.46582H12V9.46582H15V6.46582Z'
-                              fill='#0C8F8F'
-                            />
-                            <path
-                              d='M15 9.46582H12V12.4658H15V9.46582Z'
-                              fill='#EDD75A'
-                            />
-                            <path
-                              d='M15 12.4658H12V15.4658H15V12.4658Z'
-                              fill='#FFAD08'
-                            />
-                            <path
-                              d='M15 15.4658H12V18.4658H15V15.4658Z'
-                              fill='#FFAD08'
-                            />
-                            <path
-                              d='M15 18.4658H12V21.4658H15V18.4658Z'
-                              fill='#EDD75A'
-                            />
-                            <path
-                              d='M15 21.4658H12V24.4658H15V21.4658Z'
-                              fill='#FFAD08'
-                            />
-                            <path
-                              d='M21 3.46582H18V6.46582H21V3.46582Z'
-                              fill='#73B06F'
-                            />
-                            <path
-                              d='M21 6.46582H18V9.46582H21V6.46582Z'
-                              fill='#FFAD08'
-                            />
-                            <path
-                              d='M21 9.46582H18V12.4658H21V9.46582Z'
-                              fill='#73B06F'
-                            />
-                            <path
-                              d='M21 12.4658H18V15.4658H21V12.4658Z'
-                              fill='#EDD75A'
-                            />
-                            <path
-                              d='M21 15.4658H18V18.4658H21V15.4658Z'
-                              fill='#405059'
-                            />
-                            <path
-                              d='M21 18.4658H18V21.4658H21V18.4658Z'
-                              fill='#FFAD08'
-                            />
-                            <path
-                              d='M21 21.4658H18V24.4658H21V21.4658Z'
-                              fill='#FFAD08'
-                            />
-                            <path
-                              d='M6 3.46582H3V6.46582H6V3.46582Z'
-                              fill='#FFAD08'
-                            />
-                            <path
-                              d='M6 6.46582H3V9.46582H6V6.46582Z'
-                              fill='#0C8F8F'
-                            />
-                            <path
-                              d='M6 9.46582H3V12.4658H6V9.46582Z'
-                              fill='#EDD75A'
-                            />
-                            <path
-                              d='M6 12.4658H3V15.4658H6V12.4658Z'
-                              fill='#FFAD08'
-                            />
-                            <path
-                              d='M6 15.4658H3V18.4658H6V15.4658Z'
-                              fill='#FFAD08'
-                            />
-                            <path
-                              d='M6 18.4658H3V21.4658H6V18.4658Z'
-                              fill='#73B06F'
-                            />
-                            <path
-                              d='M6 21.4658H3V24.4658H6V21.4658Z'
-                              fill='#405059'
-                            />
-                            <path
-                              d='M12 3.46582H9V6.46582H12V3.46582Z'
-                              fill='#FFAD08'
-                            />
-                            <path
-                              d='M12 6.46582H9V9.46582H12V6.46582Z'
-                              fill='#EDD75A'
-                            />
-                            <path
-                              d='M12 9.46582H9V12.4658H12V9.46582Z'
-                              fill='#FFAD08'
-                            />
-                            <path
-                              d='M12 12.4658H9V15.4658H12V12.4658Z'
-                              fill='#EDD75A'
-                            />
-                            <path
-                              d='M12 15.4658H9V18.4658H12V15.4658Z'
-                              fill='#EDD75A'
-                            />
-                            <path
-                              d='M12 18.4658H9V21.4658H12V18.4658Z'
-                              fill='#EDD75A'
-                            />
-                            <path
-                              d='M12 21.4658H9V24.4658H12V21.4658Z'
-                              fill='#0C8F8F'
-                            />
-                            <path
-                              d='M18 3.46582H15V6.46582H18V3.46582Z'
-                              fill='#FFAD08'
-                            />
-                            <path
-                              d='M18 6.46582H15V9.46582H18V6.46582Z'
-                              fill='#405059'
-                            />
-                            <path
-                              d='M18 9.46582H15V12.4658H18V9.46582Z'
-                              fill='#FFAD08'
-                            />
-                            <path
-                              d='M18 12.4658H15V15.4658H18V12.4658Z'
-                              fill='#EDD75A'
-                            />
-                            <path
-                              d='M18 15.4658H15V18.4658H18V15.4658Z'
-                              fill='#0C8F8F'
-                            />
-                            <path
-                              d='M18 18.4658H15V21.4658H18V18.4658Z'
-                              fill='#FFAD08'
-                            />
-                            <path
-                              d='M18 21.4658H15V24.4658H18V21.4658Z'
-                              fill='#0C8F8F'
-                            />
-                            <path
-                              d='M24 3.46582H21V6.46582H24V3.46582Z'
-                              fill='#405059'
-                            />
-                            <path
-                              d='M24 6.46582H21V9.46582H24V6.46582Z'
-                              fill='#EDD75A'
-                            />
-                            <path
-                              d='M24 9.46582H21V12.4658H24V9.46582Z'
-                              fill='#73B06F'
-                            />
-                            <path
-                              d='M24 12.4658H21V15.4658H24V12.4658Z'
-                              fill='#FFAD08'
-                            />
-                            <path
-                              d='M24 15.4658H21V18.4658H24V15.4658Z'
-                              fill='#405059'
-                            />
-                            <path
-                              d='M24 18.4658H21V21.4658H24V18.4658Z'
-                              fill='#0C8F8F'
-                            />
-                            <path
-                              d='M24 21.4658H21V24.4658H24V21.4658Z'
-                              fill='#EDD75A'
-                            />
-                          </g>
-                        </g>
-                        <defs>
-                          <clipPath id='clip0_52_5107'>
-                            <rect
-                              width='24'
-                              height='24'
-                              fill='white'
-                              transform='translate(0 0.46582)'
-                            />
-                          </clipPath>
-                        </defs>
-                      </svg>
+                    <div className='text-white font-semibold flex mt-1 items-center'>
+                      <img
+                        className='rounded-full w-6 h-6'
+                        src={`${data.author_image}`}
+                        alt=''
+                      />
 
-                      <div className='ml-2'>Undefined</div>
+                      <div className='ml-2'>{data.author}</div>
                     </div>
                   </div>
                 )}
@@ -405,7 +124,9 @@ export const NftDetails = () => {
                   <div className='text-[#BDBDBA] text-[13px] font-medium'>
                     Drop discription
                   </div>
-                  <div className='text-white font-semibold'>{data.description}</div>
+                  <div className='text-white font-semibold'>
+                    {data.description}
+                  </div>
                 </div>
               </div>
             </>

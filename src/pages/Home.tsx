@@ -1,21 +1,29 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, createContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ListDetail } from '../components/ListDetail';
-import { useWindowSize } from '../hooks/useWindownSize';
 import { useAuthContext } from '../context/AuthContext';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { FaPlus, FaMap } from 'react-icons/fa6';
 import { useNavigate } from 'react-router';
-import { Modal } from 'antd';
 import request from '../axios';
 import { IDrop } from '../models/types';
 import Slider from '../components/Slider';
 import { DetailCard } from '../components/DetailCard';
+import { Button } from 'antd';
 
 function Home() {
-  const { coordsNow, loggedIn } = useAuthContext();
+  const {
+    coordsNow,
+    loggedIn,
+    setLoggedIn,
+    setUser,
+    setTorus,
+    torus,
+    windowSize,
+  } = useAuthContext();
   const [readyToCollect, setReadyToCollect] = useState<IDrop[]>([]);
   const [nearBy, setNearBy] = useState<IDrop[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -47,15 +55,15 @@ function Home() {
 
   return (
     <>
-      <div className='w-[375px] px-[20px] sm:px-0'>
-        <div className='w-[375px] sm:h-[704px] flex items-end bg-cover mt-[40px]'>
+      <div className='w-full px-[20px] sm:px-0'>
+        <div className='w-full sm:h-[704px] flex items-end bg-cover mt-[40px]'>
           <div className='flex flex-col rounded-tr-[24px] sm:h-[336px] sm:bg-white sm:py-[40px] sm:pl-[142px] sm:pr-[48px] '>
-            <div className='text-[34px] font-bold leading-10 w-[335px]'>
+            <div className='text-[34px] font-bold leading-10'>
               Discover Local Hidden Gems
             </div>
             {readyToCollect.length !== 0 ? (
               <>
-                <div className='w-[355px] mt-6'>
+                <div className='mt-6' style={{ width: windowSize.width - 20 }}>
                   <Slider>
                     {readyToCollect.map((item: any, index: any) => (
                       <DetailCard
@@ -69,48 +77,71 @@ function Home() {
               </>
             ) : (
               <>
-                <div className='w-[335px]'>
-                  <div className='flex items-center justify-center mt-7'>
-                    <img src='./Route_search.png' alt='' />
-                  </div>
-                  <div className='text-center text-[20px] font-semibold text-black opacity-50'>
-                    Go further to discover or drop something in the area
-                  </div>
+                <div className='flex items-center justify-center mt-7'>
+                  <img src='./Route_search.png' alt='' />
+                </div>
+                <div className='text-center text-[20px] font-semibold text-black opacity-50'>
+                  Go further to discover or drop something in the area
                 </div>
               </>
             )}
-            <div className='flex'></div>
-            <div className='w-full h-[48px] relative items-center justify-center rounded-3xl bg-[#00A868] text-white text-base font-semibold px-[32px] mt-[25px] hidden sm:flex'>
-              <p className='absolute'>Connect wallet to start explore</p>
-              <WalletMultiButton
-                style={{
-                  width: '490px',
-                  position: 'absolute',
-                  top: '-25px',
-                  left: '-240px',
-                  opacity: 0,
-                }}
-              />
-            </div>
           </div>
         </div>
 
         <div className='max-w-[870px] ml-auto mr-auto mb-10'>
-          <div
+          <Button
+            loading={loading}
             className='w-full h-[48px] relative items-center justify-center rounded-3xl bg-black text-white text-base font-semibold px-[32px] mt-6 flex sm:hidden'
-            onClick={() => {
+            onClick={async () => {
               if (loggedIn) {
                 navigate('/drop-onboarding');
               } else {
-                Modal.error({
-                  title: 'Error',
-                  content: 'You need to sign in first',
-                  okButtonProps: {
-                    style: {
-                      background: 'red',
+                setLoading(true);
+                if (!torus.isInitialized) {
+                  await torus.init({
+                    buildEnv: 'production', // "production", or "developement" are also the option
+                    enableLogging: true, // default: false
+                    network: {
+                      blockExplorerUrl:
+                        'https://explorer.solana.com/?cluster=mainnet', // devnet and mainnet
+                      chainId: '0x1',
+                      displayName: 'Solana Mainnet',
+                      logo: 'solana.svg',
+                      rpcTarget: process.env.REACT_APP_HELIUS_RPC_URL!, // from "@solana/web3.js" package
+                      ticker: 'SOL',
+                      tickerName: 'Solana Token',
                     },
-                  },
+                    showTorusButton: false, // default: true
+                    useLocalStorage: false, // default: false to use sessionStorage
+                    buttonPosition: 'top-left', // default: bottom-left
+                    apiKey: process.env.REACT_APP_CLIENT_ID_WEB3_AUTH!, // https://developer.web3auth.io
+                    whiteLabel: {
+                      name: 'Whitelabel Demo',
+                      theme: {
+                        isDark: true,
+                        colors: { torusBrand1: '#00a8ff' },
+                      },
+                      logoDark:
+                        'https://solana-testing.tor.us/img/solana-logo-light.46db0c8f.svg',
+                      logoLight:
+                        'https://solana-testing.tor.us/img/solana-logo-light.46db0c8f.svg',
+                      topupHide: true,
+                    },
+                  });
+                }
+                await torus.login();
+
+                setTorus(torus);
+
+                const torusInfo = await torus.getUserInfo();
+
+                setUser({
+                  ...torusInfo,
+                  address: (await torus.getAccounts())[0],
                 });
+
+                setLoading(false);
+                setLoggedIn(true);
               }
             }}
           >
@@ -118,13 +149,12 @@ function Home() {
               <FaPlus size={24} className='font-white mr-2' /> Drop a new
               experience
             </p>
-          </div>
+          </Button>
           <div
             className='w-full h-[48px] relative items-center justify-center rounded-3xl bg-white text-black text-base font-semibold px-[32px] mt-4 flex sm:hidden'
             style={{ border: '1px solid gray' }}
             onClick={() => {
-                navigate('/map-view');
-          
+              navigate('/map-view');
             }}
           >
             <p className='absolute flex items-center'>

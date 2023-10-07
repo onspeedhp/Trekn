@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
 import { useAuthContext } from '../context/AuthContext';
-import { Modal } from 'antd';
+import { Button, Modal } from 'antd';
 import { useEffect, useState } from 'react';
 
 export const AddDescription: React.FC = () => {
@@ -99,6 +99,34 @@ export const AddDescription: React.FC = () => {
             }}
           />
         </div>
+
+        <Button
+          className='bg-white w-full h-12 rounded-3xl font-semibold text-base mt-80'
+          onClick={() => {
+            if (description) {
+              setMetadata({
+                ...metadata,
+                description: description,
+              });
+
+              navigate('/drop-onboarding/confirm');
+            } else {
+              Modal.error({
+                title: 'Error',
+                content: 'Need to fill up cNFT description',
+                okButtonProps: {
+                  type: 'default',
+                  style: {
+                    background: 'red',
+                    color: 'white',
+                  },
+                },
+              });
+            }
+          }}
+        >
+          Continue
+        </Button>
       </div>
     </div>
   );

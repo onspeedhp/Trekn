@@ -110,14 +110,14 @@ const LocationSearch = () => {
                   //   );
 
                   //   if (distance > 100) {
-                      
+
                   //     disable = true;
                   //   }
 
                   //   console.log(disable);
-                    
+
                   // });
-                  
+
                   return (
                     <div className='mb-5' key={index}>
                       <Radio
@@ -134,7 +134,6 @@ const LocationSearch = () => {
             )}
           </Radio.Group>
         </div>
-        <div>Add a new location</div>
       </div>
     </>
   );

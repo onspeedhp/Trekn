@@ -65,6 +65,7 @@ export const MapView = () => {
     setLoggedIn,
     setUser,
     user,
+    windowSize,
   } = useAuthContext();
   const coords = {
     lat: coordsNow.lat,
@@ -203,7 +204,7 @@ export const MapView = () => {
         setDisable(false);
       } else {
         if (!selectedLocation.radius || distance <= selectedLocation.radius) {
-          setMintStatus('Collect this');
+          setMintStatus('Collect');
           setDisable(false);
         } else {
           setDisable(true);
@@ -423,7 +424,7 @@ export const MapView = () => {
                   >
                     <Button
                       className='h-12 rounded-3xl bg-black text-white'
-                      style={{ width: 335 }}
+                      style={{ width: windowSize.width - 40 }}
                       loading={loading}
                       onClick={async () => {
                         if (user.address) {

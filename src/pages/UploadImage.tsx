@@ -9,7 +9,7 @@ import { supabase } from '../utils/supabaseClients';
 export const UploadImage = () => {
   const [selectedImage, setSelectedImage] = useState<any>(null);
   const [fileName, setFileName] = useState<string>('');
-  const { metadata, setMetadata } = useAuthContext();
+  const { metadata, setMetadata, windowSize } = useAuthContext();
 
   const handleError = () => {
     const modal = Modal.error({
@@ -104,21 +104,21 @@ export const UploadImage = () => {
             style={{
               background:
                 'radial-gradient(circle, #0D1606, #4C871E, #93E454), url(./upload_img.png)',
-              width: 335,
+              width: windowSize.width - 40,
               height: selectedImage ? 421 : 389,
               marginBottom: 62,
               borderRadius: 12,
             }}
           >
             <div
-              style={{ width: 303, height: 357 }}
+              style={{ width: windowSize.width - 72, height: 357 }}
               className='absolute m-4 flex-col'
             >
               {!selectedImage ? (
                 <>
                   <div
                     className='bg-black rounded-xl flex items-center justify-center mb-3'
-                    style={{ height: 303, width: 303 }}
+                    style={{ height: 303, width: windowSize.width - 72 }}
                   >
                     <input
                       type='file'
@@ -150,7 +150,7 @@ export const UploadImage = () => {
                     alt='Uploaded'
                     className='rounded-xl mb-3'
                     style={{
-                      width: 303,
+                      width: windowSize.width - 72,
                       height: 303,
                       objectFit: 'cover',
                       objectPosition: 'center',

@@ -18,6 +18,29 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState({});
   const [torus, setTorus] = useState(new Torus());
 
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
+  useEffect(() => {
+    // Hàm cập nhật kích thước cửa sổ
+    function handleResize() {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
+
+    // Đăng ký sự kiện lắng nghe sự thay đổi kích thước cửa sổ
+    window.addEventListener('resize', handleResize);
+
+    // Làm sạch sự kiện khi component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       ({ coords: { longitude, latitude } }) => {
@@ -59,6 +82,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setTorus: setTorus,
         user: user,
         setUser: setUser,
+        windowSize: windowSize,
       }}
     >
       {children}
@@ -80,6 +104,10 @@ interface AuthContextProps {
   setTorus: (torus: Torus) => void;
   user: any;
   setUser: (user: any) => void;
+  windowSize: {
+    width: number;
+    height: number;
+  };
 }
 
 interface ICoords {

@@ -2,20 +2,18 @@ import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { getLabelLocation } from '../utils/common.utils';
 import parse from 'html-react-parser';
+import { useAuthContext } from '../context/AuthContext';
 
 export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
   const navigate = useNavigate();
-
-  // const { Icon, label } = useMemo(() => {
-  //   return getStatusLocation(data?.distance, data?.radius);
-  // }, [data]);
   const { Icon, label } = getLabelLocation(status, data?.distance);
+  const { windowSize } = useAuthContext();
 
   return (
     <div
       className='w-full flex justify-center items-center rounded-xl relative my-2 cursor-pointer rounded-xl'
       style={{
-        width: status === 'ReadyToCollect' ? 300 : 335,
+        width: status === 'ReadyToCollect' ? 300 : windowSize.width - 40,
         height: 338,
         backgroundColor: '#525252',
         marginRight: status === 'ReadyToCollect' ? 12 : 0,
@@ -28,7 +26,7 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
         <div
           className='rounded-xl'
           style={{
-            width: status === 'ReadyToCollect' ? 300 : 335,
+            width: status === 'ReadyToCollect' ? 300 : windowSize.width - 40,
             height: 338,
             objectFit: 'cover',
             objectPosition: 'center',
@@ -37,7 +35,7 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
           <img
             src={`${data.image}`}
             style={{
-              width: status === 'ReadyToCollect' ? 300 : 335,
+              width: status === 'ReadyToCollect' ? 300 : windowSize.width - 40,
               height: 338,
               borderRadius: 12,
             }}

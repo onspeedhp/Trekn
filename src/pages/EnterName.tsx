@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router';
 import { FaRandom } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { useAuthContext } from '../context/AuthContext';
-import { Modal } from 'antd';
+import { Button, Modal } from 'antd';
 
 export const EnterName = () => {
   const navigate = useNavigate();
@@ -79,6 +79,32 @@ export const EnterName = () => {
               <FaRandom size={24} className='text-[#58C900]' />
             </span>
           </div>
+
+          <Button
+            className='bg-white w-full h-12 rounded-3xl font-semibold text-base mt-80'
+            onClick={() => {
+              if (name) {
+                setMetadata({
+                  name: name,
+                });
+                navigate(`/drop-onboarding/upload-image`);
+              } else {
+                Modal.error({
+                  title: 'Error',
+                  content: 'Need to fill up cNFT name',
+                  okButtonProps: {
+                    type: 'default',
+                    style: {
+                      background: 'red',
+                      color: 'white',
+                    },
+                  },
+                });
+              }
+            }}
+          >
+            Continue
+          </Button>
         </div>
       </div>
     </>
