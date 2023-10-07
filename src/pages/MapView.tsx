@@ -356,7 +356,7 @@ export const MapView = () => {
                     <div className='flex h-10 p-3 bg-[#F5F5F5] opacity-70 rounded-full'>
                       <FaUserFriends size={16} />
                       <span className='text-[13px] font-semibold ml-2'>
-                        {selectedLocation.count} owned
+                        {selectedLocation.count} collected
                       </span>
                     </div>
 
