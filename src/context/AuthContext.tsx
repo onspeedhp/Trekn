@@ -115,27 +115,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setLoggedIn(true);
   };
 
-  // useEffect(() => {
-  //   try {
-  //     const init = async () => {
-  //       if (torus.isInitialized) {
-  //         const torusInfo = await torus.getUserInfo();
-
-  //         // setUser({
-  //         //   ...torusInfo,
-  //         //   address: (await torus.getAccounts())[0],
-  //         // });
-
-  //         setLoggedIn(true);
-  //       }
-  //     };
-
-  //     init();
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // }, []);
-
   return (
     <AuthContext.Provider
       value={{
@@ -150,6 +129,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setUser: setUser,
         windowSize: windowSize,
         init: init,
+        leaderBoard: leaderBoard,
+        setLeaderBoard: setLeaderBoard,
       }}
     >
       {children}
@@ -176,6 +157,8 @@ interface AuthContextProps {
     height: number;
   };
   init: () => Promise<void>;
+  leaderBoard: boolean;
+  setLeaderBoard: (leaderBoard: boolean) => void;
 }
 
 interface ICoords {
