@@ -32,11 +32,13 @@ function Home() {
   };
 
   useEffect(() => {
+    setLoadingPoint(true);
     getLeaderBoardPoint({
       onSuccess: (data) => {
         setLeaderBoardPoint(data);
       },
     });
+    setLoadingPoint(false);
   }, []);
 
   const getNearBy = async (lat: number, log: number) => {
@@ -86,7 +88,7 @@ function Home() {
                 ) : (
                   <>
                     <div className='flex items-center justify-center mt-7'>
-                      <img src='./Route_search.png' alt='' />
+                      <img src='./Route_search.svg' alt='' />
                     </div>
                     <div className='text-center text-[20px] font-semibold text-black opacity-50'>
                       Go further to discover or drop something in the area

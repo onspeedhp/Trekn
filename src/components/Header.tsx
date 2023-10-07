@@ -14,7 +14,7 @@ const Header = ({ hidden }: { hidden: boolean }) => {
       {!hidden && (
         <div className='m-5 flex items-center relative'>
           <a href='/home'>
-            <img src='./Logo.png' alt='' />
+            <img src='./Logo.svg' alt='' className='h-6'/>
           </a>
 
           <div className='absolute flex items-center inset-y-0 right-0'>

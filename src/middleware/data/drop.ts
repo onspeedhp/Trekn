@@ -103,9 +103,11 @@ export const updateDrop = async ({
   onSuccess?: (data: any) => void;
   onError?: (error: any) => void;
 }) => {
+  const reaction_counts = drop.reaction_counts;
+  reaction_counts[value] += 1;
   const { error } = await supabase
     .from('drop')
-    .update({ reaction_counts: drop.reaction_counts[value] + 1 })
+    .update({ reaction_counts: reaction_counts })
     .eq('id', drop.id);
 
   if (userId !== drop.user.id) {
