@@ -14,10 +14,12 @@ export const mintCompressedNFT = async ({
   drop,
   userAddress,
   onSuccess,
+  userId,
   onError = () => {},
 }: {
   drop: any;
   userAddress: PublicKey;
+  userId: number;
   onSuccess: (data: any) => void;
   onError: (error: any) => void;
 }) => {
@@ -25,7 +27,7 @@ export const mintCompressedNFT = async ({
   const { data: minted, error: m_error } = await supabase
     .from('minted')
     .select('*')
-    .eq('who', userAddress.toString())
+    .eq('ownerId', userId)
     .eq('drop_id', drop.id);
 
   if (!minted || minted.length === 0) {
@@ -88,7 +90,7 @@ export const mintCompressedNFT = async ({
       if (sig) {
         await createMinted({
           minted: {
-            who: userAddress.toString(),
+            ownerId: userId,
             drop_id: drop.id,
           },
           onSuccess: () => {

@@ -12,6 +12,13 @@ export interface IDrop {
   symbol?: any;
   sig?: any;
   distance?: number;
-  author?: string;
-  author_image?: string;
+  author_id?: number;
+}
+
+export interface IUser {
+  id: number;
+  name: string;
+  email: string;
+  address: string;
+  profileImage: string;
 }

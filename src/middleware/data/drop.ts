@@ -39,28 +39,43 @@ export const getAllDrops = async ({
   onSuccess?: (data: any) => void;
   onError?: (error: any) => void;
 }) => {
-  const { data, error } = await supabase.from('drop').select('*');
-
+  const { data, error } = await supabase.from('drop').select('*, user(*)');
   if (!error) {
-    onSuccess(data);
+    const newData: any[] = [];
+
+    for (const drop of data) {
+      const { count, error } = await supabase
+        .from('minted')
+        .select('ownerId', { count: 'exact', head: true })
+        .eq('drop_id', drop.id);
+
+      if (count !== null) {
+        newData.push({
+          ...drop,
+          count,
+        });
+      }
+    }
+
+    onSuccess(newData);
   } else {
     onError('');
   }
 };
 
 export const getDropByUserAddress = async ({
-  userAddress,
+  userId,
   onSuccess = () => {},
   onError = () => {},
 }: {
-  userAddress: string;
+  userId: number;
   onSuccess?: (data: any) => void;
   onError?: (error: any) => void;
 }) => {
   const { data, error } = await supabase
     .from('drop')
     .select('*')
-    .eq('creator_address', userAddress);
+    .eq('author_id', userId);
 
   if (!error) {
     onSuccess(data);

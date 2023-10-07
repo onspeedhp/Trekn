@@ -194,8 +194,7 @@ export const Confirm: React.FC = () => {
               await createDrop({
                 drop: {
                   ...metadata,
-                  author: user.name,
-                  author_image: user.profileImage,
+                  author_id: user.id,
                 },
                 onSuccess: (data) => {
                   console.log(data);

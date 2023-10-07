@@ -22,18 +22,18 @@ export const createMinted = async ({
 };
 
 export const getMintedByUserAddress = async ({
-  userAddress,
+  userId,
   onSuccess = () => {},
   onError = () => {},
 }: {
-  userAddress: string;
+  userId: number;
   onSuccess?: (data: any) => void;
   onError?: (error: any) => void;
 }) => {
   const { data, error } = await supabase
     .from('minted')
     .select(`*, drop(*)`)
-    .eq('who', userAddress);
+    .eq('ownerId', userId);
 
   if (!error) {
     onSuccess(data);
@@ -48,17 +48,25 @@ export const getMintedById = async ({
   onError = () => {},
 }: {
   mintedId: string;
-  onSuccess?: (data: any) => void;
+  onSuccess?: (data: any, count: number) => void;
   onError?: (error: any) => void;
 }) => {
   const { data, error } = await supabase
     .from('minted')
-    .select(`*, drop(*)`)
+    .select(`*, drop(*, user(*))`)
     .eq('id', mintedId);
 
-  if (!error) {
-    onSuccess(data);
+  if (data) {
+    const { count, error } = await supabase
+      .from('minted')
+      .select('ownerId', { count: 'exact', head: true })
+      .eq('drop_id', data[0].drop_id);
+    if (count) {
+      onSuccess(data, count);
+    } else {
+      onError(error);
+    }
   } else {
-    onError('');
+    onError(error);
   }
 };

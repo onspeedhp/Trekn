@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { ListDetail } from '../components/ListDetail';
 import { useAuthContext } from '../context/AuthContext';
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { FaPlus, FaMap } from 'react-icons/fa6';
 import { useNavigate } from 'react-router';
 import request from '../axios';
@@ -22,6 +21,7 @@ function Home() {
     windowSize,
   } = useAuthContext();
   const [readyToCollect, setReadyToCollect] = useState<IDrop[]>([]);
+  
   const [nearBy, setNearBy] = useState<IDrop[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -32,7 +32,6 @@ function Home() {
       lat: lat,
       lng: log,
     });
-
     setReadyToCollect(res.data.data);
   };
 

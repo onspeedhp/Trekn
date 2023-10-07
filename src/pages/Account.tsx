@@ -30,14 +30,14 @@ export const Account = () => {
   useEffect(() => {
     if (user.address) {
       getDropByUserAddress({
-        userAddress: user.address,
+        userId: user.id,
         onSuccess: (data: any) => {
           setUserDrops(data);
         },
       });
 
       getMintedByUserAddress({
-        userAddress: user.address,
+        userId: user.id,
         onSuccess: (data: any) => {
           setUserMinteds(data);
         },

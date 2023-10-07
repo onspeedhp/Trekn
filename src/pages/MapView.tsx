@@ -56,17 +56,8 @@ function deepEqual(obj1: any, obj2: any): boolean {
 
 export const MapView = () => {
   const navigate = useNavigate();
-  const {
-    coordsNow,
-    loggedIn,
-    setMetadata,
-    torus,
-    setTorus,
-    setLoggedIn,
-    setUser,
-    user,
-    windowSize,
-  } = useAuthContext();
+  const { coordsNow, loggedIn, setMetadata, user, windowSize, init } =
+    useAuthContext();
   const coords = {
     lat: coordsNow.lat,
     lng: coordsNow.log,
@@ -82,10 +73,6 @@ export const MapView = () => {
   const [disable, setDisable] = useState(false);
 
   const [open, setOpen] = useState(false);
-
-  const hide = () => {
-    setOpen(false);
-  };
 
   const handleOpenChange = (newOpen: boolean) => {
     setOpen(newOpen);
@@ -220,7 +207,6 @@ export const MapView = () => {
         theme={{
           components: {
             Popover: {
-              width: 97,
               minWidth: 97,
             },
           },
@@ -332,12 +318,12 @@ export const MapView = () => {
                   <div className='flex items-center mt-5 mb-2'>
                     <img
                       className='rounded-full w-6 h-6'
-                      src={`${selectedLocation.author_image}`}
+                      src={`${selectedLocation.user.profileImage}`}
                       alt=''
                     />
 
                     <div className='text-[13px] text-[#848484] font-medium ml-2'>
-                      {selectedLocation.author}
+                      {selectedLocation.user.name}
                     </div>
                   </div>
 
@@ -370,7 +356,7 @@ export const MapView = () => {
                     <div className='flex h-10 p-3 bg-[#F5F5F5] opacity-70 rounded-full'>
                       <FaUserFriends size={16} />
                       <span className='text-[13px] font-semibold ml-2'>
-                        1290 owned this
+                        {selectedLocation.count} owned
                       </span>
                     </div>
 
@@ -432,6 +418,7 @@ export const MapView = () => {
                           await mintCompressedNFT({
                             drop: selectedLocation,
                             userAddress: new PublicKey(user.address),
+                            userId: user.id,
                             onSuccess: (data: any) => {
                               setMetadata({
                                 image: selectedLocation.image,
@@ -459,53 +446,7 @@ export const MapView = () => {
                         } else {
                           setLoading(true);
 
-                          if (!torus.isInitialized) {
-                            await torus.init({
-                              buildEnv: 'production', // "production", or "developement" are also the option
-                              enableLogging: true, // default: false
-                              network: {
-                                blockExplorerUrl:
-                                  'https://explorer.solana.com/?cluster=mainnet', // devnet and mainnet
-                                chainId: '0x1',
-                                displayName: 'Solana Mainnet',
-                                logo: 'solana.svg',
-                                rpcTarget:
-                                  process.env.REACT_APP_HELIUS_RPC_URL!, // from "@solana/web3.js" package
-                                ticker: 'SOL',
-                                tickerName: 'Solana Token',
-                              },
-                              showTorusButton: false, // default: true
-                              useLocalStorage: false, // default: false to use sessionStorage
-                              buttonPosition: 'top-left', // default: bottom-left
-                              apiKey:
-                                process.env.REACT_APP_CLIENT_ID_WEB3_AUTH!, // https://developer.web3auth.io
-                              whiteLabel: {
-                                name: 'Whitelabel Demo',
-                                theme: {
-                                  isDark: true,
-                                  colors: { torusBrand1: '#00a8ff' },
-                                },
-                                logoDark:
-                                  'https://solana-testing.tor.us/img/solana-logo-light.46db0c8f.svg',
-                                logoLight:
-                                  'https://solana-testing.tor.us/img/solana-logo-light.46db0c8f.svg',
-                                topupHide: true,
-                              },
-                            });
-                          }
-
-                          await torus.login();
-
-                          setTorus(torus);
-
-                          const torusInfo = await torus.getUserInfo();
-
-                          setUser({
-                            ...torusInfo,
-                            address: (await torus.getAccounts())[0],
-                          });
-
-                          setLoggedIn(true);
+                          await init();
                           setLoading(false);
                         }
                         // }

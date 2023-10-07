@@ -19,17 +19,19 @@ export const NftDetails = () => {
     if (mintedId) {
       getMintedById({
         mintedId: mintedId,
-        onSuccess: (data: any) => {
+        onSuccess: async (data, count) => {
           const minted = data[0];
+
           setData({
+            dropId: minted.drop.id,
             image: minted.drop.image,
             created_at: minted.created_at,
             name: minted.drop.name,
             location_name: minted.drop.location_name,
             location: minted.drop.location,
             description: minted.drop.description,
-            author: minted.drop.author,
-            author_image: minted.drop.author_image,
+            user: minted.drop.user,
+            count: count,
           });
         },
       });
@@ -73,27 +75,31 @@ export const NftDetails = () => {
                 />
 
                 {mintedId && (
-                  <div className='flex-col mt-4'>
-                    <div className='text-[#BDBDBA] text-[13px] font-medium'>
-                      Author
-                    </div>
-                    <div className='text-white font-semibold flex mt-1 items-center'>
-                      <img
-                        className='rounded-full w-6 h-6'
-                        src={`${data.author_image}`}
-                        alt=''
-                      />
+                  <>
+                    <div className='flex-col mt-4'>
+                      <div className='text-[#BDBDBA] text-[13px] font-medium'>
+                        Author
+                      </div>
+                      <div className='text-white font-semibold flex mt-1 items-center'>
+                        <img
+                          className='rounded-full w-6 h-6'
+                          src={`${data.user.profileImage}`}
+                          alt=''
+                        />
 
-                      <div className='ml-2'>{data.author}</div>
+                        <div className='ml-2'>{data.user.name}</div>
+                      </div>
                     </div>
-                  </div>
+                    <div className='flex-col mt-4'>
+                      <div className='text-[#BDBDBA] text-[13px] font-medium'>
+                        Number of owners
+                      </div>
+                      <div className='text-white font-semibold'>
+                        {data.count}
+                      </div>
+                    </div>
+                  </>
                 )}
-                <div className='flex-col mt-4'>
-                  <div className='text-[#BDBDBA] text-[13px] font-medium'>
-                    Number of owners
-                  </div>
-                  <div className='text-white font-semibold'>1200</div>
-                </div>
 
                 <div className='flex-col mt-4'>
                   <div className='text-[#BDBDBA] text-[13px] font-medium'>

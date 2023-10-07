@@ -64,10 +64,10 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
         <div className='font-medium	text-[13px] flex items-center'>
           <img
             className='rounded-full w-4 h-4 mr-1'
-            src={`${data.author_image}`}
+            src={`${data.user.profileImage}`}
             alt=''
           />
-          {data.author}
+          {data.user.name}
         </div>
         <div className='font-semibold	text-xl mb-1 mt-2'>{data?.name}</div>
         <div className='text-sm font-medium	opacity-70'>
