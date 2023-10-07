@@ -1,20 +1,36 @@
 import { supabase } from '../../utils/supabaseClients';
 
 export const createMinted = async ({
-  minted,
+  userId,
+  drop,
   onSuccess = () => {},
   onError = () => {},
 }: {
-  minted: any;
+  userId: any;
+  drop: any;
   onSuccess?: (data: any) => void;
   onError?: (error: any) => void;
 }) => {
   const { data, error } = await supabase
     .from('minted')
-    .insert({ ...minted })
+    .insert({ ownerId: userId, drop_id: drop.id })
     .select('*');
 
   if (!error) {
+    // check if user is owned of this drop
+    if (userId !== drop.user.id) {
+      // increase the owner of drop
+      await supabase
+        .from('user')
+        .update({ point: drop.user.point + 2 })
+        .eq('id', drop.user.id);
+    }
+    // increase the collected of drop
+    await supabase
+      .from('drop')
+      .update({ collected: drop.collected + 1 })
+      .eq('author_id', drop.user.id);
+
     onSuccess(data);
   } else {
     onError('');

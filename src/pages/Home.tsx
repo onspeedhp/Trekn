@@ -9,10 +9,7 @@ import { IDrop } from '../models/types';
 import Slider from '../components/Slider';
 import { DetailCard } from '../components/DetailCard';
 import { Button, Spin } from 'antd';
-import {
-  getLeadderBoardForDrop,
-  getLeadderBoardForMinted,
-} from '../middleware/data/user';
+import { getLeaderBoardPoint } from '../middleware/data/user';
 
 function Home() {
   const { coordsNow, loggedIn, windowSize, leaderBoard, init } =
@@ -21,11 +18,8 @@ function Home() {
 
   const [nearBy, setNearBy] = useState<IDrop[]>([]);
   const [loading, setLoading] = useState(false);
-  const [leaderBoardForDrop, setLeaderBoardForDrop] = useState([]);
-  const [loadingDrop, setLoadingDrop] = useState(false);
-
-  const [leaderBoardForMinted, setLeaderBoardForMinted] = useState([]);
-  const [loadingMinted, setLoadingMinted] = useState(false);
+  const [leaderBoardPoint, setLeaderBoardPoint] = useState([]);
+  const [loadingPoint, setLoadingPoint] = useState(false);
 
   const navigate = useNavigate();
 
@@ -36,7 +30,14 @@ function Home() {
     });
     setReadyToCollect(res.data.data);
   };
-  const [current, setCurrent] = useState('item1');
+
+  useEffect(() => {
+    getLeaderBoardPoint({
+      onSuccess: (data) => {
+        setLeaderBoardPoint(data);
+      },
+    });
+  }, []);
 
   const getNearBy = async (lat: number, log: number) => {
     const res = await request.post('drop/getNearBy', {
@@ -46,18 +47,6 @@ function Home() {
 
     setNearBy(res.data.data);
   };
-
-  useEffect(() => {
-    if (leaderBoardForMinted.length === 0) {
-      setLoadingMinted(true);
-      getLeadderBoardForMinted({
-        onSuccess: (data) => {
-          setLeaderBoardForMinted(data);
-        },
-      });
-      setLoadingMinted(false);
-    }
-  }, [leaderBoard]);
 
   useEffect(() => {
     const { log, lat } = coordsNow;
@@ -151,125 +140,37 @@ function Home() {
               <div className='text-[34px] font-bold leading-10 mb-6 mt-10'>
                 Leader board
               </div>
-              <div className='bg-[#F1F1F1] w-full h-16 rounded-2xl flex items-center justify-center'>
-                <div
-                  className={`mr-4 flex items-center justify-center ${
-                    current === 'item1' ? 'text-white' : 'text-black'
-                  }`}
-                  style={{
-                    width: 150,
-                    height: 48,
-                    backgroundColor:
-                      current === 'item1' ? 'black' : 'transparent',
-                    borderRadius: current === 'item1' ? 12 : 0,
-                  }}
-                  onClick={async () => {
-                    setCurrent('item1');
-                    if (leaderBoardForMinted.length === 0) {
-                      setLoadingMinted(true);
-                      await getLeadderBoardForMinted({
-                        onSuccess: (data) => {
-                          setLeaderBoardForMinted(data);
-                        },
-                      });
-                      setLoadingMinted(false);
-                    }
-                  }}
-                >
-                  Collected
-                </div>
 
-                <div
-                  className={`flex items-center justify-center ${
-                    current === 'item2' ? 'text-white' : 'text-black'
-                  }`}
-                  style={{
-                    width: 150,
-                    height: 48,
-                    backgroundColor:
-                      current === 'item2' ? 'black' : 'transparent',
-                    borderRadius: current === 'item2' ? 12 : 0,
-                  }}
-                  onClick={async () => {
-                    setCurrent('item2');
-                    if (leaderBoardForDrop.length === 0) {
-                      setLoadingDrop(true);
-                      await getLeadderBoardForDrop({
-                        onSuccess: (data) => {
-                          setLeaderBoardForDrop(data);
-                        },
-                      });
-                      setLoadingDrop(false);
-                    }
-                  }}
+              <>
+                <Spin
+                  tip='Loading...'
+                  spinning={loadingPoint}
+                  className='flex items-center mt-16 mx-3'
                 >
-                  Drops
-                </div>
-              </div>
-
-              {current === 'item1' ? (
-                <>
-                  <Spin
-                    tip='Loading...'
-                    spinning={loadingMinted}
-                    className='flex items-center mt-16 mx-3'
-                  >
-                    {leaderBoardForMinted.length !== 0 && (
-                      <>
-                        <div className='flex-col mt-6 mx-3'>
-                          {leaderBoardForMinted.map((user: any, index) => (
-                            <div
-                              className='flex items-center relative w-full mb-4'
-                              key={index}
-                            >
-                              <img
-                                src={`${user?.profileImage}`}
-                                alt=''
-                                className='w-9 h-9 mr-2 rounded-full'
-                              />
-                              <div className='font-medium'>{user?.name}</div>
-                              <div className='absolute inset-y-0 right-0'>
-                                {user.count}
-                              </div>
+                  {leaderBoardPoint.length !== 0 && (
+                    <>
+                      <div className='flex-col mt-6 mx-3'>
+                        {leaderBoardPoint.map((user: any, index) => (
+                          <div
+                            className='flex items-center relative w-full mb-4'
+                            key={index}
+                          >
+                            <img
+                              src={`${user?.profileImage}`}
+                              alt=''
+                              className='w-9 h-9 mr-2 rounded-full'
+                            />
+                            <div className='font-medium'>{user?.name}</div>
+                            <div className='absolute inset-y-0 right-0'>
+                              {user.point}
                             </div>
-                          ))}
-                        </div>
-                      </>
-                    )}
-                  </Spin>
-                </>
-              ) : (
-                <>
-                  <Spin
-                    tip='Loading...'
-                    spinning={loadingDrop}
-                    className='flex items-center mt-16 mx-3'
-                  >
-                    {leaderBoardForDrop.length !== 0 && (
-                      <>
-                        <div className='flex-col mt-6 mx-3'>
-                          {leaderBoardForDrop.map((user: any, index) => (
-                            <div
-                              className='flex items-center relative w-full mb-4'
-                              key={index}
-                            >
-                              <img
-                                src={`${user?.profileImage}`}
-                                alt=''
-                                className='w-9 h-9 mr-2 rounded-full'
-                              />
-                              <div className='font-medium'>{user?.name}</div>
-                              <div className='absolute inset-y-0 right-0'>
-                                {user.count}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </>
-                    )}
-                  </Spin>
-                </>
-              )}
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </Spin>
+              </>
             </div>
           </>
         )}

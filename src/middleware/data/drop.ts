@@ -19,6 +19,7 @@ export const createDrop = async ({
         'Drop description': drop.description,
       },
     ],
+    point: 0,
   };
   const { data, error } = await supabase
     .from('drop')
@@ -41,23 +42,7 @@ export const getAllDrops = async ({
 }) => {
   const { data, error } = await supabase.from('drop').select('*, user(*)');
   if (!error) {
-    const newData: any[] = [];
-
-    for (const drop of data) {
-      const { count, error } = await supabase
-        .from('minted')
-        .select('ownerId', { count: 'exact', head: true })
-        .eq('drop_id', drop.id);
-
-      if (count !== null) {
-        newData.push({
-          ...drop,
-          count,
-        });
-      }
-    }
-
-    onSuccess(newData);
+    onSuccess(data);
   } else {
     onError('');
   }
@@ -95,7 +80,7 @@ export const getDropByID = async ({
 }) => {
   const { data, error } = await supabase
     .from('drop')
-    .select('*')
+    .select('*, user(*)')
     .eq('id', dropId);
 
   if (!error) {
@@ -107,34 +92,29 @@ export const getDropByID = async ({
 
 export const updateDrop = async ({
   value,
-  dropId,
+  drop,
+  userId,
   onSuccess = () => {},
   onError = () => {},
 }: {
+  userId: number;
   value: string;
-  dropId: number;
+  drop: any;
   onSuccess?: (data: any) => void;
   onError?: (error: any) => void;
 }) => {
-  const { data: drop, error } = await supabase
+  const { error } = await supabase
     .from('drop')
-    .select('*')
-    .eq('id', dropId);
+    .update({ reaction_counts: drop.reaction_counts[value] + 1 })
+    .eq('id', drop.id);
 
-  if (!error) {
-    const reaction_counts = drop[0].reaction_counts;
-    reaction_counts[value] += 1;
-    const { error } = await supabase
-      .from('drop')
-      .update({ reaction_counts: reaction_counts })
-      .eq('id', dropId);
-
-    onSuccess('');
-
-    if (error) {
-      onError(error);
+  if (userId !== drop.user.id) {
+    if (value === '1' || value === '0') {
+      await supabase.from('user').update({ point: drop.user.point + 1 });
     }
-  } else {
+  }
+
+  if (error) {
     onError(error);
   }
 };

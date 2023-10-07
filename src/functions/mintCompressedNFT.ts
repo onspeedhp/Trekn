@@ -19,7 +19,7 @@ export const mintCompressedNFT = async ({
 }: {
   drop: any;
   userAddress: PublicKey;
-  userId: number;
+  userId: any;
   onSuccess: (data: any) => void;
   onError: (error: any) => void;
 }) => {
@@ -86,13 +86,11 @@ export const mintCompressedNFT = async ({
       );
 
       // // web 2 side
-
       if (sig) {
         await createMinted({
-          minted: {
-            ownerId: userId,
-            drop_id: drop.id,
-          },
+          userId: userId,
+          drop: drop,
+
           onSuccess: () => {
             onSuccess(sig);
           },
@@ -107,6 +105,6 @@ export const mintCompressedNFT = async ({
       onError(error);
     }
   } else {
-    onError('User is already collect this NFT');
+    onError('You have already collect this NFT');
   }
 };

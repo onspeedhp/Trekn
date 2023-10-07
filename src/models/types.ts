@@ -13,6 +13,7 @@ export interface IDrop {
   sig?: any;
   distance?: number;
   author_id?: number;
+  reaction_counts?: any;
 }
 
 export interface IUser {
@@ -21,4 +22,5 @@ export interface IUser {
   email: string;
   address: string;
   profileImage: string;
+  point: number;
 }

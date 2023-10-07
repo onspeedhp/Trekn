@@ -6,7 +6,7 @@ import { FaExternalLinkAlt } from 'react-icons/fa';
 
 export const MintSuccess = () => {
   const navigate = useNavigate();
-  const { metadata, setMetadata } = useAuthContext();
+  const { metadata } = useAuthContext();
 
   const handleError = () => {
     const modal = Modal.error({

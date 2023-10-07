@@ -22,6 +22,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     email: '',
     address: '',
     profileImage: '',
+    point: 0,
   });
   const [torus, setTorus] = useState(new Torus());
   const [leaderBoard, setLeaderBoard] = useState(false);
@@ -108,7 +109,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     } else {
       await insertUser({
         props: userInfo,
-        onSuccess: (data: any) => [setUser(data)],
+        onSuccess: (data: any) => {
+          setUser(data);
+        },
       });
     }
 

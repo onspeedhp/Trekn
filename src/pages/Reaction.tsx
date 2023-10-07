@@ -14,7 +14,7 @@ import { updateDrop } from '../middleware/data/drop';
 
 export const Reaction = () => {
   const navigate = useNavigate();
-  const { metadata, setMetadata } = useAuthContext();
+  const { metadata, setMetadata, user } = useAuthContext();
   const [value, setValue] = useState<number>();
 
   const handleError = () => {
@@ -113,7 +113,7 @@ export const Reaction = () => {
           </div>
         </div>
         <div className='flex' style={{ marginTop: 56, marginBottom: 206 }}>
-          {reactions.map((items, index) => (
+          {reactions.reverse().map((items, index) => (
             <div
               key={index}
               onClick={() => {
@@ -135,8 +135,9 @@ export const Reaction = () => {
           onClick={async () => {
             if (metadata.id) {
               await updateDrop({
-                dropId: metadata.id,
+                drop: metadata,
                 value: String(value),
+                userId: user.id,
               });
               setMetadata({});
               navigate('/account');
