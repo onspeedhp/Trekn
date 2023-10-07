@@ -46,7 +46,7 @@ export const NftDetails = () => {
   }, []);
   return (
     <>
-      <div className='bg-black absolute w-full h-screen overflow-scroll'>
+      <div className='bg-black absolute w-full h-full overflow-scroll'>
         <div className='m-5 font-semibold'>
           <svg
             xmlns='http://www.w3.org/2000/svg'

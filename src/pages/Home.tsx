@@ -216,7 +216,7 @@ function Home() {
                   >
                     {leaderBoardForMinted.length !== 0 && (
                       <>
-                        <div className='flex items-center mt-6 mx-3'>
+                        <div className='flex-col mt-6 mx-3'>
                           {leaderBoardForMinted.map((user: any, index) => (
                             <div
                               className='flex items-center relative w-full mb-4'
@@ -247,7 +247,7 @@ function Home() {
                   >
                     {leaderBoardForDrop.length !== 0 && (
                       <>
-                        <div className='flex items-center mt-6 mx-3'>
+                        <div className='flex-col mt-6 mx-3'>
                           {leaderBoardForDrop.map((user: any, index) => (
                             <div
                               className='flex items-center relative w-full mb-4'
