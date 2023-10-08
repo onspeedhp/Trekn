@@ -145,14 +145,16 @@ export const SelectLocation: React.FC = () => {
   const [scriptLoaded, setScriptLoaded] = useState(false);
 
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_JAVASCRIPT_API_KEY}&libraries=places`;
-    script.async = true;
-    script.defer = true;
-    script.onload = () => {
-      setScriptLoaded(true);
-    };
-    document.head.appendChild(script);
+    if (!window.google || !window.google.maps || !window.google.maps.places) {
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_JAVASCRIPT_API_KEY}&libraries=places`;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        setScriptLoaded(true);
+      };
+      document.head.appendChild(script);
+    }
 
     if (window.google) {
       setScriptLoaded(true);
@@ -181,7 +183,7 @@ export const SelectLocation: React.FC = () => {
 
   useEffect(() => {
     if (!metadata.image || !metadata.name) {
-      // handleError();
+      handleError();
     }
   }, []);
 
