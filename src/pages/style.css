@@ -1,0 +1,5 @@
+.ant-menu-item:hover,
+.ant-menu-submenu-title:hover {
+  background-color: transparent !important; /* Set the background color to transparent on hover */
+  color: inherit !important; /* Inherit the text color on hover */
+}

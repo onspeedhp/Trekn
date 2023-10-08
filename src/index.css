@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Work Sans';
+}
+
+.ant-drawer-close {
+  position: absolute;
+  top: 20px;
+  right: 0;
+}
