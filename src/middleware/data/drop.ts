@@ -19,7 +19,6 @@ export const createDrop = async ({
         'Drop description': drop.description,
       },
     ],
-    point: 0,
   };
   const { data, error } = await supabase
     .from('drop')
