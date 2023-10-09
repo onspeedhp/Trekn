@@ -55,7 +55,6 @@ export const Confirm: React.FC = () => {
       setLocationName(metadata.location_name);
       setLocation(metadata.location);
       setDescription(metadata.description);
-      setMetadata({ ...metadata, creator_address: user.address });
     }
   }, []);
 
