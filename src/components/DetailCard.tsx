@@ -38,6 +38,8 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
               width: status === 'ReadyToCollect' ? 300 : windowSize.width - 40,
               height: 338,
               borderRadius: 12,
+              objectFit: 'cover',
+              objectPosition: 'center',
             }}
           />
           <div

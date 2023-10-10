@@ -70,7 +70,12 @@ export const NftDetails = () => {
               <div className='flex-col'>
                 <img
                   src={`${data.image}`}
-                  style={{ width: windowSize.width - 40, height: 335 }}
+                  style={{
+                    width: windowSize.width - 40,
+                    height: 335,
+                    objectFit: 'cover',
+                    objectPosition: 'center',
+                  }}
                   className='rounded-xl'
                 />
 

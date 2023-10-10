@@ -156,6 +156,8 @@ export const Account = () => {
                               width: 165,
                               height: 165,
                               marginBottom: 21,
+                              objectFit: 'cover',
+                              objectPosition: 'center',
                             }}
                           />
 
@@ -211,6 +213,8 @@ export const Account = () => {
                               width: 165,
                               height: 165,
                               marginBottom: 21,
+                              objectFit: 'cover',
+                              objectPosition: 'center',
                             }}
                           />
 
