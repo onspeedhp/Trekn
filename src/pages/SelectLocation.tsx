@@ -27,6 +27,7 @@ const LocationSearch = () => {
     const provider = new LocationIQProvider({
       params: {
         key: `${process.env.REACT_APP_LOCATION_IQ}`,
+        countrycodes: 'vn',
       },
     });
 

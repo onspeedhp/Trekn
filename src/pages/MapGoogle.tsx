@@ -19,7 +19,6 @@ import {
 } from 'react-icons/fa6';
 import { useNavigate, useParams } from 'react-router';
 import { useAuthContext } from '../context/AuthContext';
-import GoogleMap from '../components/GoogleMap';
 import React, { useEffect, useRef, useState, TouchEvent } from 'react';
 import { FaUserFriends, FaHome } from 'react-icons/fa';
 import { GroupIcon } from '../icons';
@@ -238,7 +237,7 @@ export const MapView = () => {
             <FaHome size={16} />
           </Button>
 
-          {locations && locations.length > 0 && (
+          {/* {locations && locations.length > 0 && (
             <GoogleMap
               defaultZoom={16}
               defaultCenter={coords}
@@ -251,7 +250,7 @@ export const MapView = () => {
                 disableDefaultUI: true,
               }}
             />
-          )}
+          )} */}
 
           {selectedLocation && (
             <div
