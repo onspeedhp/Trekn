@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import React from 'react';
 import { calculateDistance } from '../functions/calculateDistance';
-import { OpenStreetMapProvider } from 'leaflet-geosearch';
+import { LocationIQProvider, OpenStreetMapProvider } from 'leaflet-geosearch';
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -18,8 +18,20 @@ const LocationSearch = () => {
   const navigate = useNavigate();
 
   const test = async (query: any) => {
-    const provider = new OpenStreetMapProvider();
+    // const provider = new OpenStreetMapProvider({
+    //   params: {
+    //     countrycodes: 'vn',
+    //     addressdetails: 1,
+    //   },
+    // });
+    const provider = new LocationIQProvider({
+      params: {
+        key: `${process.env.REACT_APP_LOCATION_IQ}`,
+      },
+    });
+
     const results = await provider.search({ query: query });
+
     if (results.length > 5) {
       setLocations(results.slice(0, 5));
     } else {
@@ -111,7 +123,7 @@ export const SelectLocation: React.FC = () => {
 
   useEffect(() => {
     if (!metadata.image || !metadata.name) {
-      handleError();
+      // handleError();
     }
   }, []);
 
