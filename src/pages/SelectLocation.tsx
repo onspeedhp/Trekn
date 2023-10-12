@@ -18,18 +18,13 @@ const LocationSearch = () => {
   const navigate = useNavigate();
 
   const test = async (query: any) => {
-    // const provider = new OpenStreetMapProvider({
+    const provider = new OpenStreetMapProvider();
+    // const provider = new LocationIQProvider({
     //   params: {
+    //     key: `${process.env.REACT_APP_LOCATION_IQ}`,
     //     countrycodes: 'vn',
-    //     addressdetails: 1,
     //   },
     // });
-    const provider = new LocationIQProvider({
-      params: {
-        key: `${process.env.REACT_APP_LOCATION_IQ}`,
-        countrycodes: 'vn',
-      },
-    });
 
     const results = await provider.search({ query: query });
 
