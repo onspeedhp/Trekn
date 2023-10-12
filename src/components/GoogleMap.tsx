@@ -15,14 +15,7 @@ const Wrapper = styled.main`
 
 const GoogleMap: React.FC<GoogleMapProps> = ({ children, ...props }) => (
   <Wrapper>
-    <GoogleMapReact
-      bootstrapURLKeys={{
-        key: process.env.REACT_APP_JAVASCRIPT_API_KEY!,
-      }}
-      {...props}
-    >
-      {children}
-    </GoogleMapReact>
+    <GoogleMapReact {...props}>{children}</GoogleMapReact>
   </Wrapper>
 );
 

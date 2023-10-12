@@ -39,6 +39,7 @@
     "fs": "^0.0.1-security",
     "google-map-react": "^2.2.1",
     "html-react-parser": "^4.2.2",
+    "leaflet": "^1.9.4",
     "leaflet-geosearch": "^3.10.0",
     "moment": "^2.29.4",
     "nstall": "^0.2.0",
@@ -85,7 +86,7 @@
   },
   "devDependencies": {
     "@types/google-map-react": "^2.1.7",
-    "@types/leaflet": "^1.9.4",
+    "@types/leaflet": "^1.9.6",
     "@types/react-slick": "^0.23.10",
     "assert": "^2.0.0",
     "buffer": "^6.0.3",

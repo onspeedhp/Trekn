@@ -34,7 +34,7 @@ function App({
 
   const Header: any = header;
 
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 2000);
 
   useEffect(() => {
     function handleResize() {

@@ -1,13 +1,10 @@
-/* eslint-disable no-restricted-globals */
-import {
-  Button,
-  ConfigProvider,
-  Divider,
-  Drawer,
-  Modal,
-  Popover,
-  Spin,
-} from 'antd';
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import { useAuthContext } from '../context/AuthContext';
+import { getAllDrops, getDropByID } from '../middleware/data/drop';
+import { deepEqual } from './MapView';
+import L from 'leaflet';
+import { Button, ConfigProvider, Drawer, Modal, Popover } from 'antd';
+import { useNavigate, useParams } from 'react-router';
 import {
   FaFaceFrown,
   FaFaceKissWinkHeart,
@@ -17,55 +14,23 @@ import {
   FaPlus,
   FaChevronDown,
 } from 'react-icons/fa6';
-import { useNavigate, useParams } from 'react-router';
-import { useAuthContext } from '../context/AuthContext';
-import GoogleMap from '../components/GoogleMap';
-import React, { useEffect, useRef, useState, TouchEvent } from 'react';
-import { FaUserFriends, FaHome } from 'react-icons/fa';
-import { GroupIcon } from '../icons';
 import {
   calculateDistance,
   convertDistance,
 } from '../functions/calculateDistance';
-import { getAllDrops, getDropByID } from '../middleware/data/drop';
+import React, { useEffect, useRef, useState, TouchEvent } from 'react';
+import { FaHome, FaUserFriends } from 'react-icons/fa';
+import { GroupIcon } from '../icons';
 import { mintCompressedNFT } from '../functions/mintCompressedNFT';
 import { PublicKey } from '@solana/web3.js';
 import './style.css';
 
-export function deepEqual(obj1: any, obj2: any): boolean {
-  if (obj1 === obj2) {
-    return true;
-  }
-
-  if (
-    typeof obj1 !== 'object' ||
-    obj1 === null ||
-    typeof obj2 !== 'object' ||
-    obj2 === null
-  ) {
-    return false;
-  }
-
-  const keys1 = Object.keys(obj1);
-  const keys2 = Object.keys(obj2);
-
-  if (keys1.length !== keys2.length) {
-    return false;
-  }
-
-  for (let key of keys1) {
-    if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-export const MapView = () => {
+export const MapTest = () => {
   const navigate = useNavigate();
   const { coordsNow, loggedIn, setMetadata, user, windowSize, init } =
     useAuthContext();
+  console.log(coordsNow);
+
   const coords = {
     lat: coordsNow.lat,
     lng: coordsNow.log,
@@ -114,7 +79,7 @@ export const MapView = () => {
   const handleTouchMove = (event: TouchEvent<HTMLDivElement>) => {
     const touchY = event.touches[0].clientY;
     const touchStart = parseInt(refDrawer.current?.dataset.touchStart || '0');
-    const heightScreen = screen.height;
+    const heightScreen = windowSize.height;
     const newHeight = drawerHeight + (touchStart - touchY);
 
     if (newHeight >= 400 && newHeight < heightScreen * 0.98) {
@@ -150,36 +115,6 @@ export const MapView = () => {
       });
     }
   }, []);
-
-  const onGoogleApiLoaded = ({ map, maps }: { map: any; maps: any }) => {
-    new maps.Marker({
-      position: { lat: coords.lat, lng: coords.lng },
-      map,
-      title: 'Location now',
-      icon: {
-        url: '/marker_new.png',
-        scaledSize: new maps.Size(38, 38),
-      },
-    });
-
-    locations.forEach((location: any) => {
-      const marker = new maps.Marker({
-        position: { lat: location.lat, lng: location.lng },
-        map,
-        title: location.name,
-        icon: {
-          url: '/location.png',
-          scaledSize: new maps.Size(38, 38),
-        },
-      });
-
-      marker.addListener('click', () => {
-        setSelectedLocation(location);
-        setIsDrawerVisible(true);
-        setDrawerHeight(443);
-      });
-    });
-  };
 
   useEffect(() => {
     if (selectedLocation) {
@@ -220,38 +155,72 @@ export const MapView = () => {
           },
         }}
       >
-        <div
-          className='rounded-xl h-screen'
-          style={{
-            width: '100%',
-          }}
-        >
+        <div id='map' className='relative h-full w-full'>
           <Button
             onClick={() => {
               navigate('/home');
             }}
             style={{
               padding: 0,
+              zIndex: 1000,
             }}
             className='fixed bg-black top-0 right-0 rounded-full w-9 h-9 text-white flex justify-center items-center m-5 z-10'
           >
             <FaHome size={16} />
           </Button>
-
-          {locations && locations.length > 0 && (
-            <GoogleMap
-              defaultZoom={16}
-              defaultCenter={coords}
-              bootstrapURLKeys={{
-                key: process.env.REACT_APP_JAVASCRIPT_API_KEY!,
-              }}
-              yesIWantToUseGoogleMapApiInternals
-              onGoogleApiLoaded={onGoogleApiLoaded}
-              options={{
-                disableDefaultUI: true,
-              }}
+          <MapContainer
+            center={
+              deepEqual(coordsNow, { lat: -1, log: -1 })
+                ? { lat: 21.0278, lng: 105.8342 }
+                : { lat: coordsNow.lat, lng: coordsNow.log }
+            }
+            zoom={13}
+            scrollWheelZoom={false}
+            style={{ height: windowSize.height, width: windowSize.width }}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
             />
-          )}
+
+            {locations.map((location, index) => (
+              <>
+                <Marker
+                  key={index}
+                  icon={
+                    new L.Icon({
+                      iconUrl: '/location.png', // URL to your custom icon image
+                      iconSize: [38, 38], // Size of the icon
+                    })
+                  }
+                  position={{ lat: location.lat, lng: location.lng }}
+                  eventHandlers={{
+                    click: () => {
+                      setSelectedLocation(location);
+                      setIsDrawerVisible(true);
+                      setDrawerHeight(443);
+                    },
+                  }}
+                />
+              </>
+            ))}
+
+            <Marker
+              icon={
+                new L.Icon({
+                  iconUrl: '/marker_new.png', // URL to your custom icon image
+                  iconSize: [38, 38], // Size of the icon
+                })
+              }
+              position={
+                deepEqual(coordsNow, { lat: -1, log: -1 })
+                  ? { lat: 21.0278, lng: 105.8342 }
+                  : { lat: coordsNow.lat, lng: coordsNow.log }
+              }
+            >
+              <Popup>You are here</Popup>
+            </Marker>
+          </MapContainer>
 
           {selectedLocation && (
             <div
@@ -417,7 +386,7 @@ export const MapView = () => {
                     className='absolute bg-white bottom-0 w-full'
                   >
                     <Button
-                      className='h-12 rounded-3xl bg-black text-white'
+                      className='h-12 rounded-3xl text-white bg-black'
                       style={{ width: windowSize.width - 40 }}
                       loading={loading}
                       onClick={async () => {
@@ -472,7 +441,10 @@ export const MapView = () => {
             onClick={() => {
               navigate('/drop-onboarding');
             }}
-            style={{ marginLeft: 155 }}
+            style={{
+              marginLeft: Math.round((windowSize.width - 64) / 2),
+              zIndex: 1000,
+            }}
             className='fixed bg-black bottom-0 rounded-full w-16 h-16 text-white flex items-center justify-center mb-4'
           >
             <FaPlus size={24} />
