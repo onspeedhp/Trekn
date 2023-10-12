@@ -29,6 +29,10 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Trekn - Proof of Travel</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.css"
+    />
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -44,5 +48,7 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+    <!-- Make sure you put this AFtER leaflet.js, when using with leaflet -->
+    <script src="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.umd.js"></script>
   </body>
 </html>

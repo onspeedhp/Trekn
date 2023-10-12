@@ -113,9 +113,7 @@ export const Confirm: React.FC = () => {
         <div className='flex items-center mb-6'>
           <div className='flex-col mr-4' style={{ width: 268 }}>
             <div className='text-[#BDBDBA] text-[13px]'>Drop location</div>
-            <div>
-              {locationName}, {location}
-            </div>
+            <div>{location}</div>
           </div>
           <div
             className='flex bg-[#373737] rounded-full items-center justify-center'

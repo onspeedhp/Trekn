@@ -74,7 +74,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         buttonPosition: 'top-left', // default: bottom-left
         apiKey: process.env.REACT_APP_CLIENT_ID_WEB3_AUTH!, // https://developer.web3auth.io
         whiteLabel: {
-          name: 'Whitelabel Demo',
+          name: 'Trekn',
           theme: {
             isDark: true,
             colors: { torusBrand1: '#00a8ff' },

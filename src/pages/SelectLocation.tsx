@@ -5,6 +5,11 @@ import { useEffect, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import React from 'react';
 import { calculateDistance } from '../functions/calculateDistance';
+import { OpenStreetMapProvider } from 'leaflet-geosearch';
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 const LocationSearch = () => {
   const [query, setQuery] = useState('');
@@ -12,27 +17,24 @@ const LocationSearch = () => {
   const { metadata, setMetadata, coordsNow } = useAuthContext();
   const navigate = useNavigate();
 
+  const test = async (query: any) => {
+    const provider = new OpenStreetMapProvider();
+    const results = await provider.search({ query: query });
+    if (results.length > 5) {
+      setLocations(results.slice(0, 5));
+    } else {
+      setLocations(results);
+    }
+    await sleep(200);
+  };
+
   useEffect(() => {
     if (query === '') {
       setLocations([]);
       return;
     }
 
-    if (window.google && window.google.maps && window.google.maps.places) {
-      const service = new window.google.maps.places.AutocompleteService();
-      service.getPlacePredictions(
-        {
-          input: query,
-          componentRestrictions: { country: ['vn', 'de', 'in', 'gb'] },
-        },
-        (predictions, status) => {
-          if (status !== window.google.maps.places.PlacesServiceStatus.OK) {
-            return;
-          }
-          setLocations(predictions);
-        }
-      );
-    }
+    test(query);
   }, [query]);
 
   return (
@@ -55,81 +57,25 @@ const LocationSearch = () => {
           <Radio.Group
             name='radiogroup'
             onChange={(e: RadioChangeEvent) => {
-              const service = new window.google.maps.places.PlacesService(
-                document.createElement('div')
-              );
-              const placeId = locations[e.target.value].place_id;
-              service.getDetails({ placeId }, (place: any, status: any) => {
-                if (
-                  status !== window.google.maps.places.PlacesServiceStatus.OK ||
-                  !place.geometry ||
-                  !place.geometry.location
-                ) {
-                  console.error(status);
-                  return;
-                }
-
-                setMetadata({
-                  ...metadata,
-                  location:
-                    locations[e.target.value].structured_formatting
-                      .secondary_text,
-                  location_name:
-                    locations[e.target.value].structured_formatting.main_text,
-                  lat: place.geometry.location.lat(),
-                  lng: place.geometry.location.lng(),
-                });
-
-                navigate('/drop-onboarding/add-description');
+              setMetadata({
+                ...metadata,
+                location: locations[e.target.value].label,
+                location_name: locations[e.target.value].raw.name,
+                lat: locations[e.target.value].y,
+                lng: locations[e.target.value].x,
               });
+              navigate('/drop-onboarding/add-description');
             }}
           >
             {locations && (
               <>
-                {locations.map((location: any, index: any) => {
-                  let disable = false;
-                  // const service = new window.google.maps.places.PlacesService(
-                  //   document.createElement('div')
-                  // );
-                  // const placeId = location.place_id;
-                  // service.getDetails({ placeId }, (place: any, status: any) => {
-                  //   if (
-                  //     status !==
-                  //       window.google.maps.places.PlacesServiceStatus.OK ||
-                  //     !place.geometry ||
-                  //     !place.geometry.location
-                  //   ) {
-                  //     console.error(status);
-                  //     return;
-                  //   }
-                  //   const distance = calculateDistance(
-                  //     coordsNow.lat,
-                  //     coordsNow.log,
-                  //     place.geometry.location.lat(),
-                  //     place.geometry.location.lng()
-                  //   );
-
-                  //   if (distance > 100) {
-
-                  //     disable = true;
-                  //   }
-
-                  //   console.log(disable);
-
-                  // });
-
-                  return (
-                    <div className='mb-5' key={index}>
-                      <Radio
-                        value={index}
-                        className='text-white text-[15px]'
-                        disabled={disable}
-                      >
-                        {location.description}
-                      </Radio>
-                    </div>
-                  );
-                })}
+                {locations.map((location: any, index: any) => (
+                  <div className='mb-5' key={index}>
+                    <Radio value={index} className='text-white text-[15px]'>
+                      {location.label}
+                    </Radio>
+                  </div>
+                ))}
               </>
             )}
           </Radio.Group>
@@ -183,7 +129,7 @@ export const SelectLocation: React.FC = () => {
 
   useEffect(() => {
     if (!metadata.image || !metadata.name) {
-      handleError();
+      // handleError();
     }
   }, []);
 
