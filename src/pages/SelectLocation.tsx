@@ -88,24 +88,6 @@ const LocationSearch = () => {
 export const SelectLocation: React.FC = () => {
   const navigate = useNavigate();
   const { metadata, setMetadata } = useAuthContext();
-  const [scriptLoaded, setScriptLoaded] = useState(false);
-
-  useEffect(() => {
-    if (!window.google || !window.google.maps || !window.google.maps.places) {
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_PLACES_API}&libraries=places`;
-      script.async = true;
-      script.defer = true;
-      script.onload = () => {
-        setScriptLoaded(true);
-      };
-      document.head.appendChild(script);
-    }
-
-    if (window.google) {
-      setScriptLoaded(true);
-    }
-  }, []);
 
   const handleError = () => {
     const modal = Modal.error({
@@ -129,7 +111,7 @@ export const SelectLocation: React.FC = () => {
 
   useEffect(() => {
     if (!metadata.image || !metadata.name) {
-      // handleError();
+      handleError();
     }
   }, []);
 
@@ -163,7 +145,7 @@ export const SelectLocation: React.FC = () => {
           </div>
         </div>
 
-        {scriptLoaded && <LocationSearch />}
+        <LocationSearch />
       </div>
     </div>
   );
