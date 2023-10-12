@@ -1,8 +1,6 @@
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { useAuthContext } from '../context/AuthContext';
 import { getAllDrops, getDropByID } from '../middleware/data/drop';
-import { deepEqual } from './MapView';
-import L from 'leaflet';
+import { deepEqual } from './MapGoogle';
 import { Button, ConfigProvider, Drawer, Modal, Popover } from 'antd';
 import { useNavigate, useParams } from 'react-router';
 import {
@@ -23,13 +21,14 @@ import { FaHome, FaUserFriends } from 'react-icons/fa';
 import { GroupIcon } from '../icons';
 import { mintCompressedNFT } from '../functions/mintCompressedNFT';
 import { PublicKey } from '@solana/web3.js';
+import Map, { Marker } from 'react-map-gl';
+
 import './style.css';
 
-export const MapTest = () => {
+export const MapGL = () => {
   const navigate = useNavigate();
   const { coordsNow, loggedIn, setMetadata, user, windowSize, init } =
     useAuthContext();
-  console.log(coordsNow);
 
   const coords = {
     lat: coordsNow.lat,
@@ -168,59 +167,56 @@ export const MapTest = () => {
           >
             <FaHome size={16} />
           </Button>
-          <MapContainer
-            center={
-              deepEqual(coordsNow, { lat: -1, log: -1 })
-                ? { lat: 21.0278, lng: 105.8342 }
-                : { lat: coordsNow.lat, lng: coordsNow.log }
-            }
-            zoom={13}
-            scrollWheelZoom={false}
-            style={{ height: windowSize.height, width: windowSize.width }}
-          >
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-            />
 
+          <Map
+            mapboxAccessToken={`${process.env.REACT_APP_MAP_BOX_ACCESS_TOKEN}`}
+            initialViewState={{
+              longitude: deepEqual(coordsNow, { lat: -1, log: -1 })
+                ? 105.8342
+                : coordsNow.log,
+              latitude: deepEqual(coordsNow, { lat: -1, log: -1 })
+                ? 21.0278
+                : coordsNow.lat,
+              zoom: 14,
+            }}
+            style={{ width: windowSize.width, height: windowSize.height }}
+            mapStyle='mapbox://styles/mapbox/streets-v9'
+          >
             {locations.map((location, index) => (
               <>
                 <Marker
                   key={index}
-                  icon={
-                    new L.Icon({
-                      iconUrl: '/location.png', // URL to your custom icon image
-                      iconSize: [38, 38], // Size of the icon
-                    })
-                  }
-                  position={{ lat: location.lat, lng: location.lng }}
-                  eventHandlers={{
-                    click: () => {
-                      setSelectedLocation(location);
-                      setIsDrawerVisible(true);
-                      setDrawerHeight(443);
-                    },
+                  longitude={location.lng}
+                  latitude={location.lat}
+                  anchor='bottom'
+                  onClick={() => {
+                    setSelectedLocation(location);
+                    setIsDrawerVisible(true);
+                    setDrawerHeight(443);
                   }}
-                />
+                >
+                  <img src='./Marker.svg' />
+                </Marker>
               </>
             ))}
 
             <Marker
-              icon={
-                new L.Icon({
-                  iconUrl: '/marker_new.png', // URL to your custom icon image
-                  iconSize: [38, 38], // Size of the icon
-                })
-              }
-              position={
+              longitude={
                 deepEqual(coordsNow, { lat: -1, log: -1 })
-                  ? { lat: 21.0278, lng: 105.8342 }
-                  : { lat: coordsNow.lat, lng: coordsNow.log }
+                  ? 105.8342
+                  : coordsNow.log
               }
+              latitude={
+                deepEqual(coordsNow, { lat: -1, log: -1 })
+                  ? 21.0278
+                  : coordsNow.lat
+              }
+              anchor='bottom'
+              onClick={() => {}}
             >
-              <Popup>You are here</Popup>
+              <img src='./current_location.svg' />
             </Marker>
-          </MapContainer>
+          </Map>
 
           {selectedLocation && (
             <div

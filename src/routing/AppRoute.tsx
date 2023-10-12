@@ -2,7 +2,6 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import App from '../App';
 import Home from '../pages/Home';
 import Header from '../components/Header';
-import { MapView } from '../pages/MapView';
 import { DropOnboarding } from '../pages/DropOnboarding';
 import { EnterName } from '../pages/EnterName';
 import { UploadImage } from '../pages/UploadImage';
@@ -14,7 +13,7 @@ import { Account } from '../pages/Account';
 import { NftDetails } from '../pages/NftDetails';
 import { MintSuccess } from '../pages/MintSuccess';
 import { Reaction } from '../pages/Reaction';
-import { MapTest } from '../pages/MapTest';
+import { MapGL } from '../pages/MapGL';
 
 const AppRoutes = () => (
   <BrowserRouter basename='/'>
@@ -22,13 +21,6 @@ const AppRoutes = () => (
       <Route path='/' element={<App layout={Home} header={Header} />}>
         <Route path='home' element={<Home />} />
       </Route>
-{/* 
-      <Route
-        path='/map-view'
-        element={<App header={Header} hideHeader={true} layout={MapView} />}
-      >
-        <Route path=':dropId' element={<Home />} />
-      </Route> */}
 
       <Route
         path='/drop-onboarding'
@@ -98,7 +90,7 @@ const AppRoutes = () => (
 
       <Route
         path='/map-view'
-        element={<App header={Header} hideHeader={true} layout={MapTest} />}
+        element={<App header={Header} hideHeader={true} layout={MapGL} />}
       >
         <Route path=':dropId' element={<Home />} />
       </Route>
