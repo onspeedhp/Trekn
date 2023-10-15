@@ -20,15 +20,19 @@ function Home() {
   const [loading, setLoading] = useState(false);
   const [leaderBoardPoint, setLeaderBoardPoint] = useState([]);
   const [loadingPoint, setLoadingPoint] = useState(false);
+  const [loadingNearBy, setLoadingNearBy] = useState(false);
+  const [loadingReadyToCollect, setLoadingReadyToCollet] = useState(false);
 
   const navigate = useNavigate();
 
   const getReadyToCollect = async (lat: number, log: number) => {
+    setLoadingReadyToCollet(true);
     const res = await request.post('drop/getReadyToCollect', {
       lat: lat,
       lng: log,
     });
     setReadyToCollect(res.data.data);
+    setLoadingReadyToCollet(false);
   };
 
   useEffect(() => {
@@ -42,12 +46,14 @@ function Home() {
   }, []);
 
   const getNearBy = async (lat: number, log: number) => {
+    setLoadingNearBy(true);
     const res = await request.post('drop/getNearBy', {
       lat: lat,
       lng: log,
     });
 
     setNearBy(res.data.data);
+    setLoadingNearBy(false);
   };
 
   useEffect(() => {
@@ -87,12 +93,14 @@ function Home() {
                   </>
                 ) : (
                   <>
-                    <div className='flex items-center justify-center mt-7'>
-                      <img src='./Route_search.svg' alt='' />
-                    </div>
-                    <div className='text-center text-[20px] font-semibold text-black opacity-50'>
-                      Go further to discover or drop something in the area
-                    </div>
+                    <Spin tip='Loading...' className='flex items-center' spinning={loadingReadyToCollect}>
+                      <div className='flex items-center justify-center mt-7'>
+                        <img src='./Route_search.svg' alt='' />
+                      </div>
+                      <div className='text-center text-[20px] font-semibold text-black opacity-50'>
+                        Go further to discover or drop something in the area
+                      </div>
+                    </Spin>
                   </>
                 )}
               </div>
@@ -130,9 +138,15 @@ function Home() {
               </div>
 
               <div style={{ marginTop: 43 }}>
-                {nearBy.length !== 0 && (
-                  <ListDetail status={'Nearby'} data={nearBy} />
-                )}
+                <Spin
+                  tip='Loading nearby'
+                  spinning={loadingNearBy}
+                  className='flex items-center mt-10'
+                >
+                  {nearBy.length !== 0 && (
+                    <ListDetail status={'Nearby'} data={nearBy} />
+                  )}
+                </Spin>
               </div>
             </div>
           </>
