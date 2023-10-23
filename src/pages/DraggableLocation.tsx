@@ -94,7 +94,7 @@ export const DraggableLocation = () => {
   const handleReverseGeocode = async (lat: any, lng: any) => {
     try {
       const response = await axios.get(
-        `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lng}&apiKey=5f91c2d850ab462ab83873e49ef52ce6`
+        `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lng}&apiKey=${process.env.REACT_APP_GEOAPIFY}`
       );
       setAddress(response.data.features[0].properties.formatted);
     } catch (error) {
@@ -145,7 +145,7 @@ export const DraggableLocation = () => {
                 fill='none'
                 className='mb-6'
                 onClick={() => {
-                  navigate('/drop-onboarding/upload-image'); 
+                  navigate('/drop-onboarding/upload-image');
                 }}
               >
                 <path
@@ -228,7 +228,7 @@ export const DraggableLocation = () => {
                 onDrag={onMarkerDrag}
                 onDragEnd={onMarkerDragEnd}
               >
-                <FaMapPin size={24} className='text-[#278EFF]'/>
+                <FaMapPin size={24} className='text-[#278EFF]' />
               </Marker>
             </Map>
           </div>
