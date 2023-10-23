@@ -127,7 +127,7 @@ export const NftDetails = () => {
                     Drop location
                   </div>
                   <div className='text-white font-semibold'>
-                    {data.location_name}, {data.location}
+                    {data.location}
                   </div>
                 </div>
 

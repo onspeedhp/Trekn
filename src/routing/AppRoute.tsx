@@ -14,6 +14,7 @@ import { NftDetails } from '../pages/NftDetails';
 import { MintSuccess } from '../pages/MintSuccess';
 import { Reaction } from '../pages/Reaction';
 import { MapGL } from '../pages/MapGL';
+import { DraggableLocation } from '../pages/DraggableLocation';
 
 const AppRoutes = () => (
   <BrowserRouter basename='/'>
@@ -39,12 +40,12 @@ const AppRoutes = () => (
         element={<App header={Header} hideHeader={true} layout={UploadImage} />}
       ></Route>
 
-      <Route
+      {/* <Route
         path='/drop-onboarding/select-location'
         element={
           <App header={Header} hideHeader={true} layout={SelectLocation} />
         }
-      ></Route>
+      ></Route> */}
 
       <Route
         path='/drop-onboarding/add-description'
@@ -94,6 +95,13 @@ const AppRoutes = () => (
       >
         <Route path=':dropId' element={<Home />} />
       </Route>
+
+      <Route
+        path='/drop-onboarding/drag-location'
+        element={
+          <App header={Header} hideHeader={true} layout={DraggableLocation} />
+        }
+      ></Route>
     </Routes>
   </BrowserRouter>
 );

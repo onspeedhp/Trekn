@@ -48,7 +48,8 @@ export const AddDescription: React.FC = () => {
           fill='none'
           className='mb-6'
           onClick={() => {
-            navigate('/drop-onboarding/select-location');
+            // navigate('/drop-onboarding/select-location');
+            navigate('/drop-onboarding/drag-location');
           }}
         >
           <path

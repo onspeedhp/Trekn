@@ -187,7 +187,7 @@ export const UploadImage = () => {
                   ...metadata,
                   image: `${process.env.REACT_APP_SUPABASE_URL}/storage/v1/object/public/drop_image/${fileName}`,
                 });
-                navigate(`/drop-onboarding/select-location`);
+                navigate(`/drop-onboarding/drag-location`);
               }}
             >
               Continue

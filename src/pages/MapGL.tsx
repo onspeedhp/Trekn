@@ -304,7 +304,6 @@ export const MapGL = () => {
                     {selectedLocation.name}
                   </div>
                   <div className='text-[13px] text-[#848484] font-medium mb-4'>
-                    {selectedLocation.location_name} ∙
                     {selectedLocation.location}
                   </div>
 
