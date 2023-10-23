@@ -10,11 +10,12 @@ import Slider from '../components/Slider';
 import { DetailCard } from '../components/DetailCard';
 import { Button, Spin } from 'antd';
 import { getLeaderBoardPoint } from '../middleware/data/user';
+import { useSelector } from 'react-redux';
 
 function Home() {
-  const { coordsNow, loggedIn, windowSize, leaderBoard, init } =
-    useAuthContext();
+  const { coordsNow, windowSize, leaderBoard, init } = useAuthContext();
   const [readyToCollect, setReadyToCollect] = useState<IDrop[]>([]);
+  const user = useSelector((state: any) => state.user);
 
   const [nearBy, setNearBy] = useState<IDrop[]>([]);
   const [loading, setLoading] = useState(false);
@@ -93,7 +94,11 @@ function Home() {
                   </>
                 ) : (
                   <>
-                    <Spin tip='Loading...' className='flex items-center' spinning={loadingReadyToCollect}>
+                    <Spin
+                      tip='Loading...'
+                      className='flex items-center'
+                      spinning={loadingReadyToCollect}
+                    >
                       <div className='flex items-center justify-center mt-7'>
                         <img src='./Route_search.svg' alt='' />
                       </div>
@@ -111,7 +116,7 @@ function Home() {
                 loading={loading}
                 className='w-full h-[48px] relative items-center justify-center rounded-3xl bg-black text-white text-base font-semibold px-[32px] mt-6 flex sm:hidden'
                 onClick={async () => {
-                  if (loggedIn) {
+                  if (user.id) {
                     navigate('/drop-onboarding');
                   } else {
                     setLoading(true);

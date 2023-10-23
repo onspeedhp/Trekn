@@ -30,6 +30,7 @@ import { getAllDrops, getDropByID } from '../middleware/data/drop';
 import { mintCompressedNFT } from '../functions/mintCompressedNFT';
 import { PublicKey } from '@solana/web3.js';
 import './style.css';
+import { useSelector } from 'react-redux';
 
 export function deepEqual(obj1: any, obj2: any): boolean {
   if (obj1 === obj2) {
@@ -63,8 +64,9 @@ export function deepEqual(obj1: any, obj2: any): boolean {
 
 export const MapView = () => {
   const navigate = useNavigate();
-  const { coordsNow, loggedIn, setMetadata, user, windowSize, init } =
-    useAuthContext();
+  const { coordsNow, setMetadata, windowSize, init } = useAuthContext();
+  const user = useSelector((state: any) => state.user);
+
   const coords = {
     lat: coordsNow.lat,
     lng: coordsNow.log,
@@ -193,7 +195,7 @@ export const MapView = () => {
         )
       );
 
-      if (!loggedIn) {
+      if (!user.id) {
         setMintStatus('Login to collect');
         setDisable(false);
       } else {
@@ -206,7 +208,7 @@ export const MapView = () => {
         }
       }
     }
-  }, [selectedLocation, coordsNow, loggedIn]);
+  }, [selectedLocation, coordsNow, user]);
 
   return (
     <>

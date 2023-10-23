@@ -10,11 +10,13 @@ import {
   FaFaceSadCry,
 } from 'react-icons/fa6';
 import { updateDrop } from '../middleware/data/drop';
+import { useSelector } from 'react-redux';
 
 export const Reaction = () => {
   const navigate = useNavigate();
-  const { metadata, setMetadata, user } = useAuthContext();
+  const { metadata, setMetadata } = useAuthContext();
   const [value, setValue] = useState<number>();
+  const user = useSelector((state: any) => state.user);
 
   const handleError = () => {
     const modal = Modal.error({

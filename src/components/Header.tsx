@@ -3,10 +3,13 @@ import { FaMedal, FaSignOutAlt, FaUserCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 import { useAuthContext } from '../context/AuthContext';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 const Header = ({ hidden }: { hidden: boolean }) => {
   const navigate = useNavigate();
-  const { loggedIn, init, leaderBoard, setLeaderBoard } = useAuthContext();
+  const { init, leaderBoard, setLeaderBoard } = useAuthContext();
+  const user = useSelector((state: any) => state.user);
+
   const [loading, setLoading] = useState(false);
 
   return (
@@ -14,7 +17,7 @@ const Header = ({ hidden }: { hidden: boolean }) => {
       {!hidden && (
         <div className='m-5 flex items-center relative'>
           <a href='/home'>
-            <img src='./Logo.svg' alt='' className='h-6'/>
+            <img src='./Logo.svg' alt='' className='h-6' />
           </a>
 
           <div className='absolute flex items-center inset-y-0 right-0'>
@@ -28,7 +31,7 @@ const Header = ({ hidden }: { hidden: boolean }) => {
               <FaMedal size={16} className='text-white w-4 h-4' />
             </Button>
 
-            {loggedIn ? (
+            {user.id ? (
               <>
                 <FaUserCircle
                   onClick={() => {

@@ -5,9 +5,11 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { IDrop, IUser } from '../models/types';
+import { IDrop } from '../models/types';
 import Torus from '@toruslabs/solana-embed';
 import { insertUser, isUserIsExisted } from '../middleware/data/user';
+import { updateUser } from '../redux/slides/userSlides';
+import { useDispatch } from 'react-redux';
 
 export const AuthContext = createContext({} as AuthContextProps);
 export const useAuthContext = () => useContext(AuthContext);
@@ -15,15 +17,7 @@ export const useAuthContext = () => useContext(AuthContext);
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [coordsNow, setCoordsNow] = useState({ log: -1, lat: -1 } as ICoords);
   const [nftMetada, setNFTMetadata] = useState<IDrop>({} as IDrop);
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [user, setUser] = useState({
-    id: 1,
-    name: '',
-    email: '',
-    address: '',
-    profileImage: '',
-    point: 0,
-  });
+  const dispatch = useDispatch();
   const [torus, setTorus] = useState(new Torus());
   const [leaderBoard, setLeaderBoard] = useState(false);
 
@@ -107,17 +101,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     });
 
     if (isUserIsExist) {
-      setUser(data);
+      dispatch(updateUser(data));
     } else {
       await insertUser({
         props: userInfo,
         onSuccess: (data: any) => {
-          setUser(data);
+          dispatch(updateUser(data));
         },
       });
     }
 
-    setLoggedIn(true);
   };
 
   return (
@@ -126,12 +119,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         coordsNow: coordsNow,
         metadata: nftMetada,
         setMetadata: setNFTMetadata,
-        loggedIn: loggedIn,
-        setLoggedIn: setLoggedIn,
         torus: torus,
         setTorus: setTorus,
-        user: user,
-        setUser: setUser,
         windowSize: windowSize,
         init: init,
         leaderBoard: leaderBoard,
@@ -151,12 +140,8 @@ interface AuthContextProps {
   coordsNow: ICoords;
   metadata: IDrop;
   setMetadata: (metadata: any) => void;
-  loggedIn: boolean;
-  setLoggedIn: (login: boolean) => void;
   torus: Torus;
   setTorus: (torus: Torus) => void;
-  user: IUser;
-  setUser: (user: any) => void;
   windowSize: {
     width: number;
     height: number;

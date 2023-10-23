@@ -11,7 +11,7 @@ import axios from 'axios';
 import { FaMapPin, FaTimesCircle } from 'react-icons/fa';
 
 export const DraggableLocation = () => {
-  const { coordsNow, loggedIn, setMetadata, user, windowSize, init, metadata } =
+  const { coordsNow, setMetadata, windowSize, metadata } =
     useAuthContext();
   const navigate = useNavigate();
   const [edit, setEdit] = useState(false);

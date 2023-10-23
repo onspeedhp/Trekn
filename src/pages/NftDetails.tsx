@@ -4,15 +4,17 @@ import { getMintedById } from '../middleware/data/minted';
 import { getDropByID } from '../middleware/data/drop';
 import moment, { min } from 'moment';
 import { useAuthContext } from '../context/AuthContext';
+import { useSelector } from 'react-redux';
 
 export const NftDetails = () => {
   const { mintedId, dropId } = useParams();
   const navigate = useNavigate();
   const [data, setData] = useState<any>(null);
-  const { loggedIn, windowSize } = useAuthContext();
+  const { windowSize } = useAuthContext();
+  const user = useSelector((state: any) => state.user);
 
   useEffect(() => {
-    if (!loggedIn) {
+    if (!user.id) {
       navigate('/');
     }
 

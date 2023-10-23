@@ -5,10 +5,13 @@ import { useEffect, useState } from 'react';
 import { createDrop } from '../middleware/data/drop';
 import { PublicKey } from '@solana/web3.js';
 import RPC from '../utils/solanaRPC';
+import { useSelector } from 'react-redux';
 
 export const Confirm: React.FC = () => {
   const navigate = useNavigate();
-  const { metadata, setMetadata, user } = useAuthContext();
+  const { metadata, setMetadata } = useAuthContext();
+  const user = useSelector((state: any) => state.user);
+
   const [isLoading, setIsLoading] = useState(false);
 
   const [name, setName] = useState('');

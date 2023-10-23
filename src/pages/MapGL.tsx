@@ -24,11 +24,12 @@ import { PublicKey } from '@solana/web3.js';
 import Map, { Marker } from 'react-map-gl';
 
 import './style.css';
+import { useSelector } from 'react-redux';
 
 export const MapGL = () => {
   const navigate = useNavigate();
-  const { coordsNow, loggedIn, setMetadata, user, windowSize, init } =
-    useAuthContext();
+  const { coordsNow, setMetadata, windowSize, init } = useAuthContext();
+  const user = useSelector((state: any) => state.user);
 
   const coords = {
     lat: coordsNow.lat,
@@ -128,7 +129,7 @@ export const MapGL = () => {
         )
       );
 
-      if (!loggedIn) {
+      if (!user.id) {
         setMintStatus('Login to collect');
         setDisable(false);
       } else {
@@ -141,7 +142,7 @@ export const MapGL = () => {
         }
       }
     }
-  }, [selectedLocation, coordsNow, loggedIn]);
+  }, [selectedLocation, coordsNow, user]);
 
   return (
     <>

@@ -6,24 +6,27 @@ import { FaLock } from 'react-icons/fa6';
 import { FaSignOutAlt } from 'react-icons/fa';
 import { getDropByUserAddress } from '../middleware/data/drop';
 import { getMintedByUserAddress } from '../middleware/data/minted';
+import { useDispatch, useSelector } from 'react-redux';
+import { resetUser } from '../redux/slides/userSlides';
 
 export const Account = () => {
   const navigate = useNavigate();
-  const { loggedIn, setLoggedIn, torus, user, setUser } = useAuthContext();
+  const { torus } = useAuthContext();
   const [current, setCurrent] = useState('item1');
   const [userDrops, setUserDrops] = useState<any[]>([]);
   const [userMinteds, setUserMinteds] = useState<any[]>([]);
+  const user = useSelector((state: any) => state.user);
+  const dispath = useDispatch();
 
   useEffect(() => {
-    if (!user.address || !loggedIn) {
+    if (!user.id) {
       navigate('/home');
     }
   }, []);
 
   const logout = async () => {
     await torus.logout();
-    setLoggedIn(false);
-    setUser({});
+    dispath(resetUser());
     navigate('/home');
   };
 
