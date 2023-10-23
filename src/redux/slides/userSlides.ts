@@ -7,6 +7,8 @@ const initialState = {
   address: '',
   profileImage: '',
   point: 0,
+  lat: 0,
+  lng: 0,
 };
 
 export const userSlide = createSlice({
@@ -22,6 +24,11 @@ export const userSlide = createSlice({
       state.profileImage = profileImage ? profileImage : state.profileImage;
       state.point = point ? point : state.point;
     },
+    updateCoordinate: (state, action) => {
+      const { lat, lng } = action.payload;
+      state.lat = lat ? lat : state.lat;
+      state.lng = lng ? lng : state.lng;
+    },
     resetUser: (state) => {
       state.id = 0;
       state.name = '';
@@ -34,6 +41,6 @@ export const userSlide = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { updateUser, resetUser } = userSlide.actions;
+export const { updateUser, resetUser, updateCoordinate } = userSlide.actions;
 
 export default userSlide.reducer;

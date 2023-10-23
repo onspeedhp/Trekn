@@ -9,11 +9,12 @@ import { useNavigate } from 'react-router';
 import { Button, Modal } from 'antd';
 import axios from 'axios';
 import { FaMapPin, FaTimesCircle } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
 
 export const DraggableLocation = () => {
-  const { coordsNow, setMetadata, windowSize, metadata } =
-    useAuthContext();
+  const { setMetadata, windowSize, metadata } = useAuthContext();
   const navigate = useNavigate();
+  const user = useSelector((state: any) => state.user);
   const [edit, setEdit] = useState(false);
 
   const handleError = () => {
@@ -40,11 +41,11 @@ export const DraggableLocation = () => {
     if (!metadata.image || !metadata.name) {
       handleError();
     }
-    handleReverseGeocode(coordsNow.lat, coordsNow.log);
+    handleReverseGeocode(user.lat, user.lng);
   }, []);
   const [marker, setMarker] = useState({
-    latitude: coordsNow.lat,
-    longitude: coordsNow.log,
+    latitude: user.lat,
+    longitude: user.lng,
   });
   const [events, logEvents] = useState<Record<string, LngLat>>({});
 
@@ -56,8 +57,8 @@ export const DraggableLocation = () => {
     logEvents((_events: any) => ({ ..._events, onDrag: event.lngLat }));
 
     const distance = calculateDistance(
-      coordsNow.lat,
-      coordsNow.log,
+      user.lat,
+      user.lng,
       event.lngLat.lat,
       event.lngLat.lng
     );
@@ -83,7 +84,7 @@ export const DraggableLocation = () => {
         type: 'Feature',
         geometry: {
           type: 'Point',
-          coordinates: [coordsNow.log, coordsNow.lat],
+          coordinates: [user.lng, user.lat],
         },
         properties: null,
       },
@@ -198,12 +199,8 @@ export const DraggableLocation = () => {
             <Map
               mapboxAccessToken={`${process.env.REACT_APP_MAP_BOX_ACCESS_TOKEN}`}
               initialViewState={{
-                longitude: deepEqual(coordsNow, { lat: -1, log: -1 })
-                  ? 105.8342
-                  : coordsNow.log,
-                latitude: deepEqual(coordsNow, { lat: -1, log: -1 })
-                  ? 21.0278
-                  : coordsNow.lat,
+                longitude: !user.lng ? 105.8342 : user.lng,
+                latitude: !user.lat ? 21.0278 : user.lat,
                 zoom: 16,
               }}
               style={{

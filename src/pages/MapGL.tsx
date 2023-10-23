@@ -28,13 +28,8 @@ import { useSelector } from 'react-redux';
 
 export const MapGL = () => {
   const navigate = useNavigate();
-  const { coordsNow, setMetadata, windowSize, init } = useAuthContext();
+  const { setMetadata, windowSize, init } = useAuthContext();
   const user = useSelector((state: any) => state.user);
-
-  const coords = {
-    lat: coordsNow.lat,
-    lng: coordsNow.log,
-  };
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<any>(null);
   const [drawerHeight, setDrawerHeight] = useState(0);
@@ -121,8 +116,8 @@ export const MapGL = () => {
       setDistance(
         Math.ceil(
           calculateDistance(
-            coords.lat,
-            coords.lng,
+            user.lat,
+            user.lng,
             selectedLocation.lat,
             selectedLocation.lng
           )
@@ -142,7 +137,7 @@ export const MapGL = () => {
         }
       }
     }
-  }, [selectedLocation, coordsNow, user]);
+  }, [selectedLocation, user]);
 
   return (
     <>
@@ -172,12 +167,8 @@ export const MapGL = () => {
           <Map
             mapboxAccessToken={`${process.env.REACT_APP_MAP_BOX_ACCESS_TOKEN}`}
             initialViewState={{
-              longitude: deepEqual(coordsNow, { lat: -1, log: -1 })
-                ? 105.8342
-                : coordsNow.log,
-              latitude: deepEqual(coordsNow, { lat: -1, log: -1 })
-                ? 21.0278
-                : coordsNow.lat,
+              longitude: !user.lng ? 105.8342 : user.lng,
+              latitude: !user.lat ? 21.0278 : user.lat,
               zoom: 14,
             }}
             style={{ width: windowSize.width, height: windowSize.height }}
@@ -226,18 +217,9 @@ export const MapGL = () => {
                 </Marker>
               </>
             ))}
-
             <Marker
-              longitude={
-                deepEqual(coordsNow, { lat: -1, log: -1 })
-                  ? 105.8342
-                  : coordsNow.log
-              }
-              latitude={
-                deepEqual(coordsNow, { lat: -1, log: -1 })
-                  ? 21.0278
-                  : coordsNow.lat
-              }
+              longitude={!user.lng ? 105.8342 : user.lng}
+              latitude={!user.lat ? 21.0278 : user.lat}
               anchor='bottom'
               onClick={() => {}}
             >

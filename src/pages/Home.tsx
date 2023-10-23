@@ -13,7 +13,7 @@ import { getLeaderBoardPoint } from '../middleware/data/user';
 import { useSelector } from 'react-redux';
 
 function Home() {
-  const { coordsNow, windowSize, leaderBoard, init } = useAuthContext();
+  const { windowSize, leaderBoard, init } = useAuthContext();
   const [readyToCollect, setReadyToCollect] = useState<IDrop[]>([]);
   const user = useSelector((state: any) => state.user);
 
@@ -23,9 +23,7 @@ function Home() {
   const [loadingPoint, setLoadingPoint] = useState(false);
   const [loadingNearBy, setLoadingNearBy] = useState(false);
   const [loadingReadyToCollect, setLoadingReadyToCollet] = useState(false);
-
   const navigate = useNavigate();
-
   const getReadyToCollect = async (lat: number, log: number) => {
     setLoadingReadyToCollet(true);
     const res = await request.post('drop/getReadyToCollect', {
@@ -58,12 +56,11 @@ function Home() {
   };
 
   useEffect(() => {
-    const { log, lat } = coordsNow;
-    if (log !== -1 && lat !== -1) {
-      getReadyToCollect(lat, log);
-      getNearBy(lat, log);
+    if (user.lat) {
+      getReadyToCollect(user.lat, user.lng);
+      getNearBy(user.lat, user.lng);
     }
-  }, [coordsNow]);
+  }, [user]);
 
   return (
     <>

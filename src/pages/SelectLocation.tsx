@@ -12,85 +12,86 @@ function sleep(ms: number) {
 }
 
 const LocationSearch = () => {
-  const [query, setQuery] = useState('');
-  const [locations, setLocations] = useState<any>([]);
-  const { metadata, setMetadata, coordsNow } = useAuthContext();
-  const navigate = useNavigate();
+  // const [query, setQuery] = useState('');
+  // const [locations, setLocations] = useState<any>([]);
+  // const { metadata, setMetadata, coordsNow } = useAuthContext();
+  // const navigate = useNavigate();
 
-  const test = async (query: any) => {
-    const provider = new OpenStreetMapProvider();
-    // const provider = new LocationIQProvider({
-    //   params: {
-    //     key: `${process.env.REACT_APP_LOCATION_IQ}`,
-    //     countrycodes: 'vn',
-    //   },
-    // });
+  // const test = async (query: any) => {
+  //   const provider = new OpenStreetMapProvider();
+  //   // const provider = new LocationIQProvider({
+  //   //   params: {
+  //   //     key: `${process.env.REACT_APP_LOCATION_IQ}`,
+  //   //     countrycodes: 'vn',
+  //   //   },
+  //   // });
 
-    const results = await provider.search({ query: query });
+  //   const results = await provider.search({ query: query });
 
-    if (results.length > 5) {
-      setLocations(results.slice(0, 5));
-    } else {
-      setLocations(results);
-    }
-    await sleep(200);
-  };
+  //   if (results.length > 5) {
+  //     setLocations(results.slice(0, 5));
+  //   } else {
+  //     setLocations(results);
+  //   }
+  //   await sleep(200);
+  // };
 
-  useEffect(() => {
-    if (query === '') {
-      setLocations([]);
-      return;
-    }
+  // useEffect(() => {
+  //   if (query === '') {
+  //     setLocations([]);
+  //     return;
+  //   }
 
-    test(query);
-  }, [query]);
+  //   test(query);
+  // }, [query]);
 
-  return (
-    <>
-      <div className='relative mb-6'>
-        <input
-          placeholder='Search a nearby location'
-          className='text-white bg-[#202020] w-full rounded-xl text-base h-14 font-normal pr-10 focus:outline-none pl-10'
-          type='text'
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <span className='absolute inset-y-0 left-0 flex items-center ml-4'>
-          <FaSearch size={16} className='text-white opacity-70' />
-        </span>
-      </div>
+  // return (
+  //   <>
+  //     <div className='relative mb-6'>
+  //       <input
+  //         placeholder='Search a nearby location'
+  //         className='text-white bg-[#202020] w-full rounded-xl text-base h-14 font-normal pr-10 focus:outline-none pl-10'
+  //         type='text'
+  //         value={query}
+  //         onChange={(e) => setQuery(e.target.value)}
+  //       />
+  //       <span className='absolute inset-y-0 left-0 flex items-center ml-4'>
+  //         <FaSearch size={16} className='text-white opacity-70' />
+  //       </span>
+  //     </div>
 
-      <div className='flex-col text-[#FFFFFF]'>
-        <div className='overflow-scroll' style={{ height: 396 }}>
-          <Radio.Group
-            name='radiogroup'
-            onChange={(e: RadioChangeEvent) => {
-              setMetadata({
-                ...metadata,
-                location: locations[e.target.value].label,
-                location_name: locations[e.target.value].raw.name,
-                lat: locations[e.target.value].y,
-                lng: locations[e.target.value].x,
-              });
-              navigate('/drop-onboarding/add-description');
-            }}
-          >
-            {locations && (
-              <>
-                {locations.map((location: any, index: any) => (
-                  <div className='mb-5' key={index}>
-                    <Radio value={index} className='text-white text-[15px]'>
-                      {location.label}
-                    </Radio>
-                  </div>
-                ))}
-              </>
-            )}
-          </Radio.Group>
-        </div>
-      </div>
-    </>
-  );
+  //     <div className='flex-col text-[#FFFFFF]'>
+  //       <div className='overflow-scroll' style={{ height: 396 }}>
+  //         <Radio.Group
+  //           name='radiogroup'
+  //           onChange={(e: RadioChangeEvent) => {
+  //             setMetadata({
+  //               ...metadata,
+  //               location: locations[e.target.value].label,
+  //               location_name: locations[e.target.value].raw.name,
+  //               lat: locations[e.target.value].y,
+  //               lng: locations[e.target.value].x,
+  //             });
+  //             navigate('/drop-onboarding/add-description');
+  //           }}
+  //         >
+  //           {locations && (
+  //             <>
+  //               {locations.map((location: any, index: any) => (
+  //                 <div className='mb-5' key={index}>
+  //                   <Radio value={index} className='text-white text-[15px]'>
+  //                     {location.label}
+  //                   </Radio>
+  //                 </div>
+  //               ))}
+  //             </>
+  //           )}
+  //         </Radio.Group>
+  //       </div>
+  //     </div>
+  //   </>
+  // );
+  return <></>;
 };
 
 export const SelectLocation: React.FC = () => {

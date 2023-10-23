@@ -8,14 +8,13 @@ import {
 import { IDrop } from '../models/types';
 import Torus from '@toruslabs/solana-embed';
 import { insertUser, isUserIsExisted } from '../middleware/data/user';
-import { updateUser } from '../redux/slides/userSlides';
+import { updateCoordinate, updateUser } from '../redux/slides/userSlides';
 import { useDispatch } from 'react-redux';
 
 export const AuthContext = createContext({} as AuthContextProps);
 export const useAuthContext = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [coordsNow, setCoordsNow] = useState({ log: -1, lat: -1 } as ICoords);
   const [nftMetada, setNFTMetadata] = useState<IDrop>({} as IDrop);
   const dispatch = useDispatch();
   const [torus, setTorus] = useState(new Torus());
@@ -44,7 +43,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       ({ coords: { longitude, latitude } }) => {
-        setCoordsNow({ log: longitude, lat: latitude });
+        dispatch(
+          updateCoordinate({
+            lat: latitude,
+            lng: longitude,
+          })
+        );
       }
     );
   }, []);
@@ -110,13 +114,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         },
       });
     }
-
   };
 
   return (
     <AuthContext.Provider
       value={{
-        coordsNow: coordsNow,
         metadata: nftMetada,
         setMetadata: setNFTMetadata,
         torus: torus,
@@ -137,7 +139,6 @@ interface AuthProviderProps {
 }
 
 interface AuthContextProps {
-  coordsNow: ICoords;
   metadata: IDrop;
   setMetadata: (metadata: any) => void;
   torus: Torus;
