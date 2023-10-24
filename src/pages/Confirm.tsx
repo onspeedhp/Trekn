@@ -329,7 +329,7 @@ export const Confirm: React.FC = () => {
         </div>
 
         <Button
-          className='bg-[#2E2E2E] text-white border-0  w-full h-12 rounded-3xl font-semibold text-base flex items-center justify-center mb-5‰'
+          className='bg-[#2E2E2E] text-white border-0  w-full h-12 rounded-3xl font-semibold text-base flex items-center justify-center mb-5'
           loading={isLoading}
           onClick={async () => {
             setIsLoading(true);
