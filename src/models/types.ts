@@ -14,6 +14,7 @@ export interface IDrop {
   distance?: number;
   author_id?: number;
   reaction_counts?: any;
+  imageArray?: any;
 }
 
 export interface IUser {

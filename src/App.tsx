@@ -19,12 +19,12 @@ function App({
   const Layout: any = layout;
 
   const Header: any = header;
-
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const mobileMaxWidth = 2000;
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= mobileMaxWidth);
 
   useEffect(() => {
     function handleResize() {
-      setIsMobile(window.innerWidth <= 768);
+      setIsMobile(window.innerWidth <= mobileMaxWidth);
     }
 
     window.addEventListener('resize', handleResize);

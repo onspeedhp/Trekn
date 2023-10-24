@@ -5,6 +5,7 @@ import { Button, Modal } from 'antd';
 import { BsCardImage } from 'react-icons/bs';
 import { useAuthContext } from '../context/AuthContext';
 import { supabase } from '../utils/supabaseClients';
+import { ImageUpload } from '../components/ImageUpload';
 
 export const UploadImage = () => {
   const [selectedImage, setSelectedImage] = useState<any>(null);
@@ -99,100 +100,8 @@ export const UploadImage = () => {
             </div>
           </div>
 
-          <div
-            className='relative'
-            style={{
-              background:
-                'radial-gradient(circle, #0D1606, #4C871E, #93E454), url(./upload_img.png)',
-              width: windowSize.width - 40,
-              height: selectedImage ? 421 : 389,
-              marginBottom: 62,
-              borderRadius: 12,
-            }}
-          >
-            <div
-              style={{ width: windowSize.width - 72, height: 357 }}
-              className='absolute m-4 flex-col'
-            >
-              {!selectedImage ? (
-                <>
-                  <div
-                    className='bg-black rounded-xl flex items-center justify-center mb-3'
-                    style={{ height: 303, width: windowSize.width - 72 }}
-                  >
-                    <input
-                      type='file'
-                      ref={fileInputRef}
-                      className='absolute opacity-0 w-full h-full'
-                      onChange={handleImageChange}
-                    />
-                    <FaUpload size={16} />
-                    <span className='ml-2 text-base font-bold'>
-                      Upload your image *.*
-                    </span>
-                  </div>
-                  <div style={{ fontSize: 13 }}>
-                    <div
-                      style={{ opacity: 0.7 }}
-                      className='flex justify-center'
-                    >
-                      For optimal performance
-                    </div>
-                    <div className='flex justify-center'>
-                      1024x1024, PNG, GIF max 10MB
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <img
-                    src={selectedImage}
-                    alt='Uploaded'
-                    className='rounded-xl mb-3'
-                    style={{
-                      width: windowSize.width - 72,
-                      height: 303,
-                      objectFit: 'cover',
-                      objectPosition: 'center',
-                    }}
-                    onClick={handleReplaceClick}
-                  />
-                  <div
-                    className='flex-col items-center justify-center'
-                    style={{ fontSize: 13 }}
-                  >
-                    <div
-                      style={{ opacity: 0.7 }}
-                      className='flex justify-center'
-                    >
-                      For optimal performance
-                    </div>
-                    <div className='flex justify-center'>
-                      1024x1024, PNG, GIF max 10MB
-                    </div>
-                    <div className='flex justify-center items-center mt-4'>
-                      <BsCardImage size={16} />
-                      <span className='font-bold ml-2'>Replace image</span>
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-          {selectedImage && (
-            <Button
-              className='bg-white w-full h-12 rounded-3xl font-semibold text-base'
-              onClick={() => {
-                setMetadata({
-                  ...metadata,
-                  image: `${process.env.REACT_APP_SUPABASE_URL}/storage/v1/object/public/drop_image/${fileName}`,
-                });
-                navigate(`/drop-onboarding/drag-location`);
-              }}
-            >
-              Continue
-            </Button>
-          )}
+          <ImageUpload />
+        
         </div>
       </div>
     </>
