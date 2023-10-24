@@ -349,9 +349,24 @@ export const Confirm: React.FC = () => {
             });
 
             if (imageArray.length === metadata.imageArray.length) {
+              let image = '';
+              if (sellected === -1) {
+                const fileExt = metadata.image.name.split('.').pop();
+                const fileName = `${Math.random()}.${fileExt}`;
+                const newFilePath = `${fileName}`;
+                image = `${process.env.REACT_APP_SUPABASE_URL}/storage/v1/object/public/drop_image/${fileName}`;
+
+                await supabase.storage
+                  .from('drop_image')
+                  .upload(newFilePath, metadata.image);
+              } else {
+                image = imageArray[sellected];
+              }
               await createDrop({
                 drop: {
                   ...metadata,
+                  image: image,
+                  imageArray: imageArray,
                   author_id: user.id,
                 },
                 onSuccess: (data) => {
