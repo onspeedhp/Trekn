@@ -3,6 +3,11 @@ import { getAllDrops, getDropByID } from '../middleware/data/drop';
 import { deepEqual } from './MapGoogle';
 import { Button, ConfigProvider, Drawer, Modal, Popover } from 'antd';
 import { useNavigate, useParams } from 'react-router';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
+
 import {
   FaFaceFrown,
   FaFaceKissWinkHeart,
@@ -113,6 +118,10 @@ export const MapGL = () => {
 
   useEffect(() => {
     if (selectedLocation) {
+      console.log(
+        selectedLocation.imageArray && selectedLocation.imageArray.length > 1
+      );
+
       setDistance(
         Math.ceil(
           calculateDistance(
@@ -376,17 +385,45 @@ export const MapGL = () => {
                   </div>
 
                   <div className='flex items-center justify-center mb-5'>
-                    <img
-                      src={selectedLocation.image}
-                      alt='Uploaded'
-                      className='rounded-xl'
-                      style={{
-                        width: 339,
-                        height: 339,
-                        objectFit: 'cover',
-                        objectPosition: 'center',
-                      }}
-                    />
+                    {selectedLocation.imageArray &&
+                    selectedLocation.imageArray.length > 1 ? (
+                      <Swiper
+                        pagination={true}
+                        modules={[Pagination]}
+                        className='mySwiper'
+                      >
+                        {selectedLocation.imageArray.map(
+                          (image: any, index: any) => (
+                            <SwiperSlide key={index}>
+                              <img
+                                src={image}
+                                alt='Uploaded'
+                                className='rounded-xl'
+                                style={{
+                                  width: 339,
+                                  height: 339,
+                                  objectFit: 'cover',
+                                  objectPosition: 'center',
+                                }}
+                                key={index}
+                              />
+                            </SwiperSlide>
+                          )
+                        )}
+                      </Swiper>
+                    ) : (
+                      <img
+                        src={selectedLocation.image}
+                        alt='Uploaded'
+                        className='rounded-xl'
+                        style={{
+                          width: 339,
+                          height: 339,
+                          objectFit: 'cover',
+                          objectPosition: 'center',
+                        }}
+                      />
+                    )}
                   </div>
 
                   <div
