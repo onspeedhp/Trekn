@@ -67,7 +67,7 @@ export const Confirm: React.FC = () => {
   };
 
   return (
-    <div className='bg-black absolute w-full h-full'>
+    <div className='bg-black absolute w-full'>
       <Drawer
         placement='bottom'
         closable={false}
