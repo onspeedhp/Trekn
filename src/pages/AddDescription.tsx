@@ -2,15 +2,17 @@ import { useNavigate } from 'react-router';
 import { useAuthContext } from '../context/AuthContext';
 import { Button, Modal } from 'antd';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 export const AddDescription: React.FC = () => {
   const navigate = useNavigate();
   const { metadata, setMetadata } = useAuthContext();
+  const user = useSelector((state: any) => state.user);
 
   const handleError = () => {
     const modal = Modal.error({
       title: 'Error',
-      content: 'Name, image or location of this drop is missing',
+      content: 'Something is wrong',
       okButtonProps: {
         type: 'default',
         style: {
@@ -23,20 +25,25 @@ export const AddDescription: React.FC = () => {
     setTimeout(() => {
       setMetadata({});
       modal.destroy();
-      navigate('/drop-onboarding/enter-name');
+      navigate('/drop-onboarding/upload-image');
     }, 2000);
   };
 
   useEffect(() => {
-    if (metadata.description) {
-      setDescription(metadata.description);
-    }
-
-    if (!metadata.image || !metadata.name || !metadata.location) {
+    if (
+      !metadata.image ||
+      !metadata.imageArray ||
+      !user.id ||
+      !metadata.location ||
+      !metadata.location_name ||
+      !metadata.lat ||
+      !metadata.lng ||
+      !metadata.name
+    ) {
       handleError();
     }
   });
-  const [description, setDescription] = useState('');
+
   return (
     <div className='bg-black absolute' style={{ height: 812 }}>
       <div className='m-5 text-white font-semibold'>
@@ -48,8 +55,7 @@ export const AddDescription: React.FC = () => {
           fill='none'
           className='mb-6'
           onClick={() => {
-            // navigate('/drop-onboarding/select-location');
-            navigate('/drop-onboarding/drag-location');
+            navigate('/drop-onboarding/enter-name');
           }}
         >
           <path
@@ -61,69 +67,33 @@ export const AddDescription: React.FC = () => {
 
         <div className='mb-12'>
           <div className='text-white text-2xl font-bold mb-2'>
-            Share something about it
+            Share something?
           </div>
           <div className='text-white text-lg opacity-70'>
-            Add your own words to make this drop becomes more interesting.
+            How was the experience? Add your own stories or tips for others.
           </div>
         </div>
 
         <div className='relative'>
           <input
-            placeholder='Type here...'
-            className='text-white opacity-50 bg-black w-full text-2xl h-10 font-normal pr-10 focus:outline-none'
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter') {
-                if (description) {
-                  setMetadata({
-                    ...metadata,
-                    description: description,
-                  });
-
-                  navigate('/drop-onboarding/confirm');
-                } else {
-                  Modal.error({
-                    title: 'Error',
-                    content: 'Need to fill up cNFT description',
-                    okButtonProps: {
-                      type: 'default',
-                      style: {
-                        background: 'red',
-                        color: 'white',
-                      },
-                    },
-                  });
-                }
-              }
-            }}
+            placeholder='It’s actually the coolest...'
+            className='text-white bg-black w-full text-2xl h-10 font-normal pr-10 focus:outline-none'
+            value={metadata.description}
+            onChange={(e) =>
+              setMetadata({ ...metadata, description: e.target.value })
+            }
           />
         </div>
 
         <Button
-          className='bg-white w-full h-12 rounded-3xl font-semibold text-base mt-80'
+          className='bg-white w-full h-12 rounded-3xl font-semibold text-base mt-80 border-0'
+          disabled={metadata.description ? false : true}
+          style={{
+            backgroundColor: metadata.description ? '#2E2E2E' : '#2E2E2E',
+            color: metadata.description ? 'white' : '#FFFFFF80',
+          }}
           onClick={() => {
-            if (description) {
-              setMetadata({
-                ...metadata,
-                description: description,
-              });
-
-              navigate('/drop-onboarding/confirm');
-            } else {
-              Modal.error({
-                title: 'Error',
-                content: 'Need to fill up cNFT description',
-                okButtonProps: {
-                  type: 'default',
-                  style: {
-                    background: 'red',
-                    color: 'white',
-                  },
-                },
-              });
-            }
+            navigate('/drop-onboarding/confirm');
           }}
         >
           Continue

@@ -12,7 +12,7 @@ export const UploadImage = () => {
   const handleError = () => {
     const modal = Modal.error({
       title: 'Error',
-      content: 'Name of this drop is missing',
+      content: 'Something is wrong',
       okButtonProps: {
         style: {
           background: 'red',
@@ -24,7 +24,7 @@ export const UploadImage = () => {
     setTimeout(() => {
       setMetadata({});
       modal.destroy();
-      navigate('/drop-onboarding/enter-name');
+      navigate('/');
     }, 2000);
   };
 
@@ -48,7 +48,7 @@ export const UploadImage = () => {
             fill='none'
             className='mb-6'
             onClick={() => {
-              navigate('/drop-onboarding/enter-name');
+              navigate('/');
             }}
           >
             <path

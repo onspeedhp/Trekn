@@ -114,7 +114,7 @@ function Home() {
                 className='w-full h-[48px] relative items-center justify-center rounded-3xl bg-black text-white text-base font-semibold px-[32px] mt-6 flex sm:hidden'
                 onClick={async () => {
                   if (user.id) {
-                    navigate('/drop-onboarding');
+                    navigate('/drop-onboarding/upload-image');
                   } else {
                     setLoading(true);
                     await init();

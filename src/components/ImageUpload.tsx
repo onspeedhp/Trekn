@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { useAuthContext } from '../context/AuthContext';
 import { FaUpload } from 'react-icons/fa6';
-import { ListImage } from './ListImage';
 import { Button } from 'antd';
 import { useNavigate } from 'react-router';
-import { supabase } from '../utils/supabaseClients';
 
 export const ImageUpload: React.FC = () => {
-  const [files, setFiles] = useState<File[]>([]);
   const { metadata, setMetadata, windowSize } = useAuthContext();
+  const [files, setFiles] = useState<File[]>(metadata.imageArray || []);
+
   const [loading, setLoading] = useState(false);
 
   const fileSelectedHandler = (event: React.ChangeEvent<HTMLInputElement>) => {

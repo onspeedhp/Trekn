@@ -1,20 +1,47 @@
 import { useNavigate } from 'react-router';
-import { FaRandom } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { useAuthContext } from '../context/AuthContext';
 import { Button, Modal } from 'antd';
+import { useSelector } from 'react-redux';
 
 export const EnterName = () => {
   const navigate = useNavigate();
   const { metadata, setMetadata } = useAuthContext();
-  const [name, setName] = useState('');
+  const user = useSelector((state: any) => state.user);
+
+  const handleError = () => {
+    const modal = Modal.error({
+      title: 'Error',
+      content: 'Something is wrong',
+      okButtonProps: {
+        type: 'default',
+        style: {
+          background: 'red',
+          color: 'white',
+        },
+      },
+    });
+
+    setTimeout(() => {
+      setMetadata({});
+      modal.destroy();
+      navigate('/drop-onboarding/upload-image');
+    }, 2000);
+  };
 
   useEffect(() => {
-    if (metadata.name) {
-      setName(metadata.name);
+    if (
+      !metadata.image ||
+      !metadata.imageArray ||
+      !user.id ||
+      !metadata.location ||
+      !metadata.location_name ||
+      !metadata.lat ||
+      !metadata.lng
+    ) {
+      handleError();
     }
   }, []);
-
   return (
     <>
       <div className='bg-black absolute' style={{ height: 812 }}>
@@ -27,8 +54,7 @@ export const EnterName = () => {
             fill='none'
             className='mb-6'
             onClick={() => {
-              navigate('/drop-onboarding');
-              setMetadata({});
+              navigate('/drop-onboarding/drag-location');
             }}
           >
             <path
@@ -39,65 +65,34 @@ export const EnterName = () => {
           </svg>
           <div className='mb-12'>
             <div className='text-white text-2xl font-bold mb-2'>
-              Name your drop
+              Name the experience
             </div>
             <div className='text-white text-lg opacity-70'>
-              You’re about to drop something here, make it special.
+              Is it a coffee, a restaurant or an event? Make it simple and
+              memorable.
             </div>
           </div>
 
           <div className='relative'>
             <input
-              placeholder='Enter name...'
-              className='text-white bg-black w-full border-b-2 text-2xl h-10 font-normal pr-10 focus:outline-none'
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter') {
-                  if (name) {
-                    setMetadata({
-                      name: name,
-                    });
-                    navigate(`/drop-onboarding/upload-image`);
-                  } else {
-                    Modal.error({
-                      title: 'Error',
-                      content: 'Need to fill up cNFT name',
-                      okButtonProps: {
-                        type: 'default',
-                        style: {
-                          background: 'red',
-                          color: 'white',
-                        },
-                      },
-                    });
-                  }
-                }
+              placeholder='The mockingbird...'
+              className='text-white bg-black w-full text-2xl h-10 font-normal pr-10 focus:outline-none'
+              value={metadata.name}
+              onChange={(e) => {
+                setMetadata({ ...metadata, name: e.target.value });
               }}
             />
           </div>
 
           <Button
-            className='bg-white w-full h-12 rounded-3xl font-semibold text-base mt-80'
+            className='bg-[#2E2E2E] text-white w-full h-12 rounded-3xl font-semibold text-base mt-80 border-0'
+            disabled={metadata.name ? false : true}
+            style={{
+              backgroundColor: metadata.name ? '#2E2E2E' : '#2E2E2E',
+              color: metadata.name ? 'white' : '#FFFFFF80',
+            }}
             onClick={() => {
-              if (name) {
-                setMetadata({
-                  name: name,
-                });
-                navigate(`/drop-onboarding/upload-image`);
-              } else {
-                Modal.error({
-                  title: 'Error',
-                  content: 'Need to fill up cNFT name',
-                  okButtonProps: {
-                    type: 'default',
-                    style: {
-                      background: 'red',
-                      color: 'white',
-                    },
-                  },
-                });
-              }
+              navigate(`/drop-onboarding/add-description`);
             }}
           >
             Continue

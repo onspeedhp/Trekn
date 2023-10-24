@@ -20,7 +20,7 @@ export const Confirm: React.FC = () => {
   const handleError = () => {
     const modal = Modal.error({
       title: 'Error',
-      content: 'Info of this drop is missing',
+      content: 'Something was wrong',
       okButtonProps: {
         type: 'default',
         style: {
@@ -43,16 +43,28 @@ export const Confirm: React.FC = () => {
 
   useEffect(() => {
     if (
-      !metadata.name ||
       !metadata.image ||
+      !metadata.imageArray ||
+      !user.id ||
       !metadata.location ||
       !metadata.location_name ||
+      !metadata.lat ||
+      !metadata.lng ||
+      !metadata.name ||
       !metadata.description
     ) {
-      // handleError();
+      handleError();
     }
-    console.log(metadata);
   }, []);
+
+  const fileSelectedHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const selectedFile = event.target.files[0];
+      setSellected(-1);
+      setMetadata({ ...metadata, image: selectedFile });
+      setIsDrawerVisible(false);
+    }
+  };
 
   return (
     <div className='bg-black absolute w-full h-full'>
@@ -80,16 +92,30 @@ export const Confirm: React.FC = () => {
           }}
         >
           {metadata.imageArray && metadata.imageArray?.length === 1 ? (
-            <img
-              src={metadata.imageArray[0]}
-              className='rounded-xl'
-              style={{
-                width: windowSize.width,
-                height: 303,
-                objectFit: 'cover',
-                objectPosition: 'center',
-              }}
-            />
+            <div className='relative'>
+              <img
+                src={URL.createObjectURL(metadata.imageArray[0])}
+                className='rounded-xl relative'
+                onClick={() => {
+                  if (sellected === -1) {
+                    setSellected(0);
+                  }
+                }}
+                style={{
+                  width: windowSize.width - 40,
+                  height: 303,
+                  objectFit: 'cover',
+                  objectPosition: 'center',
+                  border: sellected === 0 ? '3px solid #99FF48' : 0,
+                }}
+              />
+              {sellected === 0 && (
+                <FaCheckCircle
+                  size={18}
+                  className='text-[#FFFFFF] absolute top-2 right-6'
+                />
+              )}
+            </div>
           ) : (
             <>
               {metadata.imageArray.map((file: File, index: any) => (
@@ -101,7 +127,11 @@ export const Confirm: React.FC = () => {
                       alt={`Uploaded ${index}`}
                       className='rounded-xl mr-[13px] mb-[15px]'
                       onClick={() => {
-                        setSellected(index);
+                        if (index === sellected) {
+                          setSellected(-1);
+                        } else {
+                          setSellected(index);
+                        }
                       }}
                       style={{
                         width: (windowSize.width - 69) / 3,
@@ -123,21 +153,36 @@ export const Confirm: React.FC = () => {
             </>
           )}
         </div>
-        <div
-          className='absolute flex items-center justify-center bottom-28 text-white w-full'
-          style={{ width: windowSize.width - 48 }}
-        >
-          <FaUpload size={16} />
-          <span className='ml-2 text-base font-bold'>
-            Upload your image *.*
-          </span>
-        </div>
+        <input
+          id='file-upload'
+          type='file'
+          accept='image/*'
+          onChange={fileSelectedHandler}
+          style={{ display: 'none' }}
+        />
+        <label htmlFor='file-upload'>
+          <div
+            className='absolute flex items-center justify-center bottom-28 text-white w-full'
+            style={{ width: windowSize.width - 48 }}
+          >
+            <FaUpload size={16} />
+            <span className='ml-2 text-base font-bold'>
+              Upload your image *.*
+            </span>
+          </div>
+        </label>
+
         <Button
           className='absolute bottom-5 bg-[#2C2C2C] text-white h-12 rounded-3xl font-semibold text-base border-0'
           style={{ width: windowSize.width - 48 }}
           onClick={() => {
+            if (sellected !== -1) {
+              setMetadata({
+                ...metadata,
+                image: metadata.imageArray[sellected],
+              });
+            }
             setIsDrawerVisible(false);
-            setMetadata({ ...metadata, image: metadata.imageArray[sellected] });
           }}
         >
           Done
@@ -284,7 +329,7 @@ export const Confirm: React.FC = () => {
         </div>
 
         <Button
-          className='bg-[#2E2E2E] text-white border-0  w-full h-12 rounded-3xl font-semibold text-base flex  items-center justify-center'
+          className='bg-[#2E2E2E] text-white border-0  w-full h-12 rounded-3xl font-semibold text-base flex items-center justify-center mb-5‰'
           loading={isLoading}
           onClick={async () => {
             setIsLoading(true);
@@ -307,8 +352,6 @@ export const Confirm: React.FC = () => {
               await createDrop({
                 drop: {
                   ...metadata,
-                  imageArray: imageArray,
-                  image: imageArray[sellected],
                   author_id: user.id,
                 },
                 onSuccess: (data) => {

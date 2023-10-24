@@ -20,7 +20,7 @@ export const DraggableLocation = () => {
   const handleError = () => {
     const modal = Modal.error({
       title: 'Error',
-      content: 'Name or image of this drop is missing',
+      content: 'Something is wrong',
       okButtonProps: {
         type: 'default',
         style: {
@@ -33,12 +33,12 @@ export const DraggableLocation = () => {
     setTimeout(() => {
       setMetadata({});
       modal.destroy();
-      navigate('/drop-onboarding/enter-name');
+      navigate('/drop-onboarding/upload-image');
     }, 2000);
   };
 
   useEffect(() => {
-    if (!metadata.image || !metadata.name) {
+    if (!metadata.image || !metadata.imageArray || !user.id) {
       handleError();
     }
     handleReverseGeocode(user.lat, user.lng);
@@ -244,7 +244,7 @@ export const DraggableLocation = () => {
                   lat: marker.latitude,
                   lng: marker.longitude,
                 });
-                navigate('/drop-onboarding/add-description');
+                navigate('/drop-onboarding/enter-name');
               }
             }}
           >
