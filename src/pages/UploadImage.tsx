@@ -1,16 +1,13 @@
 import { useNavigate } from 'react-router';
-import { FaUpload } from 'react-icons/fa';
-import { useEffect, useRef, useState } from 'react';
-import { Button, Modal } from 'antd';
-import { BsCardImage } from 'react-icons/bs';
+import { useEffect } from 'react';
+import { Modal } from 'antd';
 import { useAuthContext } from '../context/AuthContext';
-import { supabase } from '../utils/supabaseClients';
 import { ImageUpload } from '../components/ImageUpload';
+import { useSelector } from 'react-redux';
 
 export const UploadImage = () => {
-  const [selectedImage, setSelectedImage] = useState<any>(null);
-  const [fileName, setFileName] = useState<string>('');
-  const { metadata, setMetadata, windowSize } = useAuthContext();
+  const { setMetadata } = useAuthContext();
+  const user = useSelector((state: any) => state.user);
 
   const handleError = () => {
     const modal = Modal.error({
@@ -32,41 +29,12 @@ export const UploadImage = () => {
   };
 
   useEffect(() => {
-    if (!metadata.name) {
+    if (!user.id) {
       handleError();
     }
   }, []);
 
   const navigate = useNavigate();
-  const fileInputRef = useRef<HTMLInputElement>(null); // 1. Add a reference to the file input
-
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setSelectedImage(event.target?.result);
-      };
-      reader.readAsDataURL(e.target.files[0]);
-
-      const file = e.target?.files[0];
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const newFilePath = `${fileName}`;
-      setFileName(fileName);
-      await supabase.storage.from('drop_image').upload(newFilePath, file);
-    }
-  };
-
-  const resetFileInput = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''; // Reset the file input
-    }
-  };
-
-  const handleReplaceClick = () => {
-    resetFileInput(); // Reset the file input first
-    fileInputRef.current?.click(); // Then trigger the file input's click event
-  };
 
   return (
     <>
@@ -101,7 +69,6 @@ export const UploadImage = () => {
           </div>
 
           <ImageUpload />
-        
         </div>
       </div>
     </>

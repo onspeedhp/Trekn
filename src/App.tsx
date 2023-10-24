@@ -19,13 +19,17 @@ function App({
   const Layout: any = layout;
 
   const Header: any = header;
-  const mobileMaxWidth = 2000;
+  const mobileMaxWidth = 748;
   const [isMobile, setIsMobile] = useState(window.innerWidth <= mobileMaxWidth);
 
   useEffect(() => {
     function handleResize() {
       setIsMobile(window.innerWidth <= mobileMaxWidth);
     }
+
+    if (!isMobile) {
+      // window.location.href('asd');
+    } 
 
     window.addEventListener('resize', handleResize);
 
