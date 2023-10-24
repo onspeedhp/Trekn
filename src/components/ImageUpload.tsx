@@ -35,23 +35,38 @@ export const ImageUpload: React.FC = () => {
             className='bg-[#2C2C2C] rounded-xl p-2.5 flex-col relative mb-6'
           >
             <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-              {files.map((file, index) => (
+              {files.length === 1 ? (
                 <img
-                  key={index}
-                  src={URL.createObjectURL(file)}
-                  alt={`Uploaded ${index}`}
+                  src={URL.createObjectURL(files[0])}
                   className='m-1.5 rounded-xl'
                   style={{
-                    width:
-                      files.length >= 6
-                        ? (windowSize.width - 96) / 3
-                        : (windowSize.width - 84) / 2,
-                    height: '93px',
+                    width: windowSize.width - 72,
+                    height: 303,
                     objectFit: 'cover',
                     objectPosition: 'center',
                   }}
                 />
-              ))}
+              ) : (
+                <>
+                  {files.map((file, index) => (
+                    <img
+                      key={index}
+                      src={URL.createObjectURL(file)}
+                      alt={`Uploaded ${index}`}
+                      className='m-1.5 rounded-xl'
+                      style={{
+                        width:
+                          files.length > 6
+                            ? (windowSize.width - 96) / 3
+                            : (windowSize.width - 84) / 2,
+                        height: '93px',
+                        objectFit: 'cover',
+                        objectPosition: 'center',
+                      }}
+                    />
+                  ))}
+                </>
+              )}
             </div>
             <label
               htmlFor='file-upload'
@@ -75,18 +90,9 @@ export const ImageUpload: React.FC = () => {
             className='bg-[#2C2C2C] text-white w-full h-12 rounded-3xl font-semibold text-base border-0'
             onClick={() => {
               setLoading(true);
-              let imageArray: string[] = [];
-              files.forEach(async (file, index) => {
-                const fileExt = file.name.split('.').pop();
-                const fileName = `${Math.random()}.${fileExt}`;
-                const newFilePath = `${fileName}`;
-                imageArray.push(
-                  `${process.env.REACT_APP_SUPABASE_URL}/storage/v1/object/public/drop_image/${fileName}`
-                );
-
-                await supabase.storage
-                  .from('drop_image')
-                  .upload(newFilePath, file);
+              let imageArray: File[] = [];
+              files.forEach(async (file) => {
+                imageArray.push(file);
               });
               setMetadata({
                 ...metadata,

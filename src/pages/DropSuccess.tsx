@@ -7,8 +7,6 @@ export const DropSuccess = () => {
   const navigate = useNavigate();
   const { metadata, setMetadata } = useAuthContext();
 
-  const [image, setImage] = useState(metadata.image);
-
   const handleError = () => {
     const modal = Modal.error({
       title: 'Error',
@@ -37,10 +35,8 @@ export const DropSuccess = () => {
       !metadata.description
     ) {
       handleError();
-    } else {
-      setImage(metadata.image);
     }
-  });
+  }, []);
 
   return (
     <div className='bg-black absolute w-full' style={{ height: 812 }}>
@@ -68,7 +64,7 @@ export const DropSuccess = () => {
           style={{ marginBottom: 33 }}
         >
           <img
-            src={image}
+            src={URL.createObjectURL(metadata.image)}
             alt='Uploaded'
             className='rounded-xl mb-3'
             style={{

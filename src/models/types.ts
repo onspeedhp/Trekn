@@ -1,7 +1,7 @@
 export interface IDrop {
   id?: number;
   name: string;
-  image: string;
+  image: any;
   location_name: string;
   location: string;
   description: string;

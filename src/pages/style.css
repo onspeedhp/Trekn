@@ -3,3 +3,7 @@
   background-color: transparent !important; /* Set the background color to transparent on hover */
   color: inherit !important; /* Inherit the text color on hover */
 }
+
+.drawer {
+  backdrop-filter: blur(21px);
+}
