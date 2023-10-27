@@ -40,13 +40,6 @@ const AppRoutes = () => (
         element={<App header={Header} hideHeader={true} layout={UploadImage} />}
       ></Route>
 
-      {/* <Route
-        path='/drop-onboarding/select-location'
-        element={
-          <App header={Header} hideHeader={true} layout={SelectLocation} />
-        }
-      ></Route> */}
-
       <Route
         path='/drop-onboarding/add-description'
         element={
@@ -92,9 +85,7 @@ const AppRoutes = () => (
       <Route
         path='/map-view'
         element={<App header={Header} hideHeader={true} layout={MapGL} />}
-      >
-        <Route path=':dropId' element={<Home />} />
-      </Route>
+      ></Route>
 
       <Route
         path='/drop-onboarding/drag-location'

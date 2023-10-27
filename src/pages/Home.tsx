@@ -10,13 +10,15 @@ import Slider from '../components/Slider';
 import { DetailCard } from '../components/DetailCard';
 import { Button, Spin } from 'antd';
 import { getLeaderBoardPoint } from '../middleware/data/user';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateLocation } from '../redux/slides/locationSlides';
 
 function Home() {
   const { windowSize, leaderBoard, init } = useAuthContext();
   const [readyToCollect, setReadyToCollect] = useState<IDrop[]>([]);
   const user = useSelector((state: any) => state.user);
-
+  const location = useSelector((state: any) => state.location);
+  const dispatch = useDispatch();
   const [nearBy, setNearBy] = useState<IDrop[]>([]);
   const [loading, setLoading] = useState(false);
   const [leaderBoardPoint, setLeaderBoardPoint] = useState([]);
@@ -24,15 +26,6 @@ function Home() {
   const [loadingNearBy, setLoadingNearBy] = useState(false);
   const [loadingReadyToCollect, setLoadingReadyToCollet] = useState(false);
   const navigate = useNavigate();
-  const getReadyToCollect = async (lat: number, log: number) => {
-    setLoadingReadyToCollet(true);
-    const res = await request.post('drop/getReadyToCollect', {
-      lat: lat,
-      lng: log,
-    });
-    setReadyToCollect(res.data.data);
-    setLoadingReadyToCollet(false);
-  };
 
   useEffect(() => {
     setLoadingPoint(true);
@@ -50,9 +43,20 @@ function Home() {
       lat: lat,
       lng: log,
     });
+    dispatch(updateLocation({ nearBy: res.data.data }));
 
     setNearBy(res.data.data);
     setLoadingNearBy(false);
+  };
+  const getReadyToCollect = async (lat: number, log: number) => {
+    setLoadingReadyToCollet(true);
+    const res = await request.post('drop/getReadyToCollect', {
+      lat: lat,
+      lng: log,
+    });
+    dispatch(updateLocation({ readyToCollect: res.data.data }));
+    setReadyToCollect(res.data.data);
+    setLoadingReadyToCollet(false);
   };
 
   useEffect(() => {
