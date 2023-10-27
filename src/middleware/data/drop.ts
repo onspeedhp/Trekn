@@ -24,7 +24,7 @@ export const createDrop = async ({
   const { data, error } = await supabase
     .from('drop')
     .insert(newDrop)
-    .select('*');
+    .select('*, user(*)');
 
   if (!error) {
     onSuccess(data);

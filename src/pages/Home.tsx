@@ -11,7 +11,11 @@ import { DetailCard } from '../components/DetailCard';
 import { Button, Spin } from 'antd';
 import { getLeaderBoardPoint } from '../middleware/data/user';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateLocation } from '../redux/slides/locationSlides';
+import {
+  setLastFetch,
+  updateNearBy,
+  updateReadyToCollect,
+} from '../redux/slides/locationSlides';
 
 function Home() {
   const { windowSize, leaderBoard, init } = useAuthContext();
@@ -43,26 +47,47 @@ function Home() {
       lat: lat,
       lng: log,
     });
-    dispatch(updateLocation({ nearBy: res.data.data }));
-
+    dispatch(updateNearBy({ nearBy: res.data.data }));
+    dispatch(setLastFetch());
     setNearBy(res.data.data);
     setLoadingNearBy(false);
   };
+
   const getReadyToCollect = async (lat: number, log: number) => {
     setLoadingReadyToCollet(true);
     const res = await request.post('drop/getReadyToCollect', {
       lat: lat,
       lng: log,
     });
-    dispatch(updateLocation({ readyToCollect: res.data.data }));
+    dispatch(updateReadyToCollect({ readyToCollect: res.data.data }));
+    dispatch(setLastFetch());
     setReadyToCollect(res.data.data);
     setLoadingReadyToCollet(false);
   };
 
   useEffect(() => {
     if (user.lat) {
-      getReadyToCollect(user.lat, user.lng);
-      getNearBy(user.lat, user.lng);
+      if (
+        location.readyToCollect.length === 0 ||
+        location.lastFetch === -1 ||
+        (location.lastFetch - new Date().getTime()) / 1000 > 300
+      ) {
+        getReadyToCollect(user.lat, user.lng);
+      } else {
+        console.log(location.readyToCollect);
+
+        setReadyToCollect(location.readyToCollect);
+      }
+
+      if (
+        location.nearBy.length === 0 ||
+        location.lastFetch === -1 ||
+        (location.lastFetch - new Date().getTime()) / 1000 > 300
+      ) {
+        getNearBy(user.lat, user.lng);
+      } else {
+        setNearBy(location.nearBy);
+      }
     }
   }, [user]);
 

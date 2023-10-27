@@ -20,18 +20,19 @@ export const locationSlide = createSlice({
     setLastFetch: (state) => {
       state.lastFetch = new Date().getTime();
     },
-    updateLocation: (state, action) => {
-      const { nearBy, readyToCollect } = action.payload;
-      console.log(nearBy, readyToCollect);
-
-      state.nearBy = nearBy ? nearBy : state.nearBy;
+    updateReadyToCollect: (state, action) => {
+      const { readyToCollect } = action.payload;
       state.readyToCollect = readyToCollect
         ? readyToCollect
         : state.readyToCollect;
     },
-    addNewNearBy: (state, action) => {
-      const { newNearBy } = action.payload;
-      state.nearBy.push(newNearBy);
+    updateNearBy: (state, action) => {
+      const { nearBy } = action.payload;
+      state.nearBy = nearBy ? nearBy : state.nearBy;
+    },
+    addNewReadyToCollect: (state, action) => {
+      const { newReadyToCollect } = action.payload;
+      state.readyToCollect.push(newReadyToCollect);
     },
     resetLocation: (state) => {
       state.nearBy = [];
@@ -43,7 +44,12 @@ export const locationSlide = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setLastFetch, updateLocation, resetLocation } =
-  locationSlide.actions;
+export const {
+  setLastFetch,
+  updateReadyToCollect,
+  updateNearBy,
+  resetLocation,
+  addNewReadyToCollect,
+} = locationSlide.actions;
 
 export default locationSlide.reducer;

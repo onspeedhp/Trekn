@@ -4,10 +4,11 @@ import { Button, Drawer, Modal } from 'antd';
 import { useEffect, useState } from 'react';
 import { createDrop } from '../middleware/data/drop';
 import './style.css';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { FaCheckCircle, FaImage, FaUpload, FaInfoCircle } from 'react-icons/fa';
 
 import { supabase } from '../utils/supabaseClients';
+import { addNewReadyToCollect } from '../redux/slides/locationSlides';
 
 export const Confirm: React.FC = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ export const Confirm: React.FC = () => {
   const [sellected, setSellected] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
-
+  const dispatch = useDispatch();
   const handleError = () => {
     const modal = Modal.error({
       title: 'Error',
@@ -335,6 +336,7 @@ export const Confirm: React.FC = () => {
             setIsLoading(true);
 
             let imageArray: string[] = [];
+            let reduxImageArray: string[] = [];
             await metadata.imageArray.forEach(async (file: any) => {
               const fileExt = file.name.split('.').pop();
               const fileName = `${Math.random()}.${fileExt}`;
@@ -342,6 +344,7 @@ export const Confirm: React.FC = () => {
               imageArray.push(
                 `${process.env.REACT_APP_SUPABASE_URL}/storage/v1/object/public/drop_image/${fileName}`
               );
+              reduxImageArray.push(URL.createObjectURL(file));
 
               await supabase.storage
                 .from('drop_image')
@@ -369,8 +372,18 @@ export const Confirm: React.FC = () => {
                   imageArray: imageArray,
                   author_id: user.id,
                 },
+
                 onSuccess: (data) => {
-                  console.log(data);
+                  const drop = data[0];
+                  dispatch(
+                    addNewReadyToCollect({
+                      newReadyToCollect: {
+                        ...drop,
+                        image: URL.createObjectURL(metadata.image),
+                        imageArray: reduxImageArray,
+                      },
+                    })
+                  );
                 },
               });
               setIsLoading(false);
