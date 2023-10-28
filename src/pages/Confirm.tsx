@@ -96,7 +96,7 @@ export const Confirm: React.FC = () => {
             <div className='relative'>
               <img
                 src={URL.createObjectURL(metadata.imageArray[0])}
-                className='rounded-xl relative'
+                className='rounded-xl'
                 onClick={() => {
                   if (sellected === -1) {
                     setSellected(0);
@@ -219,6 +219,74 @@ export const Confirm: React.FC = () => {
             >
               <FaImage />
             </Button>
+
+            <svg
+              width='15'
+              height='22'
+              viewBox='0 0 15 22'
+              fill='none'
+              xmlns='http://www.w3.org/2000/svg'
+              className='absolute top-0 left-[-7.5px]'
+            >
+              <path
+                id='Union'
+                fill-rule='evenodd'
+                clip-rule='evenodd'
+                d='M7.33333 0H14.6667V7.33333H7.33333V0ZM7.33333 14.6667V7.33333H0V14.6667H7.33333ZM7.33333 14.6667V22H14.6667V14.6667H7.33333Z'
+                fill='#99FF48'
+              />
+            </svg>
+
+            <svg
+              width='15'
+              height='22'
+              viewBox='0 0 15 22'
+              fill='none'
+              xmlns='http://www.w3.org/2000/svg'
+              className='absolute bottom-[-7px] left-[-7.5px]'
+            >
+              <path
+                id='Union'
+                fill-rule='evenodd'
+                clip-rule='evenodd'
+                d='M7.33333 0H14.6667V7.33333H7.33333V0ZM7.33333 14.6667V7.33333H0V14.6667H7.33333ZM7.33333 14.6667V22H14.6667V14.6667H7.33333Z'
+                fill='#99FF48'
+              />
+            </svg>
+
+            <svg
+              width='15'
+              height='22'
+              viewBox='0 0 15 22'
+              fill='none'
+              xmlns='http://www.w3.org/2000/svg'
+              className='absolute top-0 right-[-7.5px]'
+            >
+              <path
+                id='Union'
+                fill-rule='evenodd'
+                clip-rule='evenodd'
+                d='M7.33366 0H0.000325203V7.33333H7.33366V0ZM7.33366 14.6667V7.33333H14.667V14.6667H7.33366ZM7.33366 14.6667V22H0.000325203V14.6667H7.33366Z'
+                fill='#99FF48'
+              />
+            </svg>
+
+            <svg
+              width='15'
+              height='22'
+              viewBox='0 0 15 22'
+              fill='none'
+              xmlns='http://www.w3.org/2000/svg'
+              className='absolute bottom-[-7px] right-[-7.5px]'
+            >
+              <path
+                id='Union'
+                fill-rule='evenodd'
+                clip-rule='evenodd'
+                d='M7.33366 0H0.000325203V7.33333H7.33366V0ZM7.33366 14.6667V7.33333H14.667V14.6667H7.33366ZM7.33366 14.6667V22H0.000325203V14.6667H7.33366Z'
+                fill='#99FF48'
+              />
+            </svg>
           </div>
         </div>
 
