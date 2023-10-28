@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 
 export const AddDescription: React.FC = () => {
   const navigate = useNavigate();
-  const { metadata, setMetadata } = useAuthContext();
+  const { metadata, setMetadata, windowSize } = useAuthContext();
   const user = useSelector((state: any) => state.user);
 
   const handleError = () => {
@@ -77,7 +77,8 @@ export const AddDescription: React.FC = () => {
         <div className='relative'>
           <input
             placeholder='It’s actually the coolest...'
-            className='text-white bg-black w-full text-2xl h-10 font-normal pr-10 focus:outline-none'
+            className='text-white bg-black w-full text-2xl h-10 font-normal pr-10 focus:outline-none overflow-hidden'
+            style={{ maxWidth: windowSize.width - 40 }}
             value={metadata.description}
             onChange={(e) =>
               setMetadata({ ...metadata, description: e.target.value })

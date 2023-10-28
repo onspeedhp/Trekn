@@ -5,11 +5,13 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import { FaUserFriends } from 'react-icons/fa';
+import { FaMapPin, FaUserFriends } from 'react-icons/fa';
 import {
   calculateDistance,
   convertDistance,
 } from '../functions/calculateDistance';
+import Map, { Marker } from 'react-map-gl';
+
 import {
   FaChevronDown,
   FaFaceFrown,
@@ -18,7 +20,6 @@ import {
   FaFaceMeh,
   FaFaceSadCry,
 } from 'react-icons/fa6';
-import { GroupIcon } from '../icons';
 import { mintCompressedNFT } from '../functions/mintCompressedNFT';
 import { PublicKey } from '@solana/web3.js';
 import { useSelector } from 'react-redux';
@@ -33,7 +34,6 @@ export const DropDetail = ({
   isDrawerVisible: boolean;
   setIsDrawerVisible: (open: boolean) => void;
 }) => {
-
   const user = useSelector((state: any) => state.user);
   const [open, setOpen] = useState(false);
   const [distance, setDistance] = useState(0);
@@ -61,7 +61,6 @@ export const DropDetail = ({
 
   useEffect(() => {
     if (selectedLocation) {
-
       setDistance(
         Math.ceil(
           calculateDistance(
@@ -97,10 +96,10 @@ export const DropDetail = ({
       closable={false}
       onClose={() => setIsDrawerVisible(false)}
       open={isDrawerVisible}
-      height={windowSize.height * 0.90}
+      height={windowSize.height * 0.9}
       className='rounded-t-3xl'
     >
-      <div className='flex-col'>
+      <div className='flex-col' style={{ marginLeft: -4, marginRight: -4 }}>
         <div
           className='fixed absolute left-0 top-0 w-full bg-white rounded-t-3xl'
           style={{ height: 44, zIndex: 9999 }}
@@ -213,7 +212,7 @@ export const DropDetail = ({
         </div>
 
         <div className='flex relative border-b' style={{ height: 60 }}>
-          <div className='flex h-10 p-3 bg-[#F5F5F5] opacity-70 rounded-full'>
+          <div className='flex h-10 p-3 bg-[#F5F5F5] rounded-full'>
             <FaUserFriends size={16} />
             <span className='text-[13px] font-semibold ml-2'>
               {selectedLocation.collected} collected
@@ -238,7 +237,7 @@ export const DropDetail = ({
             onOpenChange={setOpen}
             placement='bottom'
           >
-            <div className='flex ml-2 h-10 p-3 bg-[#F5F5F5] opacity-70 rounded-full items-center'>
+            <div className='flex ml-2 h-10 p-3 bg-[#F5F5F5] rounded-full items-center'>
               <FaFaceLaughBeam size={16} className='text-[#66C61B]' />
               <span className='text-[13px] font-semibold ml-2'>
                 {selectedLocation.reaction_counts['1']}
@@ -249,10 +248,37 @@ export const DropDetail = ({
         </div>
 
         <div className='flex items-center mb-[24px] mt-5'>
-          <GroupIcon />
+          <img src='./distance_away.svg' alt='' />
           <p className='font-bold text-[20px] ml-[10px]'>
             {convertDistance(distance)} away
           </p>
+        </div>
+
+        <div>
+          <Map
+            mapboxAccessToken={`${process.env.REACT_APP_MAP_BOX_ACCESS_TOKEN}`}
+            initialViewState={{
+              longitude: selectedLocation.lng - 0.001,
+              latitude: selectedLocation.lat,
+              zoom: 14,
+            }}
+            style={{
+              width: windowSize.width - 40,
+              height: 100,
+              borderRadius: 24,
+              marginBottom: 20,
+            }}
+            mapStyle='mapbox://styles/mapbox/streets-v9'
+          >
+            <Marker
+              longitude={selectedLocation.lng}
+              latitude={selectedLocation.lat}
+              anchor='bottom'
+              onClick={() => {}}
+            >
+              <FaMapPin size={24} className='text-[#278EFF]' />
+            </Marker>
+          </Map>
         </div>
 
         <div className='font-medium	text-black opacity-50 mb-20'>

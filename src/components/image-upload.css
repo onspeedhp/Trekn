@@ -1,0 +1,54 @@
+img:hover {
+  /* Start the shake animation and make the animation last for 0.5 seconds */
+  animation: shake 0.5s;
+
+  /* When the animation is finished, start again */
+  animation-iteration-count: infinite;
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  50% {
+    transform: translateX(2px);
+  }
+  75% {
+    transform: translateX(-2px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.shaking {
+  animation: shake 0.5s infinite;
+}
+
+.shaking:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.shaking:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.shaking:nth-child(4) {
+  animation-delay: 0.15s;
+}
+.shaking:nth-child(5) {
+  animation-delay: 0.2s;
+}
+.shaking:nth-child(6) {
+  animation-delay: 0.25s;
+}
+.shaking:nth-child(7) {
+  animation-delay: 0.3s;
+}
+.shaking:nth-child(8) {
+  animation-delay: 0.35s;
+}
+.shaking:nth-child(9) {
+  animation-delay: 0.4s;
+}

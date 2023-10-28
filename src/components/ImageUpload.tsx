@@ -3,11 +3,13 @@ import { useAuthContext } from '../context/AuthContext';
 import { FaUpload } from 'react-icons/fa6';
 import { Button } from 'antd';
 import { useNavigate } from 'react-router';
+import { FaTimesCircle } from 'react-icons/fa';
+import './image-upload.css';
 
 export const ImageUpload: React.FC = () => {
   const { metadata, setMetadata, windowSize } = useAuthContext();
   const [files, setFiles] = useState<File[]>(metadata.imageArray || []);
-
+  const [edit, setEdit] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const fileSelectedHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,7 +29,6 @@ export const ImageUpload: React.FC = () => {
   return (
     <>
       {files.length > 0 ? (
-        // <ListImage />
         <>
           <div
             style={{ height: 371, width: windowSize.width - 40 }}
@@ -35,39 +36,76 @@ export const ImageUpload: React.FC = () => {
           >
             <div style={{ display: 'flex', flexWrap: 'wrap' }}>
               {files.length === 1 ? (
-                <img
-                  src={URL.createObjectURL(files[0])}
-                  className='m-1.5 rounded-xl'
-                  style={{
-                    width: windowSize.width - 72,
-                    height: 303,
-                    objectFit: 'cover',
-                    objectPosition: 'center',
-                  }}
-                />
+                <div className='relative'>
+                  <img
+                    src={URL.createObjectURL(files[0])}
+                    className='m-1.5 rounded-xl'
+                    style={{
+                      width: windowSize.width - 72,
+                      height: 303,
+                      objectFit: 'cover',
+                      objectPosition: 'center',
+                    }}
+                  />
+                  {edit === true && (
+                    <FaTimesCircle
+                      size={18}
+                      className='text-[#FFFFFF] absolute top-[-4px] right-[-4px]'
+                      onClick={() => {
+                        setFiles([]);
+                      }}
+                    />
+                  )}
+                </div>
               ) : (
                 <>
                   {files.map((file, index) => (
-                    <img
+                    <div
+                      className={`relative ${edit && 'shaking'}`}
                       key={index}
-                      src={URL.createObjectURL(file)}
-                      alt={`Uploaded ${index}`}
-                      className='m-1.5 rounded-xl'
-                      style={{
-                        width:
-                          files.length > 6
-                            ? (windowSize.width - 96) / 3
-                            : (windowSize.width - 84) / 2,
-                        height: '93px',
-                        objectFit: 'cover',
-                        objectPosition: 'center',
-                      }}
-                    />
+                    >
+                      <img
+                        key={index}
+                        src={URL.createObjectURL(file)}
+                        alt={`Uploaded`}
+                        className='m-1.5 rounded-xl'
+                        id='image'
+                        style={{
+                          width:
+                            files.length > 6
+                              ? (windowSize.width - 96) / 3
+                              : (windowSize.width - 84) / 2,
+                          height: '93px',
+                          objectFit: 'cover',
+                          objectPosition: 'center',
+                        }}
+                      />
+                      {edit === true && (
+                        <FaTimesCircle
+                          size={18}
+                          className='text-[#FFFFFF] absolute top-[-4px] right-[-4px]'
+                          onClick={() => {
+                            const newItems = [...files];
+                            newItems.splice(index, 1);
+                            setFiles(newItems);
+                          }}
+                        />
+                      )}
+                    </div>
                   ))}
                 </>
               )}
             </div>
-            <label
+            <div
+              className='absolute bottom-0 flex justify-center mb-4 text-[#99FF48] font-semibold'
+              style={{ width: windowSize.width - 72 }}
+              onClick={() => {
+                setEdit(!edit);
+              }}
+            >
+              {edit ? 'Done' : 'Edit'}
+            </div>
+            {/* <label
               htmlFor='file-upload'
               className='custom-file-upload absolute bottom-0 flex justify-center mb-4 text-[#99FF48] font-semibold'
               style={{ width: windowSize.width - 64 }}
@@ -81,7 +119,7 @@ export const ImageUpload: React.FC = () => {
               onChange={fileSelectedHandler}
               multiple
               style={{ display: 'none' }}
-            />
+            /> */}
           </div>
 
           <Button

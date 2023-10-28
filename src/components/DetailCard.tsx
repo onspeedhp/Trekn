@@ -29,9 +29,6 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
         onClick={() => {
           setIsDrawerVisible(true);
         }}
-        // onClick={() => {
-        //   navigate(`/map-view/${data.id}`);
-        // }}
       >
         <div className='relative'>
           <div
@@ -84,7 +81,7 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
             {data.user.name}
           </div>
           <div className='font-semibold	text-xl mb-1 mt-2'>{data?.name}</div>
-          <div className='text-sm font-medium	opacity-70'>
+          <div className='text-sm font-medium	opacity-70 h-5 overflow-hidden mr-8'>
             {data?.location_name}
           </div>
         </div>
