@@ -3,10 +3,12 @@ import { supabase } from '../../utils/supabaseClients';
 
 export const createDrop = async ({
   drop,
+  user,
   onSuccess = () => {},
   onError = () => {},
 }: {
   drop: IDrop;
+  user?: any;
   onSuccess?: (data: any) => void;
   onError?: (error: any) => void;
 }) => {
@@ -21,6 +23,11 @@ export const createDrop = async ({
     ],
     collected: 0,
   };
+  await supabase
+    .from('user')
+    .update({ point: user.point + 1 })
+    .eq('id', user.id);
+    
   const { data, error } = await supabase
     .from('drop')
     .insert(newDrop)

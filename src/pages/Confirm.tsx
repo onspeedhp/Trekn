@@ -112,8 +112,8 @@ export const Confirm: React.FC = () => {
               />
               {sellected === 0 && (
                 <FaCheckCircle
-                  size={18}
-                  className='text-[#FFFFFF] absolute top-2 right-6'
+                  size={24}
+                  className='text-[#FFFFFF] absolute top-2 right-2'
                 />
               )}
             </div>
@@ -440,7 +440,7 @@ export const Confirm: React.FC = () => {
                   imageArray: imageArray,
                   author_id: user.id,
                 },
-
+                user: user,
                 onSuccess: (data) => {
                   const drop = data[0];
                   dispatch(
