@@ -25,7 +25,10 @@ export const Account = () => {
   }, []);
 
   const logout = async () => {
-    await torus.logout();
+    if (torus.isInitialized) {
+      await torus.logout();
+    }
+
     dispath(resetUser());
     navigate('/home');
   };
