@@ -2,8 +2,7 @@ import { useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import { useAuthContext } from '../context/AuthContext';
 import { Button } from 'antd';
-import { FaLock } from 'react-icons/fa6';
-import { FaSignOutAlt } from 'react-icons/fa';
+import { FaClone, FaCookie, FaShare } from 'react-icons/fa';
 import { getDropByUserAddress } from '../middleware/data/drop';
 import { getMintedByUserAddress } from '../middleware/data/minted';
 import { useDispatch, useSelector } from 'react-redux';
@@ -53,7 +52,7 @@ export const Account = () => {
 
   return (
     <>
-      <div className='bg-black absolute w-full h-screen overflow-scroll'>
+      <div className=' absolute w-full h-screen overflow-scroll'>
         <div className='m-4 font-semibold'>
           <svg
             xmlns='http://www.w3.org/2000/svg'
@@ -68,52 +67,60 @@ export const Account = () => {
           >
             <path
               d='M9.21347 13.9093L8.51972 14.6031C8.22597 14.8968 7.75097 14.8968 7.46035 14.6031L1.38535 8.5312C1.0916 8.23745 1.0916 7.76245 1.38535 7.47183L7.46035 1.39683C7.7541 1.10308 8.2291 1.10308 8.51972 1.39683L9.21347 2.09058C9.51035 2.38745 9.5041 2.87183 9.20097 3.16245L5.43535 6.74995H14.4166C14.8322 6.74995 15.1666 7.08433 15.1666 7.49995V8.49995C15.1666 8.91558 14.8322 9.24996 14.4166 9.24996H5.43535L9.20097 12.8375C9.50722 13.1281 9.51347 13.6125 9.21347 13.9093Z'
-              fill='white'
+              fill='black'
               fillOpacity='0.7'
             />
           </svg>
 
-          <div
-            className='m-5 absolute top-0 right-0 text-white flex items-center justify-center'
-            onClick={() => {
-              logout();
-            }}
-          >
-            <FaSignOutAlt size={16} className='opacity-70 mr-1' />
-            <span>Log out</span>
-          </div>
-          <div className='user-info mb-9 text-white'>
-            <div className='flex items-center justify-center mb-4'>
+          <div className='user-info mb-9 text-black'>
+            <div className='flex items-center justify-between mb-5 font-normal px-1 py-2'>
+              <div className="flex items-center gap-2 font-semibold text-xl leading-4">
+                {user.address.slice(0, 2)}...
+                {user.address.slice(-6, -1)}
+                <FaClone className='w-3 h-3' />
+              </div>
+              <Button className='bg-[#F4F4F4] rounded-full flex items-center justify-center border-0 py-2 px-3'>
+                <span className='font-medium text-black'>Copy seed phrase </span>
+              </Button>
+            </div>
+
+            <div className='flex items-center justify-between mb-4'>
               <img
-                className='rounded-full w-16 h-16'
+                className='rounded-full w-[100px] h-[100px]'
                 src={`${user.profileImage}`}
                 alt=''
               />
+              <div className="flex items-center gap-2">
+                <div className="rounded-full border border-black flex justify-center items-center p-[9px]">
+                  <FaShare className='w-3 h-3' />
+                </div>
+                <div className="rounded-full border border-black text-base font-medium py-2 px-4">
+                  Edit profile
+                </div>
+              </div>
             </div>
 
-            <div className='flex items-center justify-center mb-4 font-semibold'>
-              {user.name}
-            </div>
 
-            <div className='flex items-center justify-center mb-4 font-normal'>
-              {user.address.slice(0, 2)}...
-              {user.address.slice(-6, -1)}
-            </div>
 
-            <div className='flex items-center justify-center font-normal'>
-              <Button className='bg-[#323232] text-white flex items-center justify-center border-0'>
-                <FaLock className='opacity-70 mr-1' />
-                <span className='font-normal'>Copy seed phrase </span>
-              </Button>
+            <div className='px-2'>
+              <div className="name font-semibold text-2xl">
+                {user.name}
+              </div>
+              <div className="desc py-3 text-sm text-[#000000b3] font-normal">
+                ✈️ Wandering the world one suitcase at a time, in search of unforgettable adventures. #Jetsetter #WanderlustWanderer #LostInTravel
+              </div>
+              <div className="balance flex items-center gap-1">
+                <p className='font-semibold text-base'>12,000</p>
+                <FaCookie className='text-[#FFAD08] w-3 h-3' />
+              </div>
             </div>
           </div>
 
           <div className='collection-detail'>
             <div className='bg-[#323232] w-full h-16 rounded-2xl flex items-center justify-center'>
               <div
-                className={`mr-4 flex items-center justify-center ${
-                  current === 'item1' ? 'text-black' : 'text-white'
-                }`}
+                className={`mr-4 flex items-center justify-center ${current === 'item1' ? 'text-black' : 'text-white'
+                  }`}
                 style={{
                   width: 150,
                   height: 48,
@@ -127,9 +134,8 @@ export const Account = () => {
               </div>
 
               <div
-                className={`flex items-center justify-center ${
-                  current === 'item2' ? 'text-black' : 'text-white'
-                }`}
+                className={`flex items-center justify-center ${current === 'item2' ? 'text-black' : 'text-white'
+                  }`}
                 style={{
                   width: 150,
                   height: 48,
