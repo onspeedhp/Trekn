@@ -7,13 +7,13 @@ import { getDropByUserAddress } from '../middleware/data/drop';
 import { getMintedByUserAddress } from '../middleware/data/minted';
 import { useDispatch, useSelector } from 'react-redux';
 import { resetUser } from '../redux/slides/userSlides';
+import { sortDataByTimeline } from '../utils/account.util';
 
 export const Account = () => {
   const navigate = useNavigate();
   const { torus } = useAuthContext();
-  const [current, setCurrent] = useState('item1');
-  const [userDrops, setUserDrops] = useState<any[]>([]);
-  const [userMinteds, setUserMinteds] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState('timeline');
+  const [userData, setUserData] = useState<any[]>([]);
   const user = useSelector((state: any) => state.user);
   const dispath = useDispatch();
 
@@ -34,19 +34,29 @@ export const Account = () => {
 
   useEffect(() => {
     if (user.address) {
-      getDropByUserAddress({
-        userId: user.id,
-        onSuccess: (data: any) => {
-          setUserDrops(data);
-        },
-      });
+      (async () => {
+        const userData: any = [];
+        await getDropByUserAddress({
+          userId: user.id,
+          onSuccess: (res: any) => {
+            userData.push(...res.map((item: any) => {
+              item.type = 'drop';
+              return item;
+            }));
+          },
+        });
 
-      getMintedByUserAddress({
-        userId: user.id,
-        onSuccess: (data: any) => {
-          setUserMinteds(data);
-        },
-      });
+        await getMintedByUserAddress({
+          userId: user.id,
+          onSuccess: (res: any) => {
+            userData.push(...res.map((item: any) => {
+              item.type = 'minted';
+              return item;
+            }));
+          },
+        });
+        setUserData(sortDataByTimeline(userData));
+      })()
     }
   }, [user.address]);
 
@@ -72,7 +82,7 @@ export const Account = () => {
             />
           </svg>
 
-          <div className='user-info mb-9 text-black'>
+          <div className='user-info mb-6 text-black'>
             <div className='flex items-center justify-between mb-5 font-normal px-1 py-2'>
               <div className="flex items-center gap-2 font-semibold text-xl leading-4">
                 {user.address.slice(0, 2)}...
@@ -116,153 +126,163 @@ export const Account = () => {
             </div>
           </div>
 
-          <div className='collection-detail'>
-            <div className='bg-[#323232] w-full h-16 rounded-2xl flex items-center justify-center'>
-              <div
-                className={`mr-4 flex items-center justify-center ${current === 'item1' ? 'text-black' : 'text-white'
-                  }`}
-                style={{
-                  width: 150,
-                  height: 48,
-                  backgroundColor:
-                    current === 'item1' ? 'white' : 'transparent',
-                  borderRadius: current === 'item1' ? 12 : 0,
-                }}
-                onClick={() => setCurrent('item1')}
-              >
-                Collected
-              </div>
-
-              <div
-                className={`flex items-center justify-center ${current === 'item2' ? 'text-black' : 'text-white'
-                  }`}
-                style={{
-                  width: 150,
-                  height: 48,
-                  backgroundColor:
-                    current === 'item2' ? 'white' : 'transparent',
-                  borderRadius: current === 'item2' ? 12 : 0,
-                }}
-                onClick={() => setCurrent('item2')}
-              >
-                Drops
-              </div>
+        </div>
+        <div className='collection'>
+          <div className='collection__tab relative w-full mb-6 h-8 flex items-center justify-center border-b border-[#D9D9D9] text-base font-semibold'>
+            <div
+              className={`flex items-center justify-center w-1/2 ${activeTab === 'timeline' ? 'text-black' : 'text-[#00000080]'}`}
+              onClick={() => setActiveTab('timeline')}
+            >
+              Collected
             </div>
-            {current === 'item1' ? (
-              <>
-                {userMinteds.length !== 0 ? (
-                  <>
-                    <div className='flex flex-wrap mt-9' style={{ width: 356 }}>
-                      {userMinteds.map((minted: any, index: any) => (
-                        <div
-                          className='relative'
-                          key={index}
-                          onClick={() => {
-                            navigate(`/details/minted/${minted.id}`);
-                          }}
-                        >
-                          <img
-                            src={`${minted.drop.image}`}
-                            className='rounded-xl mr-3'
-                            style={{
-                              width: 165,
-                              height: 165,
-                              marginBottom: 21,
-                              objectFit: 'cover',
-                              objectPosition: 'center',
-                            }}
-                          />
+            <div className="h-4 w-px bg-gray-400 absolute left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%]"></div>
 
-                          <div
-                            className='absolute left-0 bottom-0 text-white p-2 text-[13px] font-semibold flex-wrap'
-                            style={{
-                              background: 'rgba(46, 46, 46, 0.70)',
-                              marginBottom: 27,
-                              marginLeft: 6,
-                              marginRight: 18,
-                              borderRadius: 6,
-                            }}
-                          >
-                            {minted.drop.name}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                ) : (
-                  <div
-                    className='text-white opacity-70 w-full font-semibold'
-                    style={{ marginTop: 102 }}
-                  >
-                    <div className='flex justify-center items-center mb-2'>
-                      No Collected Experience Yet!
-                    </div>
-                    <div className='flex justify-center items-center text-center'>
-                      You haven't collected any experience yet. Start your
-                      journey of discovery and ownership today ;)
-                    </div>
-                  </div>
-                )}
-              </>
-            ) : (
-              <>
-                {userDrops.length !== 0 ? (
-                  <>
-                    <div className='flex flex-wrap mt-9' style={{ width: 356 }}>
-                      {userDrops.map((drop: any, index: any) => (
-                        <div
-                          className='relative'
-                          key={index}
-                          onClick={() => {
-                            navigate(`/details/drop/${drop.id}`);
-                          }}
-                        >
-                          <img
-                            src={`${drop.image}`}
-                            alt={`drop_${index}`}
-                            className='rounded-xl mr-3'
-                            style={{
-                              width: 165,
-                              height: 165,
-                              marginBottom: 21,
-                              objectFit: 'cover',
-                              objectPosition: 'center',
-                            }}
-                          />
-
-                          <div
-                            className='absolute left-0 bottom-0 text-white p-2 text-[13px] font-semibold flex-wrap'
-                            style={{
-                              background: 'rgba(46, 46, 46, 0.70)',
-                              marginBottom: 27,
-                              marginLeft: 6,
-                              marginRight: 18,
-                              borderRadius: 6,
-                            }}
-                          >
-                            {drop.name}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                ) : (
-                  <div
-                    className='text-white opacity-70 w-full font-semibold'
-                    style={{ marginTop: 102 }}
-                  >
-                    <div className='flex justify-center items-center mb-2'>
-                      No Created Drops
-                    </div>
-                    <div className='flex justify-center items-center text-center'>
-                      Start sharing your experience to everyone by dropping
-                      experience today ;)
-                    </div>
-                  </div>
-                )}
-              </>
-            )}
+            <div
+              className={`flex items-center justify-center w-1/2 ${activeTab === 'feed' ? 'text-black' : 'text-[#00000080]'
+                }`}
+              onClick={() => setActiveTab('feed')}
+            >
+              Drops
+            </div>
           </div>
+          {activeTab === 'timeline' ? (
+            // <>
+            //   {userMinteds.length !== 0 ? (
+            //     <>
+            //       <div className='flex flex-wrap mt-9' style={{ width: 356 }}>
+            //         {userMinteds.map((minted: any, index: any) => (
+            //           <div
+            //             className='relative'
+            //             key={index}
+            //             onClick={() => {
+            //               navigate(`/details/minted/${minted.id}`);
+            //             }}
+            //           >
+            //             <img
+            //               src={`${minted.drop.image}`}
+            //               className='rounded-xl mr-3'
+            //               style={{
+            //                 width: 165,
+            //                 height: 165,
+            //                 marginBottom: 21,
+            //                 objectFit: 'cover',
+            //                 objectPosition: 'center',
+            //               }}
+            //             />
+
+            //             <div
+            //               className='absolute left-0 bottom-0 text-white p-2 text-[13px] font-semibold flex-wrap'
+            //               style={{
+            //                 background: 'rgba(46, 46, 46, 0.70)',
+            //                 marginBottom: 27,
+            //                 marginLeft: 6,
+            //                 marginRight: 18,
+            //                 borderRadius: 6,
+            //               }}
+            //             >
+            //               {minted.drop.name}
+            //             </div>
+            //           </div>
+            //         ))}
+            //       </div>
+            //     </>
+            //   ) : (
+            //     <div
+            //       className='text-white opacity-70 w-full font-semibold'
+            //       style={{ marginTop: 102 }}
+            //     >
+            //       <div className='flex justify-center items-center mb-2'>
+            //         No Collected Experience Yet!
+            //       </div>
+            //       <div className='flex justify-center items-center text-center'>
+            //         You haven't collected any experience yet. Start your
+            //         journey of discovery and ownership today ;)
+            //       </div>
+            //     </div>
+            //   )}
+            // </>
+            <div className="collection__timeline">
+              {Object.entries(userData).map(([key, data], dataIdx) => (
+                <>
+                  <div className='bg-[#F3F3F3] w-44 py-2 pr-4 rounded-tr-full rounded-br-full flex items-center justify-end relative' key={dataIdx}>
+                    <span className='font-medium'>
+                      {key}
+                    </span>
+                    <div className="absolute w-2 h-2 rounded-full bg-[#0500FF] left-1/3">
+                      <div className="absolute w-[2px] h-16 bg-[#0500FF] left-1/2 translate-x-[-50%]"></div>
+                    </div>
+                  </div>
+                  <div className="px-4 mt-9">
+                    {data.map((item: any, itemIdx: number) => (
+                      <div className='mb-9 relative' key={itemIdx}>
+                        <img src={item?.drop?.image} alt="" className='w-[88px] h-[88px] rounded-xl' />
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ))}
+            </div>
+          ) : (
+            // <>
+            //   {userDrops.length !== 0 ? (
+            //     <>
+            //       <div className='flex flex-wrap mt-9' style={{ width: 356 }}>
+            //         {userDrops.map((drop: any, index: any) => (
+            //           <div
+            //             className='relative'
+            //             key={index}
+            //             onClick={() => {
+            //               navigate(`/details/drop/${drop.id}`);
+            //             }}
+            //           >
+            //             <img
+            //               src={`${drop.image}`}
+            //               alt={`drop_${index}`}
+            //               className='rounded-xl mr-3'
+            //               style={{
+            //                 width: 165,
+            //                 height: 165,
+            //                 marginBottom: 21,
+            //                 objectFit: 'cover',
+            //                 objectPosition: 'center',
+            //               }}
+            //             />
+
+            //             <div
+            //               className='absolute left-0 bottom-0 text-white p-2 text-[13px] font-semibold flex-wrap'
+            //               style={{
+            //                 background: 'rgba(46, 46, 46, 0.70)',
+            //                 marginBottom: 27,
+            //                 marginLeft: 6,
+            //                 marginRight: 18,
+            //                 borderRadius: 6,
+            //               }}
+            //             >
+            //               {drop.name}
+            //             </div>
+            //           </div>
+            //         ))}
+            //       </div>
+            //     </>
+            //   ) : (
+            //     <div
+            //       className='text-white opacity-70 w-full font-semibold'
+            //       style={{ marginTop: 102 }}
+            //     >
+            //       <div className='flex justify-center items-center mb-2'>
+            //         No Created Drops
+            //       </div>
+            //       <div className='flex justify-center items-center text-center'>
+            //         Start sharing your experience to everyone by dropping
+            //         experience today ;)
+            //       </div>
+            //     </div>
+            //   )}
+            // </>
+            <div className="collection__feed">
+
+            </div>
+          )}
         </div>
       </div>
     </>
