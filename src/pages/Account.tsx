@@ -2,12 +2,12 @@ import { useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import { useAuthContext } from '../context/AuthContext';
 import { Button } from 'antd';
-import { FaClone, FaCookie, FaShare } from 'react-icons/fa';
+import { FaClone, FaCookie, FaMapPin, FaShare } from 'react-icons/fa';
 import { getDropByUserAddress } from '../middleware/data/drop';
 import { getMintedByUserAddress } from '../middleware/data/minted';
 import { useDispatch, useSelector } from 'react-redux';
 import { resetUser } from '../redux/slides/userSlides';
-import { sortDataByTimeline } from '../utils/account.util';
+import { checkClassNameAccountItem, getTime, sortDataByTimeline } from '../utils/account.util';
 
 export const Account = () => {
   const navigate = useNavigate();
@@ -133,7 +133,7 @@ export const Account = () => {
               className={`flex items-center justify-center w-1/2 ${activeTab === 'timeline' ? 'text-black' : 'text-[#00000080]'}`}
               onClick={() => setActiveTab('timeline')}
             >
-              Collected
+              Timeline
             </div>
             <div className="h-4 w-px bg-gray-400 absolute left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%]"></div>
 
@@ -142,7 +142,7 @@ export const Account = () => {
                 }`}
               onClick={() => setActiveTab('feed')}
             >
-              Drops
+              Feed
             </div>
           </div>
           {activeTab === 'timeline' ? (
@@ -214,8 +214,21 @@ export const Account = () => {
                   </div>
                   <div className="px-4 mt-9">
                     {data.map((item: any, itemIdx: number) => (
-                      <div className='mb-9 relative' key={itemIdx}>
-                        <img src={item?.drop?.image} alt="" className='w-[88px] h-[88px] rounded-xl' />
+                      <div className='mb-9 flex items-stretch gap-3' key={itemIdx}>
+                        <div className='w-[88px] h-[88px] relative'>
+                          <img src={item?.drop?.image} alt="" className='w-full h-full rounded-xl' />
+                          <div className={`absolute w-[2px] ${checkClassNameAccountItem(itemIdx, data, dataIdx, userData)} bg-[#0500FF] left-1/2 translate-x-[-50%]`}></div>
+                        </div>
+                        <div className="flex-grow flex flex-col justify-between my-2">
+                          <div className="flex items-center gap-1">
+                            <FaMapPin className='w-3 h-3'/>
+                            <div className="font-[13px] text-xs text-[#02030380]">
+                              {item?.type === 'minted' ? 'Checked-in' : 'Created'} at {getTime(item?.created_at)}
+                            </div>
+                          </div>
+                          <div className="text-[15px] font-medium leading-[18px]">{item?.drop?.name}</div>
+                          <div className="">{item?.drop?.name}</div>
+                        </div>
                       </div>
                     ))}
                   </div>

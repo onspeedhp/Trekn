@@ -9,6 +9,16 @@ export const sortDataByTimeline = (data: any) => {
     return result;
 }
 
+export const checkClassNameAccountItem = (itemIdx: number, data: Array<any>, dataIdx: number, userData: any) => {
+    return itemIdx + 1 === data.length ? ''
+        : (dataIdx + 1) === Object.entries(userData).length ? 'h-9' : 'h-16';
+}
+
+export const getTime = (date: string) => {
+    const time = new Date(date);
+    return time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+}
+
 const isTodayOrYesterday = (date: any) => {
     const today = new Date()
     const target = new Date(date);
