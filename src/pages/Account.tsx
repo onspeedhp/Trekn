@@ -2,12 +2,12 @@ import { useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import { useAuthContext } from '../context/AuthContext';
 import { Button } from 'antd';
-import { FaClone, FaCookie, FaMapPin, FaShare } from 'react-icons/fa';
+import { FaClone, FaCookie, FaMapPin, FaShare, FaThumbsUp } from 'react-icons/fa';
 import { getDropByUserAddress } from '../middleware/data/drop';
 import { getMintedByUserAddress } from '../middleware/data/minted';
 import { useDispatch, useSelector } from 'react-redux';
 import { resetUser } from '../redux/slides/userSlides';
-import { checkClassNameAccountItem, getTime, sortDataByTimeline } from '../utils/account.util';
+import { checkClassNameAccountItem, getScore, getTime, sortDataByTimeline } from '../utils/account.util';
 
 export const Account = () => {
   const navigate = useNavigate();
@@ -216,18 +216,31 @@ export const Account = () => {
                     {data.map((item: any, itemIdx: number) => (
                       <div className='mb-9 flex items-stretch gap-3' key={itemIdx}>
                         <div className='w-[88px] h-[88px] relative'>
-                          <img src={item?.drop?.image} alt="" className='w-full h-full rounded-xl' />
+                          <img src={item?.drop?.image || item?.image} alt="" className='w-full h-full rounded-xl' />
                           <div className={`absolute w-[2px] ${checkClassNameAccountItem(itemIdx, data, dataIdx, userData)} bg-[#0500FF] left-1/2 translate-x-[-50%]`}></div>
                         </div>
                         <div className="flex-grow flex flex-col justify-between my-2">
                           <div className="flex items-center gap-1">
-                            <FaMapPin className='w-3 h-3'/>
+                            <FaMapPin className='w-3 h-3' />
                             <div className="font-[13px] text-xs text-[#02030380]">
                               {item?.type === 'minted' ? 'Checked-in' : 'Created'} at {getTime(item?.created_at)}
                             </div>
                           </div>
-                          <div className="text-[15px] font-medium leading-[18px]">{item?.drop?.name}</div>
-                          <div className="">{item?.drop?.name}</div>
+                          <div className="text-[15px] font-medium leading-[18px]">{item?.drop?.name || item?.name}</div>
+                          <div className="flex items-center gap-2 leading-4">
+                            <div className="flex gap-[2px] items-center">
+                              <FaThumbsUp className='w-3 h-3 text-[#FFB800]' />
+                              <div className="text-[13px] text-[#000000b3] font-medium">
+                                {getScore(item)}
+                              </div>
+                            </div>
+                            <div className="flex gap-2 items-center">
+                              <div className="rounded-full bg-[#dfdfdfb3] w-2 h-2"></div>
+                              <div className="text-[13px] text-[#02030380] font-medium">
+                                2km away
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     ))}
