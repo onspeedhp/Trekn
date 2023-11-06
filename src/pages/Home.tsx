@@ -30,6 +30,7 @@ function Home() {
   const [loadingNearBy, setLoadingNearBy] = useState(false);
   const [loadingReadyToCollect, setLoadingReadyToCollet] = useState(false);
   const navigate = useNavigate();
+  const [current, setCurrent] = useState('item1');
 
   useEffect(() => {
     setLoadingPoint(true);
@@ -93,10 +94,62 @@ function Home() {
 
   return (
     <>
-      <div className='w-full px-[20px] sm:px-0'>
+      <div className='w-full px-[20px] sm:px-0 m'>
         {!leaderBoard ? (
           <>
-            <div className='w-full sm:h-[704px] flex items-end bg-cover mt-[40px]'>
+            <div className='mt-6'>
+              <div className='bg-[#ECECEC] w-full h-[42px] rounded-[10px] flex items-center justify-center font-bold text-[14.65px]'>
+                <div
+                  className={`flex items-center justify-center ${
+                    current === 'item1'
+                      ? 'text-black'
+                      : 'text-black text-opacity-70'
+                  }`}
+                  style={{
+                    width: (windowSize.width - 48) / 2,
+                    height: 34,
+                    backgroundColor:
+                      current === 'item1' ? 'white' : 'transparent',
+                    borderRadius: current === 'item1' ? 12 : 0,
+                  }}
+                  onClick={() => setCurrent('item1')}
+                >
+                  Following
+                </div>
+
+                <div
+                  className={`flex items-center justify-center ${
+                    current === 'item2'
+                      ? 'text-black'
+                      : 'text-black text-opacity-70'
+                  }`}
+                  style={{
+                    width: (windowSize.width - 48) / 2,
+                    height: 34,
+                    backgroundColor:
+                      current === 'item2' ? 'white' : 'transparent',
+                    borderRadius: current === 'item2' ? 12 : 0,
+                  }}
+                  onClick={() => setCurrent('item2')}
+                >
+                  Exploring
+                </div>
+              </div>
+
+              <div style={{ marginTop: 43 }}>
+                <Spin
+                  tip='Loading nearby'
+                  spinning={loadingNearBy}
+                  className='flex items-center mt-10'
+                >
+                  {nearBy.length !== 0 && (
+                    <ListDetail status={'Nearby'} data={nearBy} />
+                  )}
+                </Spin>
+              </div>
+            </div>
+
+            {/* <div className='w-full sm:h-[704px] flex items-end bg-cover mt-[40px]'>
               <div className='flex flex-col rounded-tr-[24px] sm:h-[336px] sm:bg-white sm:py-[40px] sm:pl-[142px] sm:pr-[48px] '>
                 <div className='text-[34px] font-bold leading-10 w-[335px]'>
                   Discover Local Hidden Gems
@@ -135,8 +188,8 @@ function Home() {
                   </>
                 )}
               </div>
-            </div>
-
+            </div> */}
+            {/* 
             <div className='max-w-[870px] ml-auto mr-auto mb-10'>
               <Button
                 loading={loading}
@@ -179,7 +232,7 @@ function Home() {
                   )}
                 </Spin>
               </div>
-            </div>
+            </div> */}
           </>
         ) : (
           <>

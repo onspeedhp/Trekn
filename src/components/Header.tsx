@@ -1,5 +1,5 @@
 import { Button } from 'antd';
-import { FaMedal, FaSignOutAlt, FaUserCircle } from 'react-icons/fa';
+import { FaMap, FaMedal, FaSignOutAlt, FaUserCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 import { useAuthContext } from '../context/AuthContext';
 import { useState } from 'react';
@@ -22,13 +22,20 @@ const Header = ({ hidden }: { hidden: boolean }) => {
 
           <div className='absolute flex items-center inset-y-0 right-0'>
             <Button
-              className='rounded-full h-9 w-9 bg-[#66C61B] mr-3'
+              className='rounded-full h-9 w-9 bg-[#A7FF9F] mr-3 border-0'
               style={{ paddingLeft: 9 }}
               onClick={() => {
-                setLeaderBoard(!leaderBoard);
+                // setLeaderBoard(!leaderBoard);
               }}
             >
-              <FaMedal size={16} className='text-white w-4 h-4' />
+              <FaMap
+                size={16}
+                className='ml-[1px]'
+                onClick={() => {
+                  navigate('/map-view');
+                }}
+              />
+              {/* <FaMedal size={16} className='text-white w-4 h-4' /> */}
             </Button>
 
             {user.id ? (

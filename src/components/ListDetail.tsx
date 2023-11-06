@@ -19,10 +19,10 @@ export const ListDetail = ({ data, status }: { data: any; status: any }) => {
 
   return (
     <div className='w-full'>
-      <div className='flex items-center text-sm font-semibold text-black'>
+      {/* <div className='flex items-center text-sm font-semibold text-black'>
         {status === 'Nearby' ? 'Nearby' : 'Popular'}
-      </div>
-      <div className='grid grid-cols-1 sm:grid-cols-3 '>
+      </div> */}
+      <div className='grid grid-cols-1 sm:grid-cols-3'>
         {data?.slice(0, amountShowItem).map((item: any, index: any) => (
           <DetailCard key={index} data={item} status={status} />
         ))}
