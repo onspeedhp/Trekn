@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import { useAuthContext } from '../context/AuthContext';
 import { Button } from 'antd';
-import { FaClone, FaCookie, FaMapPin, FaShare, FaThumbsUp } from 'react-icons/fa';
+import { FaClone, FaCookie, FaMapPin, FaPlusCircle, FaShare, FaThumbsUp } from 'react-icons/fa';
 import { getDropByUserAddress } from '../middleware/data/drop';
 import { getMintedByUserAddress } from '../middleware/data/minted';
 import { useDispatch, useSelector } from 'react-redux';
@@ -222,7 +222,7 @@ export const Account = () => {
                         </div>
                         <div className="flex-grow flex flex-col justify-between my-2">
                           <div className="flex items-center gap-1">
-                            <FaMapPin className='w-3 h-3' />
+                            {item?.type === 'minted' ? <FaMapPin className='w-3 h-3' /> : <FaPlusCircle className='w-3 h-3' />}
                             <div className="font-[13px] text-xs text-[#02030380]">
                               {item?.type === 'minted' ? 'Checked-in' : 'Created'} at {getTime(item?.created_at)}
                             </div>
