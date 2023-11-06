@@ -8,6 +8,7 @@ import { getMintedByUserAddress } from '../middleware/data/minted';
 import { useDispatch, useSelector } from 'react-redux';
 import { resetUser } from '../redux/slides/userSlides';
 import { checkClassNameAccountItem, getScore, getTime, sortDataByTimeline } from '../utils/account.util';
+import { calculateDistance, convertDistance } from '../functions/calculateDistance';
 
 export const Account = () => {
   const navigate = useNavigate();
@@ -237,7 +238,7 @@ export const Account = () => {
                             <div className="flex gap-2 items-center">
                               <div className="rounded-full bg-[#dfdfdfb3] w-2 h-2"></div>
                               <div className="text-[13px] text-[#02030380] font-medium">
-                                2km away
+                                {convertDistance(calculateDistance(item.lat || item?.drop.lat, item.lng || item?.drop.lng, user.lat, user.lng))} away
                               </div>
                             </div>
                           </div>
