@@ -4,7 +4,8 @@ import { getLabelLocation } from '../utils/common.utils';
 import parse from 'html-react-parser';
 import { useAuthContext } from '../context/AuthContext';
 import { DropDetail } from './DropDetail';
-import { FaMapPin, FaThumbsUp } from 'react-icons/fa';
+import { FaMapPin, FaPlusCircle, FaThumbsUp } from 'react-icons/fa';
+import moment from 'moment';
 
 interface ImageProps {
   src: string;
@@ -12,7 +13,7 @@ interface ImageProps {
 }
 
 export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { Icon, label } = getLabelLocation(status, data?.distance);
   const { windowSize } = useAuthContext();
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
@@ -30,7 +31,7 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
         isDrawerVisible={isDrawerVisible}
         setIsDrawerVisible={setIsDrawerVisible}
       />
-      <div className='flex items-center'>
+      <div className='flex items-center' key={data.id}>
         <img
           src={`${data.user.profileImage}`}
           className='w-10 h-10 mr-2 rounded-full'
@@ -39,18 +40,18 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
         <div className='flex-col'>
           <span className='font-medium mb-2'>{data.user.name}</span>
           <div className='flex items-center'>
-            <FaMapPin size={12} />
+            <FaPlusCircle size={12} />
             <span className='font-medium text-black opacity-50 ml-1'>
-              Checkin 2 hours ago
+              Created on {moment(data.created_at).format('Do MMM')}
             </span>
           </div>
         </div>
       </div>
       <div
-        className='w-full flex justify-center items-center rounded-xl relative mb-8 mt-3 cursor-pointer rounded-xl'
+        className='w-full flex justify-center items-center rounded-xl relative mt-3 cursor-pointer rounded-xl'
         style={{
-          width: status === 'ReadyToCollect' ? 300 : windowSize.width - 40,
-          height: 375,
+          width: windowSize.width - 40,
+          height: 377,
           backgroundColor: '#525252',
           marginRight: status === 'ReadyToCollect' ? 12 : 0,
         }}
@@ -62,8 +63,8 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
           <div
             className='rounded-xl'
             style={{
-              width: status === 'ReadyToCollect' ? 300 : windowSize.width - 40,
-              height: 375,
+              width: windowSize.width - 40,
+              height: 377,
               objectFit: 'cover',
               objectPosition: 'center',
             }}
@@ -71,9 +72,8 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
             <img
               src={`${data.image}`}
               style={{
-                width:
-                  status === 'ReadyToCollect' ? 300 : windowSize.width - 40,
-                height: 375,
+                width: windowSize.width - 40,
+                height: 377,
                 borderRadius: 12,
                 objectFit: 'cover',
                 objectPosition: 'center',
@@ -90,24 +90,20 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
           </div>
         </div>
 
-        {/* <div
-          className='flex w-auto h-8 items-center justify-center text-sm text-black rounded-[60px] border-[1px] border-solid border-black absolute px-[12px] z-10 top-[12px] left-[16px]'
-          style={{
-            backgroundColor: status === 'ReadyToCollect' ? '#99FF48' : 'white',
-          }}
-        >
-          {parse(Icon)}
-          <div className='ml-1'>{label}</div>
-        </div> */}
+        {status === 'ReadyToCollect' && (
+          <div
+            className='flex w-auto h-8 items-center justify-center text-sm text-black rounded-[60px] border-[1px] border-solid border-black absolute px-[12px] z-10 top-[12px] left-[16px]'
+            style={{
+              backgroundColor:
+                status === 'ReadyToCollect' ? '#99FF48' : 'white',
+            }}
+          >
+            {parse(Icon)}
+            <div className='ml-1'>Ready to checkin</div>
+          </div>
+        )}
+
         <div className='flex-col text-white absolute bottom-[16px] left-[16px]'>
-          {/* <div className='font-medium	text-[13px] flex items-center'>
-            <img
-              className='rounded-full w-4 h-4 mr-1'
-              src={`${data.user.profileImage}`}
-              alt=''
-            />
-            {data.user.name}
-          </div> */}
           <div className='font-semibold	text-base'>{data?.name}</div>
           <div className='flex items-center text-base'>
             <div className='flex items-center justify-center mr-2'>
@@ -143,13 +139,9 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
             </div>
           </div>
         </div>
-        {status === 'readyToMint' && (
-          <div className='w-auto h-[40px] flex flex-row items-center justify-center absolute bottom-[28px] right-[16px] bg-white px-[20px] rounded-[32px] z-50'>
-            <img src='./pin-icon.png' alt='' className='w-[20px] h-[20px]' />
-            <p className='text-[14px]'>Go to mint</p>
-          </div>
-        )}
       </div>
+
+      <div className='border-b mt-6 mb-6'></div>
     </>
   );
 };

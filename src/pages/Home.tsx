@@ -16,6 +16,7 @@ import {
   updateNearBy,
   updateReadyToCollect,
 } from '../redux/slides/locationSlides';
+import moment from 'moment';
 
 function Home() {
   const { windowSize, leaderBoard, init } = useAuthContext();
@@ -94,11 +95,11 @@ function Home() {
 
   return (
     <>
-      <div className='w-full px-[20px] sm:px-0 m'>
+      <div className='w-full px-[20px] sm:px-0 relative'>
         {!leaderBoard ? (
           <>
-            <div className='mt-6'>
-              <div className='bg-[#ECECEC] w-full h-[42px] rounded-[10px] flex items-center justify-center font-bold text-[14.65px]'>
+            <div className='mt-10'>
+              {/* <div className='bg-[#ECECEC] w-full h-[42px] rounded-[10px] flex items-center justify-center font-bold text-[14.65px]'>
                 <div
                   className={`flex items-center justify-center ${
                     current === 'item1'
@@ -134,9 +135,31 @@ function Home() {
                 >
                   Exploring
                 </div>
+              </div> */}
+              <div className='text-[14px] text-black opacity-70 font-medium mb-2'>
+                {moment().format('dddd, Do MMM')}
               </div>
 
-              <div style={{ marginTop: 43 }}>
+              <div className='font-semibold text-[28px]'>
+                Nearby experiences
+              </div>
+
+              <div style={{ marginTop: 24 }}>
+                <Spin
+                  tip='Loading...'
+                  spinning={loadingReadyToCollect}
+                  className='flex items-center mt-10'
+                >
+                  {nearBy.length !== 0 && (
+                    <ListDetail
+                      status={'ReadyToCollect'}
+                      data={readyToCollect}
+                    />
+                  )}
+                </Spin>
+              </div>
+
+              <div style={{ marginTop: 0 }}>
                 <Spin
                   tip='Loading nearby'
                   spinning={loadingNearBy}
@@ -148,6 +171,22 @@ function Home() {
                 </Spin>
               </div>
             </div>
+
+            <Button
+              className='absolute top-[508px] right-4 w-[56px] h-[56px] rounded-full border-0'
+              style={{ backgroundColor: 'rgba(148, 255, 65, 0.80)' }}
+              onClick={async () => {
+                if (user.id) {
+                  navigate('/drop-onboarding/upload-image');
+                } else {
+                  setLoading(true);
+                  await init();
+                  setLoading(false);
+                }
+              }}
+            >
+              <FaPlus size={24} className='text-black' />
+            </Button>
 
             {/* <div className='w-full sm:h-[704px] flex items-end bg-cover mt-[40px]'>
               <div className='flex flex-col rounded-tr-[24px] sm:h-[336px] sm:bg-white sm:py-[40px] sm:pl-[142px] sm:pr-[48px] '>
