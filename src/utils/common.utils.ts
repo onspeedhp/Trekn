@@ -59,7 +59,7 @@ export const getLabelLocation = (status: any, distance?: number) => {
     </svg>`;
     return {
       Icon: Icon,
-      label: 'Ready to collect',
+      label: '5m',
     };
   } else if (status === 'Nearby' && distance) {
     const Icon = `
