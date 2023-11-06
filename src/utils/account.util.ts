@@ -14,11 +14,11 @@ export const checkClassNameAccountItem = (
   dataIdx: number,
   userData: any
 ) => {
-  return itemIdx + 1 === data.length
+  return dataIdx + 1 !== Object.entries(userData).length
+    ? "h-16"
+    : itemIdx + 1 === data.length
     ? ""
-    : dataIdx + 1 === Object.entries(userData).length
-    ? "h-9"
-    : "h-16";
+    : "h-9";
 };
 
 export const getTime = (date: string) => {

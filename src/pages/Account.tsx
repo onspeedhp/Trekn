@@ -209,7 +209,7 @@ export const Account = () => {
                     <span className='font-medium'>
                       {key}
                     </span>
-                    <div className="absolute w-2 h-2 rounded-full bg-[#0500FF] left-1/3">
+                    <div className="absolute w-2 h-2 rounded-full bg-[#0500FF] left-[32.5%]">
                       <div className="absolute w-[2px] h-16 bg-[#0500FF] left-1/2 translate-x-[-50%]"></div>
                     </div>
                   </div>
@@ -218,7 +218,7 @@ export const Account = () => {
                       <div className='mb-9 flex items-stretch gap-3' key={itemIdx}>
                         <div className='w-[88px] h-[88px] relative'>
                           <img src={item?.drop?.image || item?.image} alt="" className='w-full h-full rounded-xl' />
-                          <div className={`absolute w-[2px] ${checkClassNameAccountItem(itemIdx, data, dataIdx, userData)} bg-[#0500FF] left-1/2 translate-x-[-50%]`}></div>
+                          <div className={`absolute w-[2px] ${checkClassNameAccountItem(itemIdx, data, dataIdx, userData)} bg-[#0500FF] left-1/2 z-10`}></div>
                         </div>
                         <div className="flex-grow flex flex-col justify-between my-2">
                           <div className="flex items-center gap-1">
