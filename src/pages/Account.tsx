@@ -6,32 +6,21 @@ import { FaClone, FaCookie, FaMapPin, FaPlusCircle, FaShare, FaThumbsUp } from '
 import { getDropByUserAddress } from '../middleware/data/drop';
 import { getMintedByUserAddress } from '../middleware/data/minted';
 import { useDispatch, useSelector } from 'react-redux';
-import { resetUser } from '../redux/slides/userSlides';
 import { checkClassNameAccountItem, getScore, getTime, sortDataByTimeline } from '../utils/account.util';
 import { calculateDistance, convertDistance } from '../functions/calculateDistance';
+import { DetailCard } from '../components/DetailCard';
 
 export const Account = () => {
   const navigate = useNavigate();
-  const { torus } = useAuthContext();
   const [activeTab, setActiveTab] = useState('timeline');
   const [userData, setUserData] = useState<any[]>([]);
   const user = useSelector((state: any) => state.user);
-  const dispath = useDispatch();
 
   useEffect(() => {
     if (!user.id) {
       navigate('/home');
     }
   }, []);
-
-  const logout = async () => {
-    if (torus.isInitialized) {
-      await torus.logout();
-    }
-
-    dispath(resetUser());
-    navigate('/home');
-  };
 
   useEffect(() => {
     if (user.address) {
@@ -56,6 +45,7 @@ export const Account = () => {
             }));
           },
         });
+
         setUserData(sortDataByTimeline(userData));
       })()
     }
@@ -215,7 +205,9 @@ export const Account = () => {
                   </div>
                   <div className="px-4 mt-9">
                     {data.map((item: any, itemIdx: number) => (
-                      <div className='mb-9 flex items-stretch gap-3' key={itemIdx}>
+                      <div className='mb-9 flex items-stretch gap-3' key={itemIdx} onClick={() => {
+                        navigate(`/details/${item?.id || item?.drop?.id}`);
+                      }}>
                         <div className='w-[88px] h-[88px] relative'>
                           <img src={item?.drop?.image || item?.image} alt="" className='w-full h-full rounded-xl' />
                           <div className={`absolute w-[2px] ${checkClassNameAccountItem(itemIdx, data, dataIdx, userData)} bg-[#0500FF] left-1/2 z-10`}></div>
@@ -307,7 +299,17 @@ export const Account = () => {
             //   )}
             // </>
             <div className="collection__feed">
-
+              {Object.entries(userData).map(([key, data], dataIdx) => (
+                <>
+                  {
+                    data.map((item: any, itemIdx: number) => (
+                      <div onClick={() => { navigate(`/details/${item?.id || item?.drop?.id}`) }}>
+                        <DetailCard key={itemIdx} data={{ ...item, user }} />
+                      </div>
+                    ))
+                  }
+                </>
+              ))}
             </div>
           )}
         </div>

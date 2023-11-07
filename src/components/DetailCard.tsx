@@ -1,11 +1,14 @@
-import React, { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router';
 import { getLabelLocation } from '../utils/common.utils';
 import parse from 'html-react-parser';
 import { useAuthContext } from '../context/AuthContext';
 import { DropDetail } from './DropDetail';
 import { FaMapPin, FaPlusCircle, FaThumbsUp } from 'react-icons/fa';
 import moment from 'moment';
+import { calculateDistance, convertDistance } from '../functions/calculateDistance';
+import { getTime } from '../utils/account.util';
+import { getUserByDropId } from '../middleware/data/user';
 
 interface ImageProps {
   src: string;
@@ -17,6 +20,8 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
   const { Icon, label } = getLabelLocation(status, data?.distance);
   const { windowSize } = useAuthContext();
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+  const [userChecked, setUserChecked] = useState([]);
+  const location = useLocation();
   const overlap = 13.75;
   const images: ImageProps[] = [
     { src: `${data.user.profileImage}`, alt: 'Image 1' },
@@ -24,13 +29,31 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
     { src: `${data.user.profileImage}`, alt: 'Image 3' },
   ];
 
+  const isHome = () => {
+    return location.pathname === '/';
+  }
+
+  useEffect(() => {
+    if (!isHome()) {
+      (async ()=>{
+        await getUserByDropId({
+          dropId: data.drop_id || data.id, onSuccess: (res) => {
+            setUserChecked(res);
+          }
+        })
+      })()
+      }
+  }, [])
+
   return (
-    <>
-      <DropDetail
-        selectedLocation={data}
-        isDrawerVisible={isDrawerVisible}
-        setIsDrawerVisible={setIsDrawerVisible}
-      />
+    <div className='px-5 py-6'>
+      {isHome() &&
+        <DropDetail
+          selectedLocation={data}
+          isDrawerVisible={isDrawerVisible}
+          setIsDrawerVisible={setIsDrawerVisible}
+        />
+      }
       <div className='flex items-center' key={data.id}>
         <img
           src={`${data.user.profileImage}`}
@@ -40,17 +63,19 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
         <div className='flex-col'>
           <span className='font-medium mb-2'>{data.user.name}</span>
           <div className='flex items-center'>
-            <FaPlusCircle size={12} />
+            {isHome() ?
+              <FaPlusCircle size={12} /> :
+              data?.type === 'minted' ? <FaMapPin className='w-3 h-3' /> : <FaPlusCircle className='w-3 h-3' />
+            }
             <span className='font-medium text-black opacity-50 ml-1'>
-              Created on {moment(data.created_at).format('Do MMM')}
+              {isHome() ? `Created on ${moment(data.created_at).format('Do MMM')}` : data?.type === 'minted' ? 'Checked-in' : 'Created'} at {getTime(data?.created_at)}
             </span>
           </div>
         </div>
       </div>
       <div
-        className='w-full flex justify-center items-center rounded-xl relative mt-3 cursor-pointer rounded-xl'
+        className='flex justify-center items-center rounded-xl relative mt-3 cursor-pointer rounded-xl'
         style={{
-          width: windowSize.width - 40,
           height: 377,
           backgroundColor: '#525252',
           marginRight: status === 'ReadyToCollect' ? 12 : 0,
@@ -70,7 +95,7 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
             }}
           >
             <img
-              src={`${data.image}`}
+              src={`${data.image || data?.drop?.image}`}
               style={{
                 width: windowSize.width - 40,
                 height: 377,
@@ -104,44 +129,69 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
         )}
 
         <div className='flex-col text-white absolute bottom-[16px] left-[16px]'>
-          <div className='font-semibold	text-base'>{data?.name}</div>
-          <div className='flex items-center text-base'>
+          <div className='font-semibold	text-base'>{data?.name || data?.drop?.name}</div>
+          <div className='flex items-center text-base mt-1'>
             <div className='flex items-center justify-center mr-2'>
               <FaThumbsUp className='text-[#FFB800] mr-1' />
               <span className='text-[14px] text-white opacity-70'>4.9</span>
             </div>
             <div className='flex items-center justify-center text-white opacity-70 text-[14px]'>
-              <span className='mr-2 w-[11px]'>●</span> {label} away
+              <span className='mr-2 w-[11px]'>●</span> {isHome() ? label : convertDistance(calculateDistance(data.lat || data?.drop.lat, data.lng || data?.drop.lng, data.user.lat, data.user.lng))} away
             </div>
           </div>
-          <div className='mt-4 mb-5 flex items-center'>
+          <div className='mt-4 flex items-center'>
             <div className='relative h-[27.5px] flex justify-start items-center w-[55px]'>
-              {images.map((image, index) => (
-                <img
-                  key={image.src}
-                  src={image.src}
-                  alt={image.alt}
-                  style={{
-                    border: '1.146px solid #FFF',
-                    position: 'absolute',
-                    width: '27.5px',
-                    height: '27.5px',
-                    borderRadius: '50%',
-                    left: `${index * overlap}px`, // Chồng lên 40%
-                    zIndex: index + 1,
-                  }}
-                />
-              ))}
+              {isHome() ?
+                images.map((image, index) => (
+                  <img
+                    key={image.src}
+                    src={image.src}
+                    alt={image.alt}
+                    style={{
+                      border: '1.146px solid #FFF',
+                      position: 'absolute',
+                      width: '27.5px',
+                      height: '27.5px',
+                      borderRadius: '50%',
+                      left: `${index * overlap}px`, // Chồng lên 40%
+                      zIndex: index + 1,
+                    }}
+                  />))
+                :
+                userChecked.map((item: any, idx: number) => (
+                  <img
+                    key={idx}
+                    src={item.profileImage}
+                    alt={item.profileImage}
+                    style={{
+                      border: '1.146px solid #FFF',
+                      position: 'absolute',
+                      width: '27.5px',
+                      height: '27.5px',
+                      borderRadius: '50%',
+                      left: `${idx * overlap}px`, // Chồng lên 40%
+                      zIndex: idx + 1,
+                    }}
+                  />
+                ))
+              }
             </div>
-
-            <div className='bg-white text-black ml-2 p-2 text-[13px] font-medium rounded-full'>
-              12 checked-in
-            </div>
+            {isHome() ?
+              <div className='bg-white text-black ml-2 p-2 text-[13px] font-medium rounded-full'>
+                12 checked-in
+              </div>
+              :
+              userChecked?.length > 0 &&
+              <div className='bg-white text-black ml-2 p-2 text-[13px] font-medium rounded-full'>
+                {userChecked.length} checked-in
+              </div>
+            }
           </div>
         </div>
       </div>
-
-      <div className='border-b mt-6 mb-6'></div>
-    </>
+      {isHome() &&
+        <div className='border-b mt-6 mb-6'></div>
+      }
+    </div>
   );
 };

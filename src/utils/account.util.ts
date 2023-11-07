@@ -1,10 +1,24 @@
 export const sortDataByTimeline = (data: any) => {
   const result: any = {};
+  data.sort((a: any,b: any) => {
+    const dateA = new Date(a?.created_at);
+    const dateB = new Date(b?.created_at);
+
+    if (dateA < dateB) {
+        return -1;
+    }
+    if (dateA < dateB) {
+        return 1;
+    }
+    return 0;
+  }).reverse();
+
   data.map((item: any) => {
     const date = new Date(item?.created_at);
     const key = isTodayOrYesterday(date);
     result[key] = [...(result[key] || []), item];
   });
+  console.log(result);
   return result;
 };
 
@@ -68,7 +82,7 @@ const isTodayOrYesterday = (date: any) => {
   const target = new Date(date);
   const diff = today.getTime() - target.getTime();
   const dayDiff = diff / (1000 * 3600 * 24);
-  if (dayDiff < 1) {
+  if (dayDiff < 1 && today.getDate() === target.getDate()) {
     return "Today";
   } else if (dayDiff < 2) {
     return "Yesterday";
