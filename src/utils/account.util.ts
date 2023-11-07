@@ -35,20 +35,11 @@ export const checkClassNameAccountItem = (
     : "h-9";
 };
 
-export const getTime = (date: string) => {
-  const time = new Date(date);
-  return time.toLocaleString("en-US", {
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-  });
-};
-
 export const getScore = (data: any) => {
-  if (data.type === "drop") {
-    return calculateScore(data?.reaction_counts);
-  } else {
+  if (data.type === "minted") {
     return calculateScore(data?.drop?.reaction_counts);
+  } else {
+    return calculateScore(data?.reaction_counts);
   }
 };
 

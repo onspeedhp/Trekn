@@ -6,9 +6,10 @@ import { FaClone, FaCookie, FaMapPin, FaPlusCircle, FaShare, FaThumbsUp } from '
 import { getDropByUserAddress } from '../middleware/data/drop';
 import { getMintedByUserAddress } from '../middleware/data/minted';
 import { useDispatch, useSelector } from 'react-redux';
-import { checkClassNameAccountItem, getScore, getTime, sortDataByTimeline } from '../utils/account.util';
+import { checkClassNameAccountItem, getScore, sortDataByTimeline } from '../utils/account.util';
 import { calculateDistance, convertDistance } from '../functions/calculateDistance';
 import { DetailCard } from '../components/DetailCard';
+import moment from 'moment';
 
 export const Account = () => {
   const navigate = useNavigate();
@@ -206,7 +207,7 @@ export const Account = () => {
                   <div className="px-4 mt-9">
                     {data.map((item: any, itemIdx: number) => (
                       <div className='mb-9 flex items-stretch gap-3' key={itemIdx} onClick={() => {
-                        navigate(`/details/${item?.id || item?.drop?.id}`);
+                        navigate(`/details/drop/${item?.drop_id || item?.id}`);
                       }}>
                         <div className='w-[88px] h-[88px] relative'>
                           <img src={item?.drop?.image || item?.image} alt="" className='w-full h-full rounded-xl' />
@@ -216,7 +217,7 @@ export const Account = () => {
                           <div className="flex items-center gap-1">
                             {item?.type === 'minted' ? <FaMapPin className='w-3 h-3' /> : <FaPlusCircle className='w-3 h-3' />}
                             <div className="font-[13px] text-xs text-[#02030380]">
-                              {item?.type === 'minted' ? 'Checked-in' : 'Created'} at {getTime(item?.created_at)}
+                              {item?.type === 'minted' ? 'Checked-in' : 'Created'} at {moment(item?.created_at).format('hh:ss A')}
                             </div>
                           </div>
                           <div className="text-[15px] font-medium leading-[18px]">{item?.drop?.name || item?.name}</div>
@@ -303,7 +304,7 @@ export const Account = () => {
                 <>
                   {
                     data.map((item: any, itemIdx: number) => (
-                      <div onClick={() => { navigate(`/details/${item?.id || item?.drop?.id}`) }}>
+                      <div onClick={() => { navigate(`/details/${item.type}/${item?.id || item?.drop?.id}`); }}>
                         <DetailCard key={itemIdx} data={{ ...item, user }} />
                       </div>
                     ))

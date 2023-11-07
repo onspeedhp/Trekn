@@ -57,14 +57,14 @@ export const getUserByDropId = async ({
 
   const { data, error } = await supabase
     .from("user")
-    .select("profileImage, minted(*)")
+    .select("*, minted(*)")
 
   if (!error) {
     const result = data.map((user: any) => {
       if (user.minted && Array.isArray(user.minted)) {
-        const isHasMinted = user.minted.find((item: any) => item.drop_id === dropId);
-        if (isHasMinted) {
-          return user;
+        const minted = user.minted.filter((item: any) => item.drop_id === dropId);
+        if (minted.length) {
+          return {...user, minted};
         }
       }
       return null;
