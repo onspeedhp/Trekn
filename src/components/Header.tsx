@@ -1,5 +1,5 @@
 import { Button } from 'antd';
-import { FaMap, FaMedal, FaSignOutAlt, FaUserCircle } from 'react-icons/fa';
+import { FaMap, FaSignOutAlt, FaUserCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 import { useAuthContext } from '../context/AuthContext';
 import { useState } from 'react';
@@ -22,8 +22,8 @@ const Header = ({ hidden }: { hidden: boolean }) => {
 
           <div className='absolute flex items-center inset-y-0 right-0'>
             <Button
-              className='rounded-full h-9 w-9 bg-[#A7FF9F] mr-3 border-0'
-              style={{ paddingLeft: 9 }}
+              className='rounded-full h-9 w-9 bg-white mr-3 border-0 text-black'
+              style={{ paddingLeft: 8, border: '1px solid black' }}
               onClick={() => {
                 // setLeaderBoard(!leaderBoard);
               }}

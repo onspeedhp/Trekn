@@ -11,11 +11,12 @@ import {
 } from 'react-icons/fa6';
 import { updateDrop } from '../middleware/data/drop';
 import { useSelector } from 'react-redux';
+import { addReaction } from '../middleware/data/reaction';
 
 export const Reaction = () => {
   const navigate = useNavigate();
   const { metadata, setMetadata } = useAuthContext();
-  const [value, setValue] = useState<number>();
+  const [value, setValue] = useState<number>(-1);
   const user = useSelector((state: any) => state.user);
 
   const handleError = () => {
@@ -119,7 +120,7 @@ export const Reaction = () => {
               key={index}
               onClick={() => {
                 if (value === Math.abs(index - 4)) {
-                  setValue(undefined);
+                  setValue(-1);
                 } else {
                   setValue(Math.abs(index - 4));
                 }
@@ -135,11 +136,10 @@ export const Reaction = () => {
           className='bg-[#2E2E2E] text-white border-0  w-full h-12 rounded-3xl font-semibold text-base'
           onClick={async () => {
             if (metadata.id) {
-              console.log(value);
 
-              await updateDrop({
-                drop: metadata,
-                value: String(value),
+              await addReaction({
+                dropId: metadata.id,
+                value: value,
                 userId: user.id,
               });
               setMetadata({});

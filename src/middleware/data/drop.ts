@@ -27,7 +27,7 @@ export const createDrop = async ({
     .from('user')
     .update({ point: user.point + 1 })
     .eq('id', user.id);
-    
+
   const { data, error } = await supabase
     .from('drop')
     .insert(newDrop)
@@ -87,7 +87,8 @@ export const getDropByID = async ({
 }) => {
   const { data, error } = await supabase
     .from('drop')
-    .select('*, user(*)')
+    .select('*, user(*), reaction(*, user(*))')
+
     .eq('id', dropId);
 
   if (!error) {

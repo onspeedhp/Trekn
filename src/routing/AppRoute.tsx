@@ -15,6 +15,7 @@ import { MintSuccess } from '../pages/MintSuccess';
 import { Reaction } from '../pages/Reaction';
 import { MapGL } from '../pages/MapGL';
 import { DraggableLocation } from '../pages/DraggableLocation';
+import { DropDetailPage } from '../pages/DropDetailPage';
 
 const AppRoutes = () => (
   <BrowserRouter basename='/'>
@@ -91,6 +92,13 @@ const AppRoutes = () => (
         path='/drop-onboarding/drag-location'
         element={
           <App header={Header} hideHeader={true} layout={DraggableLocation} />
+        }
+      ></Route>
+
+      <Route
+        path='/drop/details/:dropId'
+        element={
+          <App header={Header} hideHeader={true} layout={DropDetailPage} />
         }
       ></Route>
     </Routes>

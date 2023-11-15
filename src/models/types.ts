@@ -15,6 +15,7 @@ export interface IDrop {
   author_id?: number;
   reaction_counts?: any;
   imageArray?: any;
+  minted?: any;
 }
 
 export interface IUser {
