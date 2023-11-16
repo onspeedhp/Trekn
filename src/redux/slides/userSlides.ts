@@ -10,6 +10,7 @@ const initialState = storedUser || {
   email: '',
   address: '',
   profileImage: '',
+  description: '',
   point: 0,
   lat: 0,
   lng: 0,
@@ -20,13 +21,14 @@ export const userSlide = createSlice({
   initialState,
   reducers: {
     updateUser: (state, action) => {
-      const { name, email, address, profileImage, point, id } = action.payload;
+      const { name, email, address, profileImage, point, id, description } = action.payload;
       state.id = id ? id : state.id;
       state.name = name ? name : state.name;
       state.email = email ? email : state.email;
       state.address = address ? address : state.address;
       state.profileImage = profileImage ? profileImage : state.profileImage;
       state.point = point ? point : state.point;
+      state.description = description ? description : state.description;
 
       localStorage.setItem('user', JSON.stringify(state));
     },
@@ -43,6 +45,7 @@ export const userSlide = createSlice({
       state.address = '';
       state.profileImage = '';
       state.point = 0;
+      state.description = '';
 
       localStorage.removeItem('user');
     },

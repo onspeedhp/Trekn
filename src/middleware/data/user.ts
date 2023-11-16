@@ -64,11 +64,27 @@ export const getUserByDropId = async ({
       if (user.minted && Array.isArray(user.minted)) {
         const minted = user.minted.filter((item: any) => item.drop_id === dropId);
         if (minted.length) {
-          return {...user, minted};
+          return { ...user, minted };
         }
       }
       return null;
     }).filter(Boolean);
     onSuccess(result);
+  }
+};
+
+export const updateUserDB = async ({ userId, updateData, onSuccess }: {
+  userId: number;
+  updateData: any;
+  onSuccess: (data: any) => void
+}) => {
+  const { data, error } = await supabase
+    .from("user")
+    .update({ ...updateData })
+    .eq('id', userId)
+    .select()
+
+  if(!error) {
+    onSuccess(data[0]);
   }
 };

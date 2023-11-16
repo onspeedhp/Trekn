@@ -16,6 +16,7 @@ import { Reaction } from '../pages/Reaction';
 import { MapGL } from '../pages/MapGL';
 import { DraggableLocation } from '../pages/DraggableLocation';
 import { DropDetailPage } from '../pages/DropDetailPage';
+import EditProfile from '../pages/EditProfile';
 
 const AppRoutes = () => (
   <BrowserRouter basename='/'>
@@ -61,6 +62,11 @@ const AppRoutes = () => (
       <Route
         path='/account'
         element={<App header={Header} hideHeader={true} layout={Account} />}
+      ></Route>
+
+      <Route
+        path='/account/edit'
+        element={<App header={Header} hideHeader={true} layout={EditProfile} />}
       ></Route>
 
       <Route

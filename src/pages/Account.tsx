@@ -116,7 +116,9 @@ export const Account = () => {
                 <div className='rounded-full border border-black flex justify-center items-center p-[9px]'>
                   <FaShare className='w-3 h-3' />
                 </div>
-                <div className='rounded-full border border-black text-base font-medium py-2 px-4'>
+                <div className='rounded-full border border-black text-base font-medium py-2 px-4' onClick={() => {
+                  navigate('/account/edit')
+                }}>
                   Edit profile
                 </div>
               </div>
@@ -125,12 +127,10 @@ export const Account = () => {
             <div className='px-2'>
               <div className='name font-semibold text-2xl'>{user.name}</div>
               <div className='desc py-3 text-sm text-[#000000b3] font-normal'>
-                ✈️ Wandering the world one suitcase at a time, in search of
-                unforgettable adventures. #Jetsetter #WanderlustWanderer
-                #LostInTravel
+                {user.description}
               </div>
               <div className='balance flex items-center gap-1'>
-                <p className='font-semibold text-base'>12,000</p>
+                <p className='font-semibold text-base'>{user.point}</p>
                 <FaCookie className='text-[#FFAD08] w-3 h-3' />
               </div>
             </div>
@@ -139,9 +139,8 @@ export const Account = () => {
         <div className='collection'>
           <div className='collection__tab relative w-full mb-6 h-8 flex items-center justify-center border-b border-[#D9D9D9] text-base font-semibold'>
             <div
-              className={`flex items-center justify-center w-1/2 ${
-                activeTab === 'timeline' ? 'text-black' : 'text-[#00000080]'
-              }`}
+              className={`flex items-center justify-center w-1/2 ${activeTab === 'timeline' ? 'text-black' : 'text-[#00000080]'
+                }`}
               onClick={() => setActiveTab('timeline')}
             >
               Timeline
@@ -149,70 +148,14 @@ export const Account = () => {
             <div className='h-4 w-px bg-gray-400 absolute left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%]'></div>
 
             <div
-              className={`flex items-center justify-center w-1/2 ${
-                activeTab === 'feed' ? 'text-black' : 'text-[#00000080]'
-              }`}
+              className={`flex items-center justify-center w-1/2 ${activeTab === 'feed' ? 'text-black' : 'text-[#00000080]'
+                }`}
               onClick={() => setActiveTab('feed')}
             >
               Feed
             </div>
           </div>
           {activeTab === 'timeline' ? (
-            // <>
-            //   {userMinteds.length !== 0 ? (
-            //     <>
-            //       <div className='flex flex-wrap mt-9' style={{ width: 356 }}>
-            //         {userMinteds.map((minted: any, index: any) => (
-            //           <div
-            //             className='relative'
-            //             key={index}
-            //             onClick={() => {
-            //               navigate(`/details/minted/${minted.id}`);
-            //             }}
-            //           >
-            //             <img
-            //               src={`${minted.drop.image}`}
-            //               className='rounded-xl mr-3'
-            //               style={{
-            //                 width: 165,
-            //                 height: 165,
-            //                 marginBottom: 21,
-            //                 objectFit: 'cover',
-            //                 objectPosition: 'center',
-            //               }}
-            //             />
-
-            //             <div
-            //               className='absolute left-0 bottom-0 text-white p-2 text-[13px] font-semibold flex-wrap'
-            //               style={{
-            //                 background: 'rgba(46, 46, 46, 0.70)',
-            //                 marginBottom: 27,
-            //                 marginLeft: 6,
-            //                 marginRight: 18,
-            //                 borderRadius: 6,
-            //               }}
-            //             >
-            //               {minted.drop.name}
-            //             </div>
-            //           </div>
-            //         ))}
-            //       </div>
-            //     </>
-            //   ) : (
-            //     <div
-            //       className='text-white opacity-70 w-full font-semibold'
-            //       style={{ marginTop: 102 }}
-            //     >
-            //       <div className='flex justify-center items-center mb-2'>
-            //         No Collected Experience Yet!
-            //       </div>
-            //       <div className='flex justify-center items-center text-center'>
-            //         You haven't collected any experience yet. Start your
-            //         journey of discovery and ownership today ;)
-            //       </div>
-            //     </div>
-            //   )}
-            // </>
             <div className='collection__timeline'>
               {Object.entries(userData).map(([key, data], dataIdx) => (
                 <>
@@ -240,7 +183,7 @@ export const Account = () => {
                           <img
                             src={item?.drop?.image || item?.image}
                             alt=''
-                            className='w-full h-full rounded-xl'
+                            className='w-full h-full rounded-xl object-cover'
                           />
                           <div
                             className={`absolute w-[2px] ${checkClassNameAccountItem(
@@ -298,68 +241,12 @@ export const Account = () => {
               ))}
             </div>
           ) : (
-            // <>
-            //   {userDrops.length !== 0 ? (
-            //     <>
-            //       <div className='flex flex-wrap mt-9' style={{ width: 356 }}>
-            //         {userDrops.map((drop: any, index: any) => (
-            //           <div
-            //             className='relative'
-            //             key={index}
-            //             onClick={() => {
-            //               navigate(`/details/drop/${drop.id}`);
-            //             }}
-            //           >
-            //             <img
-            //               src={`${drop.image}`}
-            //               alt={`drop_${index}`}
-            //               className='rounded-xl mr-3'
-            //               style={{
-            //                 width: 165,
-            //                 height: 165,
-            //                 marginBottom: 21,
-            //                 objectFit: 'cover',
-            //                 objectPosition: 'center',
-            //               }}
-            //             />
-
-            //             <div
-            //               className='absolute left-0 bottom-0 text-white p-2 text-[13px] font-semibold flex-wrap'
-            //               style={{
-            //                 background: 'rgba(46, 46, 46, 0.70)',
-            //                 marginBottom: 27,
-            //                 marginLeft: 6,
-            //                 marginRight: 18,
-            //                 borderRadius: 6,
-            //               }}
-            //             >
-            //               {drop.name}
-            //             </div>
-            //           </div>
-            //         ))}
-            //       </div>
-            //     </>
-            //   ) : (
-            //     <div
-            //       className='text-white opacity-70 w-full font-semibold'
-            //       style={{ marginTop: 102 }}
-            //     >
-            //       <div className='flex justify-center items-center mb-2'>
-            //         No Created Drops
-            //       </div>
-            //       <div className='flex justify-center items-center text-center'>
-            //         Start sharing your experience to everyone by dropping
-            //         experience today ;)
-            //       </div>
-            //     </div>
-            //   )}
-            // </>
             <div className='collection__feed'>
               {Object.entries(userData).map(([key, data], dataIdx) => (
                 <>
                   {data.map((item: any, itemIdx: number) => (
                     <div
-                    className='mx-5'
+                      className='mx-5'
                       onClick={() => {
                         navigate(
                           `/details/${item.type}/${item?.id || item?.drop?.id}`
