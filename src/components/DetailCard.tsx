@@ -11,6 +11,7 @@ import {
   convertDistance,
 } from '../functions/calculateDistance';
 import { getUserByDropId } from '../middleware/data/user';
+import LazyImageCustom from './LazyImageCustom';
 
 interface ImageProps {
   src: string;
@@ -40,7 +41,6 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
       getUserByDropId({
         dropId: data.drop_id || data.id,
         onSuccess: (res) => {
-          console.log(res);
           setUserChecked(res);
         },
       });
@@ -76,7 +76,7 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
               {isHome()
                 ? `Created on ${moment(data.created_at).format('Do MMM')}`
                 : (data?.type === 'minted' ? 'Checked-in' : 'Created') +
-                  ` ${moment(data.created_at).startOf('hour').fromNow()}`}
+                ` ${moment(data.created_at).startOf('hour').fromNow()}`}
             </span>
           </div>
         </div>
@@ -103,16 +103,18 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
               objectPosition: 'center',
             }}
           >
-            <img
-              src={`${data.image || data?.drop?.image}`}
+            <LazyImageCustom
+              src={data?.drop?.image || data?.image}
+              alt='Drop Img'
+              className='skeleton'
+              size={[windowSize.width - 40, 377]}
               style={{
                 width: windowSize.width - 40,
                 height: 377,
                 borderRadius: 12,
                 objectFit: 'cover',
                 objectPosition: 'center',
-              }}
-            />
+              }} />
             <div
               className='absolute inset-0'
               style={{
@@ -151,13 +153,13 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
               {isHome()
                 ? label
                 : convertDistance(
-                    calculateDistance(
-                      data.lat || data?.drop.lat,
-                      data.lng || data?.drop.lng,
-                      data.user.lat,
-                      data.user.lng
-                    )
-                  )}{' '}
+                  calculateDistance(
+                    data.lat || data?.drop.lat,
+                    data.lng || data?.drop.lng,
+                    data.user.lat,
+                    data.user.lng
+                  )
+                )}{' '}
               away
             </div>
           </div>
@@ -165,37 +167,38 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
             <div className='relative h-[27.5px] flex justify-start items-center w-[55px]'>
               {isHome()
                 ? images.map((image, index) => (
-                    <img
-                      key={image.src}
-                      src={image.src}
-                      alt={image.alt}
-                      style={{
-                        border: '1.146px solid #FFF',
-                        position: 'absolute',
-                        width: '27.5px',
-                        height: '27.5px',
-                        borderRadius: '50%',
-                        left: `${index * overlap}px`, // Chồng lên 40%
-                        zIndex: index + 1,
-                      }}
-                    />
-                  ))
+                  <img
+                    key={image.src}
+                    src={image.src}
+                    alt={image.alt}
+                    style={{
+                      border: '1.146px solid #FFF',
+                      position: 'absolute',
+                      width: '27.5px',
+                      height: '27.5px',
+                      borderRadius: '50%',
+                      left: `${index * overlap}px`, // Chồng lên 40%
+                      zIndex: index + 1,
+                    }}
+                  />
+                ))
                 : userChecked.map((item: any, idx: number) => (
-                    <img
-                      key={idx}
-                      src={item.profileImage}
-                      alt={item.profileImage}
-                      style={{
-                        border: '1.146px solid #FFF',
-                        position: 'absolute',
-                        width: '27.5px',
-                        height: '27.5px',
-                        borderRadius: '50%',
-                        left: `${idx * overlap}px`, // Chồng lên 40%
-                        zIndex: idx + 1,
-                      }}
-                    />
-                  ))}
+                  <LazyImageCustom
+                    key={idx}
+                    src={item.profileImage}
+                    alt={item.profileImage}
+                    size={[30, 30]}
+                    style={{
+                      border: '1.146px solid #FFF',
+                      position: 'absolute',
+                      width: '27.5px',
+                      height: '27.5px',
+                      borderRadius: '50%',
+                      left: `${idx * overlap}px`, // Chồng lên 40%
+                      zIndex: idx + 1,
+                    }}
+                  />
+                ))}
             </div>
             {isHome() ? (
               <div className='bg-white text-black ml-2 p-2 text-[13px] font-medium rounded-full'>

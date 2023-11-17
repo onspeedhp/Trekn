@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
-import { useAuthContext } from '../context/AuthContext';
 import { Button } from 'antd';
 import {
   FaClone,
@@ -12,7 +11,7 @@ import {
 } from 'react-icons/fa';
 import { getDropByUserAddress } from '../middleware/data/drop';
 import { getMintedByUserAddress } from '../middleware/data/minted';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   checkClassNameAccountItem,
   getScore,
@@ -24,11 +23,13 @@ import {
 } from '../functions/calculateDistance';
 import { DetailCard } from '../components/DetailCard';
 import moment from 'moment';
+import LazyImageCustom from '../components/LazyImageCustom';
 
 export const Account = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('timeline');
   const [userData, setUserData] = useState<any[]>([]);
+  const [test,setTest] = useState('');
   const user = useSelector((state: any) => state.user);
 
   useEffect(() => {
@@ -180,11 +181,10 @@ export const Account = () => {
                         }}
                       >
                         <div className='w-[88px] h-[88px] relative'>
-                          <img
+                          <LazyImageCustom
                             src={item?.drop?.image || item?.image}
-                            alt=''
-                            className='w-full h-full rounded-xl object-cover'
-                          />
+                            alt='Drop Img'
+                            className='w-full h-full rounded-xl object-cover skeleton' />
                           <div
                             className={`absolute w-[2px] ${checkClassNameAccountItem(
                               itemIdx,
