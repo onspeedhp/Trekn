@@ -5,6 +5,7 @@ import CustomiseInput from '../components/CustomiseInput';
 import { updateUserDB } from '../middleware/data/user';
 import { updateUser } from '../redux/slides/userSlides';
 import { Spin } from 'antd';
+import { supabase } from '../utils/supabaseClients';
 
 interface initFormType { label: string; type: string; key: string };
 
@@ -17,6 +18,7 @@ export default function EditProfile() {
     const user = useSelector((state: any) => state.user);
     const dispatch = useDispatch();
     const [profileForm, setProfileForm] = useState<any>(null);
+    const [updateAvatar, setUpdateAvatar] = useState<File | null>(null);
     const [isDisabled, setIsDisabled] = useState(true);
     const [loading, setLoading] = useState(false);
 
@@ -30,15 +32,35 @@ export default function EditProfile() {
 
     const handleOnChange = (key: string, value: string) => {
         setIsDisabled(false);
-        setProfileForm((prev: any) => ({ ...prev, [key]: value }))
+        setProfileForm((prev: any) => ({ ...prev, [key]: value }));
+    }
+
+    const handleChangeAvatarFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.currentTarget.files) {
+            const selectedFiles = Array.from(e.currentTarget.files);
+            setUpdateAvatar(selectedFiles[0])
+            setIsDisabled(false);
+        }
     }
 
     const handleSubmit = async () => {
         setLoading(true);
         setIsDisabled(true);
         try {
+            let fileName
+            if (updateAvatar) {
+                const fileExt = updateAvatar.name.split('.').pop();
+                fileName = `${Math.random()}.${fileExt}`;
+                const newFilePath = `${fileName}`;
+                await supabase.storage.from('user_avatar').upload(newFilePath, updateAvatar);
+            }
             await updateUserDB({
-                userId: user.id, updateData: profileForm, onSuccess: (data) => {
+                userId: user.id,
+                updateData: {
+                    ...profileForm,
+                    profileImage: `${process.env.REACT_APP_SUPABASE_URL}/storage/v1/object/public/user_avatar/${fileName}`
+                },
+                onSuccess: (data) => {
                     dispatch(updateUser(data));
                 }
             })
@@ -76,10 +98,16 @@ export default function EditProfile() {
                 <div className='flex flex-col items-center justify-center gap-4 mt-9'>
                     <img
                         className='rounded-full w-[100px] h-[100px]'
-                        src={`${user.profileImage}`}
+                        src={`${updateAvatar ? window.URL.createObjectURL(updateAvatar) : user.profileImage}`}
                         alt=''
                     />
-                    <div className="text-[13px] leading-4 font-medium">
+                    <div className="text-[13px] leading-4 font-medium relative">
+                        <input
+                            type='file'
+                            accept='image/*'
+                            className='absolute opacity-0 w-full h-full'
+                            onChange={handleChangeAvatarFile}
+                        />
                         Edit avatar
                     </div>
                 </div>
