@@ -249,7 +249,7 @@ export const Account = () => {
                       className='mx-5'
                       onClick={() => {
                         navigate(
-                          `/details/${item.type}/${item?.id || item?.drop?.id}`
+                          `/details/drop/${item?.drop_id || item?.id}`
                         );
                       }}
                     >
