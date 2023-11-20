@@ -44,18 +44,18 @@ export const DropDetailPage = () => {
             calculateDistance(user.lat, user.lng, data[0].lat, data[0].lng)
           );
 
-          // if (!user.id) {
-          //   setMintStatus('Login to collect');
-          //   setDisable(false);
-          // } else {
-          //   setMintStatus('Collect');
-          //   if (!data[0].radius || distance <= data[0].radius) {
-          //     setDisable(false);
-          //   } else {
-          //     setDisable(true);
-          //     setMintStatus('Move closer to collect');
-          //   }
-          // }
+          if (!user.id) {
+            setMintStatus('Login to collect');
+            setDisable(false);
+          } else {
+            setMintStatus('Collect');
+            if (!data[0].radius || distance <= data[0].radius) {
+              setDisable(false);
+            } else {
+              setDisable(true);
+              setMintStatus('Move closer to collect');
+            }
+          }
         },
       });
     }
@@ -194,39 +194,6 @@ export const DropDetailPage = () => {
           loading={loading}
           onClick={async () => {
             setOpenDrawer(true);
-            // if (user.address) {
-            //   setLoading(true);
-            //   await mintCompressedNFT({
-            //     drop: selectedLocation,
-            //     userAddress: new PublicKey(user.address),
-            //     userId: user.id,
-            //     onSuccess: (data: any) => {
-            //       setMetadata({
-            //         sig: data,
-            //         ...selectedLocation,
-            //       });
-            //       navigate('/collect-success');
-            //     },
-            //     onError: (error) => {
-            //       Modal.error({
-            //         title: 'Error',
-            //         content: error,
-            //         okButtonProps: {
-            //           type: 'default',
-            //           style: {
-            //             background: 'red',
-            //             color: 'white',
-            //           },
-            //         },
-            //       });
-            //     },
-            //   });
-            //   setLoading(false);
-            // } else {
-            //   setLoading(true);
-            //   await init();
-            //   setLoading(false);
-            // }
           }}
           disabled={disable}
         >
@@ -290,18 +257,58 @@ export const DropDetailPage = () => {
             </defs>
           </svg>
           <div className='flex-col' style={{ marginLeft: -4, marginRight: -4 }}>
-            <Button className='flex font-semibold w-full rounded-3xl h-20 bg-[#F6F6F6] items-center justify-center mb-4 border-0 mt-[45px]'>
+            <Button
+              className='flex font-semibold w-full rounded-3xl h-20 bg-[#F6F6F6] items-center justify-center mb-4 border-0 mt-[45px]'
+              disabled={true}
+            >
               <FaCamera size={32} className='mr-3' />
               Check-in with your photo
             </Button>
-            <Button className='flex font-semibold w-full rounded-3xl h-20 bg-[#F6F6F6] items-center justify-center border-0'>
+            <Button
+              className='flex font-semibold w-full rounded-3xl h-20 bg-[#F6F6F6] items-center justify-center border-0'
+              onClick={async () => {
+                if (user.address) {
+                  setLoading(true);
+                  await mintCompressedNFT({
+                    drop: selectedLocation,
+                    userAddress: new PublicKey(user.address),
+                    userId: user.id,
+                    onSuccess: (data: any) => {
+                      setMetadata({
+                        sig: data,
+                        ...selectedLocation,
+                      });
+                      navigate('/collect-success');
+                    },
+                    onError: (error) => {
+                      Modal.error({
+                        title: 'Error',
+                        content: error,
+                        okButtonProps: {
+                          type: 'default',
+                          style: {
+                            background: 'red',
+                            color: 'white',
+                          },
+                        },
+                      });
+                    },
+                  });
+                  setLoading(false);
+                } else {
+                  setLoading(true);
+                  await init();
+                  setLoading(false);
+                }
+              }}
+            >
               <FaBolt size={32} className='mr-3' />
               Check-in now
             </Button>
           </div>
         </Drawer>
 
-        <CustomWebcam />
+        {/* <CustomWebcam /> */}
       </div>
     </>
   );
