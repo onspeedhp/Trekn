@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { getLabelLocation } from '../utils/common.utils';
+import { checkTimeAgo, getLabelLocation } from '../utils/common.utils';
 import parse from 'html-react-parser';
 import { useAuthContext } from '../context/AuthContext';
 import { DropDetail } from './DropDetail';
@@ -37,14 +37,12 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
   };
 
   useEffect(() => {
-    if (!isHome()) {
-      getUserByDropId({
-        dropId: data.drop_id || data.id,
-        onSuccess: (res) => {
-          setUserChecked(res);
-        },
-      });
-    }
+    getUserByDropId({
+      dropId: data.drop_id || data.id,
+      onSuccess: (res) => {
+        setUserChecked(res);
+      },
+    });
   }, []);
 
   return (
@@ -73,10 +71,7 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
               <FaPlusCircle className='w-3 h-3' />
             )}
             <span className='font-medium text-black opacity-50 ml-1'>
-              {isHome()
-                ? `Created on ${moment(data.created_at).format('Do MMM')}`
-                : (data?.type === 'minted' ? 'Checked-in' : 'Created') +
-                ` ${moment(data.created_at).startOf('hour').fromNow()}`}
+                {checkTimeAgo(data.created_at)}
             </span>
           </div>
         </div>
@@ -165,51 +160,28 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
           </div>
           <div className='mt-4 flex items-center'>
             <div className='relative h-[27.5px] flex justify-start items-center w-[55px]'>
-              {isHome()
-                ? images.map((image, index) => (
-                  <img
-                    key={image.src}
-                    src={image.src}
-                    alt={image.alt}
-                    style={{
-                      border: '1.146px solid #FFF',
-                      position: 'absolute',
-                      width: '27.5px',
-                      height: '27.5px',
-                      borderRadius: '50%',
-                      left: `${index * overlap}px`, // Chồng lên 40%
-                      zIndex: index + 1,
-                    }}
-                  />
-                ))
-                : userChecked.map((item: any, idx: number) => (
-                  <LazyImageCustom
-                    key={idx}
-                    src={item.profileImage}
-                    alt={item.profileImage}
-                    size={[30, 30]}
-                    style={{
-                      border: '1.146px solid #FFF',
-                      position: 'absolute',
-                      width: '27.5px',
-                      height: '27.5px',
-                      borderRadius: '50%',
-                      left: `${idx * overlap}px`, // Chồng lên 40%
-                      zIndex: idx + 1,
-                    }}
-                  />
-                ))}
+              {userChecked.map((item: any, idx: number) => (
+                <LazyImageCustom
+                  key={idx}
+                  src={item.profileImage}
+                  alt={item.profileImage}
+                  size={[30, 30]}
+                  style={{
+                    border: '1.146px solid #FFF',
+                    position: 'absolute',
+                    width: '27.5px',
+                    height: '27.5px',
+                    borderRadius: '50%',
+                    left: `${idx * overlap}px`, // Chồng lên 40%
+                    zIndex: idx + 1,
+                  }}
+                />))
+              }
             </div>
-            {isHome() ? (
+            {userChecked?.length > 0 && (
               <div className='bg-white text-black ml-2 p-2 text-[13px] font-medium rounded-full'>
-                12 checked-in
+                {userChecked.length} checked-in
               </div>
-            ) : (
-              userChecked?.length > 0 && (
-                <div className='bg-white text-black ml-2 p-2 text-[13px] font-medium rounded-full'>
-                  {userChecked.length} checked-in
-                </div>
-              )
             )}
           </div>
         </div>

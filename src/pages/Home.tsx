@@ -133,7 +133,7 @@ function Home() {
             </div>
 
             <Button
-              className='absolute top-[508px] right-4 w-[56px] h-[56px] rounded-full border-0'
+              className='fixed top-[90%] right-4 w-[56px] h-[56px] rounded-full border-0'
               style={{ backgroundColor: 'rgba(148, 255, 65, 0.80)' }}
               onClick={async () => {
                 if (user.id) {

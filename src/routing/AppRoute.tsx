@@ -10,13 +10,13 @@ import { AddDescription } from '../pages/AddDescription';
 import { Confirm } from '../pages/Confirm';
 import { DropSuccess } from '../pages/DropSuccess';
 import { Account } from '../pages/Account';
-import { NftDetails } from '../pages/NftDetails';
 import { MintSuccess } from '../pages/MintSuccess';
 import { Reaction } from '../pages/Reaction';
 import { MapGL } from '../pages/MapGL';
 import { DraggableLocation } from '../pages/DraggableLocation';
 import { DropDetailPage } from '../pages/DropDetailPage';
 import EditProfile from '../pages/EditProfile';
+import { NftDetails } from '../pages/NftDetails';
 
 const AppRoutes = () => (
   <BrowserRouter basename='/'>

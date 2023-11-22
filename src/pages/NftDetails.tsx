@@ -5,7 +5,7 @@ import { getDropByID } from '../middleware/data/drop';
 import moment, { min } from 'moment';
 import { useAuthContext } from '../context/AuthContext';
 import { useSelector } from 'react-redux';
-import { FaCirclePlus, FaMapPin, FaThumbsUp } from 'react-icons/fa6';
+import { FaCirclePlus, FaFaceKissWinkHeart, FaMapPin, FaThumbsUp } from 'react-icons/fa6';
 import { getScore } from '../utils/account.util';
 import Map, { Marker } from 'react-map-gl';
 import { getUserByDropId } from '../middleware/data/user';
@@ -181,7 +181,7 @@ export const NftDetails = () => {
                       {data.user.address.slice(-6, -1)}
                     </div>
                   </div>
-                  {userChecked.map((user: any, idx: number) => (
+                  {userChecked.length > 0 ? userChecked.map((user: any, idx: number) => (
                     <div className="flex items-center gap-3" key={idx}>
                       <img src={user.profileImage} alt="main user" className="rounded-full w-12 h-12" />
                       <div className="text-base font-medium">
@@ -191,8 +191,17 @@ export const NftDetails = () => {
                         {user.address.slice(0, 2)}...
                         {user.address.slice(-6, -1)}
                       </div>
+                      <FaFaceKissWinkHeart
+                        size={24}
+                        className='text-black ml-auto'
+                      />
                     </div>
-                  ))}
+                  )) :
+                    <div className="flex justify-center items-center flex-col gap-4 bg-[#F5F5F5] rounded-lg py-9 px-16">
+                      <img src="/traveler.svg" alt="" />
+                      <p>Be the first one checked in here</p>
+                    </div>
+                  }
                 </div>
               </div>
             </>
