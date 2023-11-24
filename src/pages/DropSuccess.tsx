@@ -55,8 +55,8 @@ export const DropSuccess = () => {
             />
           </svg>
           <div className='text-2xl my-3'>Drop successful</div>
-          <div className='text-white opacity-50'>
-            Now anyone can get here and collect your drops. Have fun dropping!
+          <div className='text-[#ffffff80]'>
+            Now anyone can get here and check-in.<br />Have fun dropping!
           </div>
         </div>
         <div
