@@ -176,7 +176,7 @@ export const Account = () => {
                         key={itemIdx}
                         onClick={() => {
                           navigate(
-                            `/details/drop/${item?.drop_id || item?.id}`
+                            `/drop/details/${item?.drop_id || item?.id}`
                           );
                         }}
                       >
@@ -249,7 +249,7 @@ export const Account = () => {
                       className='mx-5'
                       onClick={() => {
                         navigate(
-                          `/details/drop/${item?.drop_id || item?.id}`
+                          `/drop/details/${item?.drop_id || item?.id}`
                         );
                       }}
                     >

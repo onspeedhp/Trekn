@@ -16,7 +16,6 @@ import { MapGL } from '../pages/MapGL';
 import { DraggableLocation } from '../pages/DraggableLocation';
 import { DropDetailPage } from '../pages/DropDetailPage';
 import EditProfile from '../pages/EditProfile';
-import { NftDetails } from '../pages/NftDetails';
 
 const AppRoutes = () => (
   <BrowserRouter basename='/'>
@@ -67,16 +66,6 @@ const AppRoutes = () => (
       <Route
         path='/account/edit'
         element={<App header={Header} hideHeader={true} layout={EditProfile} />}
-      ></Route>
-
-      <Route
-        path='/details/minted/:mintedId'
-        element={<App header={Header} hideHeader={true} layout={NftDetails} />}
-      ></Route>
-
-      <Route
-        path='/details/drop/:dropId'
-        element={<App header={Header} hideHeader={true} layout={NftDetails} />}
       ></Route>
 
       <Route

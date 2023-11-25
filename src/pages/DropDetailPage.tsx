@@ -49,26 +49,31 @@ export const DropDetailPage = () => {
             calculateDistance(user.lat, user.lng, data[0].lat, data[0].lng)
           );
 
-          if (!user.id) {
-            setMintStatus('Login to collect');
-            setDisable(false);
-          } else {
-            setMintStatus('Collect');
-            if (!data[0].radius || distance <= data[0].radius) {
-              setDisable(false);
-            } else {
-              setDisable(true);
-              setMintStatus('Move closer to collect');
-            }
-          }
+          getUserByDropId({
+            dropId: Number(dropId),
+            onSuccess: (data: any) => {
+              data.map((item: any) => {
+                if (!user.id) {
+                  setMintStatus('Login to collect');
+                  setDisable(false);
+                } else if (item?.id === user?.id) {
+                  setDisable(true);
+                  setMintStatus('Collected');
+                } else {
+                  setMintStatus('Collect');
+                  if (!data[0].radius || distance <= data[0].radius) {
+                    setDisable(false);
+                  } else {
+                    setDisable(true);
+                    setMintStatus('Move closer to collect');
+                  }
+                }
+              })
+              setUserChecked(data);
+            },
+          })
         },
       });
-      getUserByDropId({
-        dropId: Number(dropId),
-        onSuccess: (data: any) => {
-          setUserChecked(data);
-        },
-      })
     }
   }, [user]);
 
@@ -217,125 +222,129 @@ export const DropDetailPage = () => {
                   </div>
                 }
               </div>
-              <Button
-                className='h-12 rounded-3xl text-white bg-black'
-                style={{ width: windowSize.width - 40 }}
-                loading={loading}
-                onClick={async () => {
-                  setOpenDrawer(true);
-                }}
-                disabled={disable}
-              >
-                {mintStatus}
-              </Button>
-
-              <Drawer
-                height={265}
-                open={openDrawer}
-                placement='bottom'
-                className='rounded-t-3xl h-[265px] relative'
-                onClose={() => {
-                  setOpenDrawer(false);
-                }}
-                closeIcon={false}
-              >
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  width='30'
-                  height='30'
-                  viewBox='0 0 30 30'
-                  fill='none'
-                  className='absolute right-3 top-3'
-                  onClick={() => setOpenDrawer(false)}
-                >
-                  <g filter='url(#filter0_b_39_3010)'>
-                    <rect width='30' height='30' rx='15' fill='#F2F2F7' />
-                    <path
-                      d='M10.0488 19.1811C9.73779 19.4921 9.73145 20.0444 10.0552 20.3681C10.3853 20.6918 10.9375 20.6855 11.2422 20.3808L15 16.623L18.7515 20.3745C19.0688 20.6918 19.6147 20.6918 19.9385 20.3681C20.2622 20.038 20.2622 19.4985 19.9448 19.1811L16.1934 15.4296L19.9448 11.6718C20.2622 11.3544 20.2686 10.8085 19.9385 10.4848C19.6147 10.1611 19.0688 10.1611 18.7515 10.4785L15 14.2299L11.2422 10.4785C10.9375 10.1674 10.3789 10.1547 10.0552 10.4848C9.73145 10.8085 9.73779 11.3671 10.0488 11.6718L13.8003 15.4296L10.0488 19.1811Z'
-                      fill='#3C3C43'
-                      fillOpacity='0.6'
-                    />
-                  </g>
-                  <defs>
-                    <filter
-                      id='filter0_b_39_3010'
-                      x='-54.3656'
-                      y='-54.3656'
-                      width='138.731'
-                      height='138.731'
-                      filterUnits='userSpaceOnUse'
-                      colorInterpolationFilters='sRGB'
-                    >
-                      <feFlood floodOpacity='0' result='BackgroundImageFix' />
-                      <feGaussianBlur
-                        in='BackgroundImageFix'
-                        stdDeviation='27.1828'
-                      />
-                      <feComposite
-                        in2='SourceAlpha'
-                        operator='in'
-                        result='effect1_backgroundBlur_39_3010'
-                      />
-                      <feBlend
-                        mode='normal'
-                        in='SourceGraphic'
-                        in2='effect1_backgroundBlur_39_3010'
-                        result='shape'
-                      />
-                    </filter>
-                  </defs>
-                </svg>
-                <div className='flex-col' style={{ marginLeft: -4, marginRight: -4 }}>
+              {selectedLocation.user.id !== user.id &&
+                <>
                   <Button
-                    className='flex font-semibold w-full rounded-3xl h-20 bg-[#F6F6F6] items-center justify-center mb-4 border-0 mt-[45px]'
-                    disabled={true}
-                  >
-                    <FaCamera size={32} className='mr-3' />
-                    Check-in with your photo
-                  </Button>
-                  <Button
-                    className='flex font-semibold w-full rounded-3xl h-20 bg-[#F6F6F6] items-center justify-center border-0'
+                    className='h-12 rounded-3xl text-white bg-black'
+                    style={{ width: windowSize.width - 40 }}
+                    loading={loading}
                     onClick={async () => {
-                      if (user.address) {
-                        setLoading(true);
-                        await mintCompressedNFT({
-                          drop: selectedLocation,
-                          userAddress: new PublicKey(user.address),
-                          userId: user.id,
-                          onSuccess: (data: any) => {
-                            setMetadata({
-                              sig: data,
-                              ...selectedLocation,
-                            });
-                            navigate('/collect-success');
-                          },
-                          onError: (error) => {
-                            Modal.error({
-                              title: 'Error',
-                              content: error,
-                              okButtonProps: {
-                                type: 'default',
-                                style: {
-                                  background: 'red',
-                                  color: 'white',
-                                },
+                      setOpenDrawer(true);
+                    }}
+                    disabled={disable}
+                  >
+                    {mintStatus}
+                  </Button>
+
+                  <Drawer
+                    height={265}
+                    open={openDrawer}
+                    placement='bottom'
+                    className='rounded-t-3xl h-[265px] relative'
+                    onClose={() => {
+                      setOpenDrawer(false);
+                    }}
+                    closeIcon={false}
+                  >
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      width='30'
+                      height='30'
+                      viewBox='0 0 30 30'
+                      fill='none'
+                      className='absolute right-3 top-3'
+                      onClick={() => setOpenDrawer(false)}
+                    >
+                      <g filter='url(#filter0_b_39_3010)'>
+                        <rect width='30' height='30' rx='15' fill='#F2F2F7' />
+                        <path
+                          d='M10.0488 19.1811C9.73779 19.4921 9.73145 20.0444 10.0552 20.3681C10.3853 20.6918 10.9375 20.6855 11.2422 20.3808L15 16.623L18.7515 20.3745C19.0688 20.6918 19.6147 20.6918 19.9385 20.3681C20.2622 20.038 20.2622 19.4985 19.9448 19.1811L16.1934 15.4296L19.9448 11.6718C20.2622 11.3544 20.2686 10.8085 19.9385 10.4848C19.6147 10.1611 19.0688 10.1611 18.7515 10.4785L15 14.2299L11.2422 10.4785C10.9375 10.1674 10.3789 10.1547 10.0552 10.4848C9.73145 10.8085 9.73779 11.3671 10.0488 11.6718L13.8003 15.4296L10.0488 19.1811Z'
+                          fill='#3C3C43'
+                          fillOpacity='0.6'
+                        />
+                      </g>
+                      <defs>
+                        <filter
+                          id='filter0_b_39_3010'
+                          x='-54.3656'
+                          y='-54.3656'
+                          width='138.731'
+                          height='138.731'
+                          filterUnits='userSpaceOnUse'
+                          colorInterpolationFilters='sRGB'
+                        >
+                          <feFlood floodOpacity='0' result='BackgroundImageFix' />
+                          <feGaussianBlur
+                            in='BackgroundImageFix'
+                            stdDeviation='27.1828'
+                          />
+                          <feComposite
+                            in2='SourceAlpha'
+                            operator='in'
+                            result='effect1_backgroundBlur_39_3010'
+                          />
+                          <feBlend
+                            mode='normal'
+                            in='SourceGraphic'
+                            in2='effect1_backgroundBlur_39_3010'
+                            result='shape'
+                          />
+                        </filter>
+                      </defs>
+                    </svg>
+                    <div className='flex-col' style={{ marginLeft: -4, marginRight: -4 }}>
+                      <Button
+                        className='flex font-semibold w-full rounded-3xl h-20 bg-[#F6F6F6] items-center justify-center mb-4 border-0 mt-[45px]'
+                        disabled={true}
+                      >
+                        <FaCamera size={32} className='mr-3' />
+                        Check-in with your photo
+                      </Button>
+                      <Button
+                        className='flex font-semibold w-full rounded-3xl h-20 bg-[#F6F6F6] items-center justify-center border-0'
+                        onClick={async () => {
+                          if (user.address) {
+                            setLoading(true);
+                            await mintCompressedNFT({
+                              drop: selectedLocation,
+                              userAddress: new PublicKey(user.address),
+                              userId: user.id,
+                              onSuccess: (data: any) => {
+                                setMetadata({
+                                  sig: data,
+                                  ...selectedLocation,
+                                });
+                                navigate('/collect-success');
+                              },
+                              onError: (error) => {
+                                Modal.error({
+                                  title: 'Error',
+                                  content: error,
+                                  okButtonProps: {
+                                    type: 'default',
+                                    style: {
+                                      background: 'red',
+                                      color: 'white',
+                                    },
+                                  },
+                                });
                               },
                             });
-                          },
-                        });
-                        setLoading(false);
-                      } else {
-                        setLoading(true);
-                        await init();
-                        setLoading(false);
-                      }
-                    }}
-                  >
-                    <FaBolt size={32} className='mr-3' />
-                    Check-in now
-                  </Button>
-                </div>
-              </Drawer>
+                            setLoading(false);
+                          } else {
+                            setLoading(true);
+                            await init();
+                            setLoading(false);
+                          }
+                        }}
+                      >
+                        <FaBolt size={32} className='mr-3' />
+                        Check-in now
+                      </Button>
+                    </div>
+                  </Drawer>
+                </>
+              }
             </div>
           </>
         )}
