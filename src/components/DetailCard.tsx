@@ -45,6 +45,14 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
     });
   }, []);
 
+  const getWidth = () => {
+    console.log(userChecked.length)
+    if(userChecked.length > 1) {
+      return `${22.4 * userChecked.length}px`
+    }
+    return '28px'
+  }
+
   return (
     <div className={`${isHome() ? 'pb-6' : 'pb-8'}`}>
       {isHome() && (
@@ -159,7 +167,8 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
             </div>
           </div>
           <div className='mt-4 flex items-center'>
-            <div className='relative h-[27.5px] flex justify-start items-center w-[55px]'>
+            <div className='relative h-[27.5px] flex justify-start items-center'
+            style={{width: getWidth()}}>
               {userChecked.map((item: any, idx: number) => (
                 <LazyImageCustom
                   key={idx}
