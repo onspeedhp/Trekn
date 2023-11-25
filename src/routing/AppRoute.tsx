@@ -3,7 +3,6 @@ import App from '../App';
 import Home from '../pages/Home';
 import Header from '../components/Header';
 import { DropOnboarding } from '../pages/DropOnboarding';
-import { EnterName } from '../pages/EnterName';
 import { UploadImage } from '../pages/UploadImage';
 import { SelectLocation } from '../pages/SelectLocation';
 import { AddDescription } from '../pages/AddDescription';
@@ -16,6 +15,7 @@ import { MapGL } from '../pages/MapGL';
 import { DraggableLocation } from '../pages/DraggableLocation';
 import { DropDetailPage } from '../pages/DropDetailPage';
 import EditProfile from '../pages/EditProfile';
+import { EnterDropInfo } from '../pages/EnterName';
 
 const AppRoutes = () => (
   <BrowserRouter basename='/'>
@@ -32,8 +32,8 @@ const AppRoutes = () => (
       ></Route>
 
       <Route
-        path='/drop-onboarding/enter-name'
-        element={<App header={Header} hideHeader={true} layout={EnterName} />}
+        path='/drop-onboarding/enter-info'
+        element={<App header={Header} hideHeader={true} layout={EnterDropInfo} />}
       ></Route>
 
       <Route

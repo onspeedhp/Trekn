@@ -2,12 +2,18 @@ import { useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import { useAuthContext } from '../context/AuthContext';
 import { Button, Modal } from 'antd';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { FaCheckCircle, FaPen } from 'react-icons/fa';
+import { supabase } from '../utils/supabaseClients';
+import { createDrop } from '../middleware/data/drop';
+import { addNewReadyToCollect } from '../redux/slides/locationSlides';
 
-export const EnterName = () => {
+export const EnterDropInfo = () => {
   const navigate = useNavigate();
   const { metadata, setMetadata } = useAuthContext();
   const user = useSelector((state: any) => state.user);
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const handleError = () => {
     const modal = Modal.error({
@@ -44,8 +50,8 @@ export const EnterName = () => {
   }, []);
   return (
     <>
-      <div className='bg-black absolute' style={{ height: 812 }}>
-        <div className='m-5 text-white font-semibold'>
+      <div className='bg-black min-h-screen'>
+        <div className='p-5 text-white font-semibold'>
           <svg
             xmlns='http://www.w3.org/2000/svg'
             width='17'
@@ -63,42 +69,101 @@ export const EnterName = () => {
               fillOpacity='0.7'
             />
           </svg>
-          <div className='mb-12'>
-            <div className='text-white text-2xl font-bold mb-2'>
-              Name the experience
+          <div className='flex items-center justify-between mb-6'>
+            <div className="relative w-[120px] h-[120px] rounded-xl overflow-hidden">
+              <img className='w-full h-full object-cover' src={URL.createObjectURL(metadata.image || metadata.imageArray[0])} alt="" />
+
+              {metadata.imageArray?.length > 1 &&
+                <div className="absolute px-3 py-1 bg-[#ffffff70] text-black bottom-2 right-2 rounded-[999px] font-medium text-[13px]">
+                  {metadata.imageArray?.length}
+                </div>
+              }
             </div>
-            <div className='text-white text-lg opacity-70'>
-              Is it a coffee, a restaurant or an event? Make it simple and
-              memorable.
-            </div>
+            <div className="py-2 px-4 bg-white rounded-full text-black font-medium" onClick={() => navigate('/drop-onboarding/upload-image')}>Edit media</div>
           </div>
 
-          <div className='relative'>
-            <input
-              placeholder='The mockingbird...'
-              className='text-white bg-black w-full text-2xl h-10 font-normal pr-10 focus:outline-none'
-              value={metadata.name}
-              onChange={(e) => {
-                setMetadata({ ...metadata, name: e.target.value });
-              }}
-            />
+          <div className='relative flex flex-col gap-4'>
+            <label className='text-[13px] text-[#BDBDBA] font-medium leading-4'>Drop name</label>
+            <div className="border-none rounded-xl overflow-hidden mt-1">
+              <input defaultValue={metadata.name}
+                onChange={(e) => {
+                  setMetadata({ ...metadata, name: e.target.value });
+                }} type="text" className='py-4 px-3 w-full focus-visible:outline-none text-base font-medium bg-[#212121de] text-white' />
+            </div>
+            <label className='text-[13px] text-[#BDBDBA] font-medium leading-4'>Drop name</label>
+            <div className="border-none overflow-hidden mt-1">
+              <textarea onChange={(e) => {
+                setMetadata({ ...metadata, description: e.target.value });
+              }} value={metadata.description}
+                className="py-4 px-3 w-full h-32 rounded-xl focus-visible:outline-none text-base font-medium resize-none bg-[#212121de] text-white"
+              />
+            </div>
+            <label className='text-[13px] text-[#BDBDBA] font-medium leading-4'>Drop location</label>
+            <div className="border-none rounded-xl overflow-hidden mt-1 relative">
+              <input defaultValue={metadata.location} disabled={true} className='text-ellipsis py-4 px-3 pr-12 w-full focus-visible:outline-none text-base font-medium bg-[#212121de] text-white' />
+              <div className="rounded-full bg-[#373737] p-2 absolute top-3 right-3">
+                <FaPen />
+              </div>
+            </div>
           </div>
 
           <Button
-            className='bg-[#2E2E2E] text-white w-full h-12 rounded-3xl font-semibold text-base mt-80 border-0'
+            className='bg-[#2E2E2E] flex items-center justify-center w-full h-12 mt-7 rounded-3xl font-semibold text-base border-0'
             disabled={metadata.name ? false : true}
             style={{
-              backgroundColor: metadata.name ? '#2E2E2E' : '#2E2E2E',
-              color: metadata.name ? 'white' : '#FFFFFF80',
+              backgroundColor: metadata.name && metadata.description ? '#2E2E2E' : '#2E2E2E',
+              color: metadata.name && metadata.description ? 'white' : '#FFFFFF80',
             }}
-            onClick={() => {
-              navigate(`/drop-onboarding/add-description`);
+            onClick={async () => {
+              setIsLoading(true);
+
+              let imageArray: string[] = [];
+              let reduxImageArray: string[] = [];
+              await metadata.imageArray.forEach(async (file: any) => {
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Math.random()}.${fileExt}`;
+                const newFilePath = `${fileName}`;
+                imageArray.push(
+                  `${process.env.REACT_APP_SUPABASE_URL}/storage/v1/object/public/drop_image/${fileName}`
+                );
+                reduxImageArray.push(URL.createObjectURL(file));
+
+                await supabase.storage
+                  .from('drop_image')
+                  .upload(newFilePath, file);
+              });
+              const image = imageArray[0];
+              await createDrop({
+                drop: {
+                  ...metadata,
+                  image,
+                  imageArray: imageArray,
+                  author_id: user.id,
+                },
+                user: user,
+                onSuccess: (data) => {
+                  const drop = data[0];
+                  dispatch(
+                    addNewReadyToCollect({
+                      newReadyToCollect: {
+                        ...drop,
+                        image: URL.createObjectURL(metadata.image),
+                        imageArray: reduxImageArray,
+                      },
+                    })
+                  );
+                },
+              });
+              setIsLoading(false);
+              navigate('/drop-onboarding/success');
             }}
+            loading={isLoading}
           >
-            Continue
+            <FaCheckCircle size={18} className='text-[#FFFFFF] mr-2' />
+            Confirm to drop
           </Button>
         </div>
-      </div>
+      </div >
     </>
   );
 };

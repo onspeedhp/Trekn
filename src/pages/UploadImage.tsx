@@ -59,12 +59,11 @@ export const UploadImage = () => {
           </svg>
 
           <div className='mb-12'>
-            <div className='text-white text-2xl font-bold mb-2'>
-              Bring in your experience
+            <div className='text-white text-2xl font-semibold mb-2'>
+              Add your moments
             </div>
-            <div className='text-white text-lg opacity-70'>
-              Upload your image and let us transform it into an NFT, use your
-              imagination.
+            <div className='text-white text-base font-normal opacity-70'>
+              Capture your moments and share it with  other explorers.
             </div>
           </div>
 
