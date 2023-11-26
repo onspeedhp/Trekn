@@ -302,7 +302,7 @@ export const DropDetailPage = () => {
                 >
                   <Button
                     className='flex font-semibold w-full rounded-3xl h-20 bg-[#F6F6F6] items-center justify-center mb-4 border-0 mt-[45px]'
-                    disabled={true}
+                    // disabled={true}
                     onClick={() => {
                       navigate('/collect-with-photo');
                     }}

@@ -90,7 +90,7 @@ export const EnterDropInfo = () => {
                   setMetadata({ ...metadata, name: e.target.value });
                 }} type="text" className='py-4 px-3 w-full focus-visible:outline-none text-base font-medium bg-[#212121de] text-white' />
             </div>
-            <label className='text-[13px] text-[#BDBDBA] font-medium leading-4'>Drop name</label>
+            <label className='text-[13px] text-[#BDBDBA] font-medium leading-4'>Drop description</label>
             <div className="border-none overflow-hidden mt-1">
               <textarea onChange={(e) => {
                 setMetadata({ ...metadata, description: e.target.value });

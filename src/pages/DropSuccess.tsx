@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 
 export const DropSuccess = () => {
   const navigate = useNavigate();
-  const { metadata, setMetadata } = useAuthContext();
+  const { metadata, setMetadata, windowSize } = useAuthContext();
 
   const handleError = () => {
     const modal = Modal.error({
@@ -23,7 +23,7 @@ export const DropSuccess = () => {
     setTimeout(() => {
       setMetadata({});
       modal.destroy();
-      navigate('/drop-onboarding/enter-name');
+      navigate('/drop-onboarding/upload-image');
     }, 2000);
   };
 
@@ -39,7 +39,10 @@ export const DropSuccess = () => {
   }, []);
 
   return (
-    <div className='bg-black absolute w-full' style={{ height: 812 }}>
+    <div
+      className='bg-black absolute w-full'
+      style={{ height: windowSize.height }}
+    >
       <div className='mx-5 text-white' style={{ marginTop: 58 }}>
         <div className='flex-col mb-6'>
           <svg
