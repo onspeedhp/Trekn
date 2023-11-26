@@ -25,12 +25,9 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [userChecked, setUserChecked] = useState([]);
   const location = useLocation();
+  const [lastChecked, setLastChecked] = useState<any>(null);
+
   const overlap = 13.75;
-  const images: ImageProps[] = [
-    { src: `${data.user.profileImage}`, alt: 'Image 1' },
-    { src: `${data.user.profileImage}`, alt: 'Image 2' },
-    { src: `${data.user.profileImage}`, alt: 'Image 3' },
-  ];
 
   const isHome = () => {
     return location.pathname === '/' || location.pathname === '/home';
@@ -41,16 +38,31 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
       dropId: data.drop_id || data.id,
       onSuccess: (res) => {
         setUserChecked(res);
+
+        if (res) {
+          for (let userChecked of res) {
+            if (userChecked.minted.length > 0) {
+              const have_last_checked =
+                moment().unix() -
+                  moment(userChecked.minted[0].created_at).unix() <=
+                60 * 60 * 24 * 2;
+
+              if (have_last_checked) {
+                setLastChecked(userChecked);
+              }
+            }
+          }
+        }
       },
     });
   }, []);
 
   const getWidth = () => {
-    if(userChecked.length > 1) {
-      return `${22.4 * userChecked.length}px`
+    if (userChecked.length > 1) {
+      return `${22.4 * userChecked.length}px`;
     }
-    return '28px'
-  }
+    return '28px';
+  };
 
   return (
     <div className={`${isHome() ? 'pb-6' : 'pb-8'}`}>
@@ -61,12 +73,22 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
           setIsDrawerVisible={setIsDrawerVisible}
         />
       )}
+      {isHome() && lastChecked && (
+        <>
+          <div className='text-[13px] text-black opacity-70 flex items-center px-1 mb-3'>
+            <FaMapPin className='w-3 h-3 mr-2' /> {lastChecked.name} checkin{' '}
+            {moment(lastChecked.minted[0].created_at).startOf('hour').fromNow()}
+          </div>
+        </>
+      )}
+
       <div className='flex items-center' key={data.id}>
         <img
           src={`${data.user.profileImage}`}
           className='w-10 h-10 mr-2 rounded-full'
           alt=''
         />
+
         <div className='flex-col'>
           <span className='font-medium mb-2'>{data.user.name}</span>
           <div className='flex items-center'>
@@ -78,7 +100,7 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
               <FaPlusCircle className='w-3 h-3' />
             )}
             <span className='font-medium text-black opacity-50 ml-1'>
-                {checkTimeAgo(data.created_at)}
+              {checkTimeAgo(data.created_at)}
             </span>
           </div>
         </div>
@@ -88,7 +110,6 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
         style={{
           height: 377,
           backgroundColor: '#525252',
-          marginRight: status === 'ReadyToCollect' ? 12 : 0,
         }}
         onClick={() => {
           // setIsDrawerVisible(true);
@@ -116,7 +137,8 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
                 borderRadius: 12,
                 objectFit: 'cover',
                 objectPosition: 'center',
-              }} />
+              }}
+            />
             <div
               className='absolute inset-0'
               style={{
@@ -155,19 +177,21 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
               {isHome()
                 ? label
                 : convertDistance(
-                  calculateDistance(
-                    data.lat || data?.drop.lat,
-                    data.lng || data?.drop.lng,
-                    data.user.lat,
-                    data.user.lng
-                  )
-                )}{' '}
+                    calculateDistance(
+                      data.lat || data?.drop.lat,
+                      data.lng || data?.drop.lng,
+                      data.user.lat,
+                      data.user.lng
+                    )
+                  )}{' '}
               away
             </div>
           </div>
           <div className='mt-4 flex items-center'>
-            <div className='relative h-[27.5px] flex justify-start items-center'
-            style={{width: getWidth()}}>
+            <div
+              className='relative h-[27.5px] flex justify-start items-center'
+              style={{ width: getWidth() }}
+            >
               {userChecked.map((item: any, idx: number) => (
                 <LazyImageCustom
                   key={idx}
@@ -183,8 +207,8 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
                     left: `${idx * overlap}px`, // Chồng lên 40%
                     zIndex: idx + 1,
                   }}
-                />))
-              }
+                />
+              ))}
             </div>
             {userChecked?.length > 0 && (
               <div className='bg-white text-black ml-2 p-2 text-[13px] font-medium rounded-full'>
