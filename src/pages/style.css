@@ -4,6 +4,12 @@
   color: inherit !important; /* Inherit the text color on hover */
 }
 
+* {
+  font-family: 'Work Sans', sans-serif;
+  padding: 0;
+  margin: 0;
+}
+
 .drawer {
   backdrop-filter: blur(21px);
 }

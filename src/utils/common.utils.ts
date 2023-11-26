@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { convertDistance } from '../functions/calculateDistance';
 import { AwayIcon, MileageIcon, ReadyToMintIcon } from '../icons';
 
@@ -104,3 +105,25 @@ export const formatNumber = (
     return String(numberValue);
   }
 };
+
+export const checkTimeAgo = (date: string)=> {
+  const now = moment();
+  const targetDate = moment(date);
+
+  const diffInDays = now.diff(targetDate, 'days');
+  const diffInHours = now.diff(targetDate, 'hours');
+  const diffInMin = now.diff(targetDate, 'minute');
+
+  if (diffInDays < 2) {
+    if (diffInDays === 1) {
+      return 'Yesterday';
+    } else if (diffInHours >= 1) {
+      return `${diffInHours} hours ago`;
+    } else if(diffInMin) {
+      return `${diffInMin} minutes ago`;
+    }
+  } else {
+    // If more than 2 days, you can customize the format further if needed
+    return targetDate.format('Do MMM');
+  }
+}

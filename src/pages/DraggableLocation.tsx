@@ -125,7 +125,7 @@ export const DraggableLocation = () => {
         <div className='m-5 text-white font-semibold'>
           {edit ? (
             <div className='mb-12 flex items-center relative'>
-              <div className='text-white text-2xl font-bold mb-2'>
+              <div className='text-white text-2xl font-semibold mb-2'>
                 Edit location
               </div>
               <FaTimesCircle
@@ -156,10 +156,10 @@ export const DraggableLocation = () => {
                 />
               </svg>
               <div className='mb-12'>
-                <div className='text-white text-2xl font-bold mb-2'>
+                <div className='text-white text-2xl font-semibold mb-2'>
                   Where can people find it?
                 </div>
-                <div className='text-white text-lg opacity-70'>
+                <div className='text-white text-base font-normal opacity-70'>
                   Pin it on the map so others can find it.
                 </div>
               </div>
@@ -244,7 +244,7 @@ export const DraggableLocation = () => {
                   lat: marker.latitude,
                   lng: marker.longitude,
                 });
-                navigate('/drop-onboarding/enter-name');
+                navigate('/drop-onboarding/enter-info');
               }
             }}
           >

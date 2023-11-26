@@ -3,20 +3,20 @@ import App from '../App';
 import Home from '../pages/Home';
 import Header from '../components/Header';
 import { DropOnboarding } from '../pages/DropOnboarding';
-import { EnterName } from '../pages/EnterName';
 import { UploadImage } from '../pages/UploadImage';
 import { SelectLocation } from '../pages/SelectLocation';
 import { AddDescription } from '../pages/AddDescription';
 import { Confirm } from '../pages/Confirm';
 import { DropSuccess } from '../pages/DropSuccess';
 import { Account } from '../pages/Account';
-import { NftDetails } from '../pages/NftDetails';
 import { MintSuccess } from '../pages/MintSuccess';
 import { Reaction } from '../pages/Reaction';
 import { MapGL } from '../pages/MapGL';
 import { DraggableLocation } from '../pages/DraggableLocation';
 import { DropDetailPage } from '../pages/DropDetailPage';
 import EditProfile from '../pages/EditProfile';
+import { EnterDropInfo } from '../pages/EnterDropInfo';
+import CheckinWPhoto from '../pages/CheckinWPhoto';
 
 const AppRoutes = () => (
   <BrowserRouter basename='/'>
@@ -33,8 +33,8 @@ const AppRoutes = () => (
       ></Route>
 
       <Route
-        path='/drop-onboarding/enter-name'
-        element={<App header={Header} hideHeader={true} layout={EnterName} />}
+        path='/drop-onboarding/enter-info'
+        element={<App header={Header} hideHeader={true} layout={EnterDropInfo} />}
       ></Route>
 
       <Route
@@ -70,13 +70,8 @@ const AppRoutes = () => (
       ></Route>
 
       <Route
-        path='/details/minted/:mintedId'
-        element={<App header={Header} hideHeader={true} layout={NftDetails} />}
-      ></Route>
-
-      <Route
-        path='/details/drop/:dropId'
-        element={<App header={Header} hideHeader={true} layout={NftDetails} />}
+        path='/collect-with-photo'
+        element={<App header={Header} hideHeader={true} layout={CheckinWPhoto} />}
       ></Route>
 
       <Route

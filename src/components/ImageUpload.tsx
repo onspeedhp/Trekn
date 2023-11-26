@@ -181,7 +181,7 @@ export const ImageUpload: React.FC = () => {
                   For optimal performance
                 </div>
                 <div className='flex justify-center'>
-                  1024x1024, PNG, GIF max 10MB
+                  Media file max 10MB
                 </div>
               </div>
             </div>
