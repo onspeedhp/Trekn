@@ -40,13 +40,7 @@ const Header = ({ hidden }: { hidden: boolean }) => {
 
             {user.id ? (
               <>
-                <FaUserCircle
-                  onClick={() => {
-                    navigate('/account');
-                  }}
-                  size={36}
-                  className='text-black'
-                />
+                <img src={user.profileImage} alt="" onClick={() => {navigate('/account')}} className='w-9 h-9 rounded-full border box-content'/>
               </>
             ) : (
               <>

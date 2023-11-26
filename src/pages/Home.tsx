@@ -105,18 +105,17 @@ function Home() {
               </div>
 
               <div style={{ marginTop: 24 }}>
-                <Spin
+                {/* <Spin
                   tip='Loading...'
-                  spinning={loadingReadyToCollect}
                   className='flex items-center mt-10'
-                >
+                > */}
                   {nearBy.length !== 0 && (
                     <ListDetail
                       status={'ReadyToCollect'}
                       data={readyToCollect}
                     />
                   )}
-                </Spin>
+                {/* </Spin> */}
               </div>
 
               <div style={{ marginTop: 0 }}>
@@ -125,28 +124,47 @@ function Home() {
                   spinning={loadingNearBy}
                   className='flex items-center mt-10'
                 >
-                  {nearBy.length !== 0 && (
+                  {nearBy.length !== 0 ? (
                     <ListDetail status={'Nearby'} data={nearBy} />
-                  )}
+                  ) :
+                    <div className="flex flex-col items-center">
+                      <img src="/Route_search.svg" alt="" />
+                      <p className='text-center text-[15px] text-black opacity-50'>Seems like this is a whole new place for you to explore and share, be the first one!</p>
+                      <Button className='flex gap-2 items-center justify-center border-none rounded-3xl bg-black text-white text-base font-semibold w-full h-auto mt-6 py-3'
+                        onClick={async () => {
+                          if (user.id) {
+                            navigate('/drop-onboarding/upload-image');
+                          } else {
+                            setLoading(true);
+                            await init();
+                            setLoading(false);
+                          }
+                        }}>
+                        <FaPlus size={24} />
+                        <span>Drop a new experience</span>
+                      </Button>
+                    </div>
+                  }
                 </Spin>
               </div>
             </div>
-
-            <Button
-              className='fixed top-[90%] right-4 w-[56px] h-[56px] rounded-full border-0'
-              style={{ backgroundColor: 'rgba(148, 255, 65, 0.80)' }}
-              onClick={async () => {
-                if (user.id) {
-                  navigate('/drop-onboarding/upload-image');
-                } else {
-                  setLoading(true);
-                  await init();
-                  setLoading(false);
-                }
-              }}
-            >
-              <FaPlus size={24} className='text-black' />
-            </Button>
+            {nearBy.length !== 0 && !loadingNearBy &&
+              <Button
+                className='fixed top-[90%] right-4 w-[56px] h-[56px] rounded-full border-0'
+                style={{ backgroundColor: 'rgba(148, 255, 65, 0.80)' }}
+                onClick={async () => {
+                  if (user.id) {
+                    navigate('/drop-onboarding/upload-image');
+                  } else {
+                    setLoading(true);
+                    await init();
+                    setLoading(false);
+                  }
+                }}
+              >
+                <FaPlus size={24} className='text-black' />
+              </Button>
+            }
           </>
         ) : (
           <>
