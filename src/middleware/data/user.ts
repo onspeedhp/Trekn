@@ -1,4 +1,4 @@
-import { supabase } from "../../utils/supabaseClients";
+import { supabase } from '../../utils/supabaseClients';
 
 export const insertUser = async ({
   props,
@@ -7,7 +7,7 @@ export const insertUser = async ({
   props: any;
   onSuccess: (data: any) => void;
 }) => {
-  const { data, error } = await supabase.from("user").insert(props).select("*");
+  const { data, error } = await supabase.from('user').insert(props).select('*');
   if (!error) {
     onSuccess(data[0]);
   }
@@ -15,9 +15,9 @@ export const insertUser = async ({
 
 export const isUserIsExisted = async ({ email }: { email: any }) => {
   const { data, error } = await supabase
-    .from("user")
-    .select("*")
-    .eq("email", email);
+    .from('user')
+    .select('*')
+    .eq('email', email);
 
   if (!error) {
     if (data?.length === 0) {
@@ -36,10 +36,10 @@ export const getLeaderBoardPoint = async ({
   onSuccess: (data: any) => void;
 }) => {
   const { data, error } = await supabase
-    .from("user")
-    .select("*")
-    .gt("point", 0)
-    .order("point", { ascending: false })
+    .from('user')
+    .select('*')
+    .gt('point', 0)
+    .order('point', { ascending: false })
     .limit(10);
 
   if (!error) {
@@ -54,37 +54,42 @@ export const getUserByDropId = async ({
   dropId: number;
   onSuccess: (data: any) => void;
 }) => {
-
-  const { data, error } = await supabase
-    .from("user")
-    .select("*, minted(*)")
+  const { data, error } = await supabase.from('user').select('*, minted(*)');
 
   if (!error) {
-    const result = data.map((user: any) => {
-      if (user.minted && Array.isArray(user.minted)) {
-        const minted = user.minted.filter((item: any) => item.drop_id === dropId);
-        if (minted.length) {
-          return { ...user, minted };
+    const result = data
+      .map((user: any) => {
+        if (user.minted && Array.isArray(user.minted)) {
+          const minted = user.minted.filter(
+            (item: any) => item.drop_id === dropId
+          );
+          if (minted.length) {
+            return { ...user, minted };
+          }
         }
-      }
-      return null;
-    }).filter(Boolean);
+        return null;
+      })
+      .filter(Boolean);
     onSuccess(result);
   }
 };
 
-export const updateUserDB = async ({ userId, updateData, onSuccess }: {
+export const updateUserDB = async ({
+  userId,
+  updateData,
+  onSuccess,
+}: {
   userId: number;
   updateData: any;
-  onSuccess: (data: any) => void
+  onSuccess: (data: any) => void;
 }) => {
   const { data, error } = await supabase
-    .from("user")
+    .from('user')
     .update({ ...updateData })
     .eq('id', userId)
-    .select()
+    .select();
 
-  if(!error) {
+  if (!error) {
     onSuccess(data[0]);
   }
 };

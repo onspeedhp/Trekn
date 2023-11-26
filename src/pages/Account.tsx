@@ -29,7 +29,7 @@ export const Account = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('timeline');
   const [userData, setUserData] = useState<any[]>([]);
-  const [test,setTest] = useState('');
+  const [test, setTest] = useState('');
   const user = useSelector((state: any) => state.user);
 
   useEffect(() => {
@@ -83,7 +83,7 @@ export const Account = () => {
             fill='none'
             className='mb-6'
             onClick={() => {
-              navigate('/');
+              navigate(-1);
             }}
           >
             <path
@@ -117,9 +117,12 @@ export const Account = () => {
                 <div className='rounded-full border border-black flex justify-center items-center p-[9px]'>
                   <FaShare className='w-3 h-3' />
                 </div>
-                <div className='rounded-full border border-black text-base font-medium py-2 px-4' onClick={() => {
-                  navigate('/account/edit')
-                }}>
+                <div
+                  className='rounded-full border border-black text-base font-medium py-2 px-4'
+                  onClick={() => {
+                    navigate('/account/edit');
+                  }}
+                >
                   Edit profile
                 </div>
               </div>
@@ -140,8 +143,9 @@ export const Account = () => {
         <div className='collection'>
           <div className='collection__tab relative w-full mb-6 h-8 flex items-center justify-center border-b border-[#D9D9D9] text-base font-semibold'>
             <div
-              className={`flex items-center justify-center w-1/2 ${activeTab === 'timeline' ? 'text-black' : 'text-[#00000080]'
-                }`}
+              className={`flex items-center justify-center w-1/2 ${
+                activeTab === 'timeline' ? 'text-black' : 'text-[#00000080]'
+              }`}
               onClick={() => setActiveTab('timeline')}
             >
               Timeline
@@ -149,8 +153,9 @@ export const Account = () => {
             <div className='h-4 w-px bg-gray-400 absolute left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%]'></div>
 
             <div
-              className={`flex items-center justify-center w-1/2 ${activeTab === 'feed' ? 'text-black' : 'text-[#00000080]'
-                }`}
+              className={`flex items-center justify-center w-1/2 ${
+                activeTab === 'feed' ? 'text-black' : 'text-[#00000080]'
+              }`}
               onClick={() => setActiveTab('feed')}
             >
               Feed
@@ -184,7 +189,8 @@ export const Account = () => {
                           <LazyImageCustom
                             src={item?.drop?.image || item?.image}
                             alt='Drop Img'
-                            className='w-full h-full rounded-xl object-cover skeleton' />
+                            className='w-full h-full rounded-xl object-cover skeleton'
+                          />
                           <div
                             className={`absolute w-[2px] ${checkClassNameAccountItem(
                               itemIdx,
@@ -248,9 +254,7 @@ export const Account = () => {
                     <div
                       className='mx-5'
                       onClick={() => {
-                        navigate(
-                          `/drop/details/${item?.drop_id || item?.id}`
-                        );
+                        navigate(`/drop/details/${item?.drop_id || item?.id}`);
                       }}
                     >
                       <DetailCard key={itemIdx} data={{ ...item, user }} />

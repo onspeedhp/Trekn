@@ -40,7 +40,7 @@ export const DropSuccess = () => {
 
   return (
     <div className='bg-black absolute w-full' style={{ height: 812 }}>
-      <div className='mx-5 text-white font-semibold' style={{ marginTop: 58 }}>
+      <div className='mx-5 text-white' style={{ marginTop: 58 }}>
         <div className='flex-col mb-6'>
           <svg
             xmlns='http://www.w3.org/2000/svg'
@@ -54,9 +54,11 @@ export const DropSuccess = () => {
               fill='#66C61B'
             />
           </svg>
-          <div className='text-2xl my-3'>Drop successful</div>
+          <div className='text-2xl my-3 font-semibold'>Drop successful</div>
           <div className='text-[#ffffff80]'>
-            Now anyone can get here and check-in.<br />Have fun dropping!
+            Now anyone can get here and check-in.
+            <br />
+            Have fun dropping!
           </div>
         </div>
         <div

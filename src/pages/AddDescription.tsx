@@ -55,7 +55,7 @@ export const AddDescription: React.FC = () => {
           fill='none'
           className='mb-6'
           onClick={() => {
-            navigate('/drop-onboarding/enter-name');
+            navigate(-1);
           }}
         >
           <path
