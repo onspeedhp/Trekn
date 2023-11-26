@@ -46,7 +46,6 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
   }, []);
 
   const getWidth = () => {
-    console.log(userChecked.length)
     if(userChecked.length > 1) {
       return `${22.4 * userChecked.length}px`
     }

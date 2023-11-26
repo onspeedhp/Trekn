@@ -15,7 +15,8 @@ import { MapGL } from '../pages/MapGL';
 import { DraggableLocation } from '../pages/DraggableLocation';
 import { DropDetailPage } from '../pages/DropDetailPage';
 import EditProfile from '../pages/EditProfile';
-import { EnterDropInfo } from '../pages/EnterName';
+import { EnterDropInfo } from '../pages/EnterDropInfo';
+import CheckinWPhoto from '../pages/CheckinWPhoto';
 
 const AppRoutes = () => (
   <BrowserRouter basename='/'>
@@ -66,6 +67,11 @@ const AppRoutes = () => (
       <Route
         path='/account/edit'
         element={<App header={Header} hideHeader={true} layout={EditProfile} />}
+      ></Route>
+
+      <Route
+        path='/collect-with-photo'
+        element={<App header={Header} hideHeader={true} layout={CheckinWPhoto} />}
       ></Route>
 
       <Route
