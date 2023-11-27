@@ -83,7 +83,7 @@ export const Account = () => {
             fill='none'
             className='mb-6'
             onClick={() => {
-              navigate(-1);
+              navigate('/');
             }}
           >
             <path
