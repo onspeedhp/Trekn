@@ -13,6 +13,8 @@ import {
 import { getUserByDropId } from '../middleware/data/user';
 import LazyImageCustom from './LazyImageCustom';
 import { getScore } from '../utils/account.util';
+import { Carousel } from 'antd';
+import './detailCard.css';
 
 interface ImageProps {
   src: string;
@@ -66,7 +68,7 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
   };
 
   return (
-    <div className={`${isHome() ? 'pb-6' : 'pb-8'}`}>
+    <div className={`${isHome() ? 'pb-6' : 'pb-8'} detail-card`}>
       {isHome() && (
         <DropDetail
           selectedLocation={data}
@@ -127,27 +129,43 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
               objectPosition: 'center',
             }}
           >
-            <LazyImageCustom
-              src={data?.drop?.image || data?.image}
-              alt='Drop Img'
-              className='skeleton'
-              size={[windowSize.width - 40, 377]}
-              style={{
-                width: windowSize.width - 40,
-                height: 377,
-                borderRadius: 12,
-                objectFit: 'cover',
-                objectPosition: 'center',
-              }}
-            />
-            <div
+            {data?.drop?.imageArray || data?.imageArray ?
+              <Carousel swipeToSlide draggable style={{ height: '100%', width: '100%' }}>
+                {(data.imageArray
+                  ? data.imageArray
+                  : data?.drop?.imageArray
+                )?.map((item: string, idx: number) => (
+                  <LazyImageCustom
+                    key={idx}
+                    src={item}
+                    alt='Drop Img'
+                    className='skeleton h-full object-cover rounded-xl object-center'
+                  />
+                ))}
+              </Carousel>
+              :
+              <LazyImageCustom
+                src={data?.drop?.image || data?.image}
+                alt='Drop Img'
+                className='skeleton  object-cover rounded-xl object-center'
+                size={[windowSize.width - 40, 377]}
+                style={{
+                  width: windowSize.width - 40,
+                  height: 377,
+                  borderRadius: 12,
+                  objectFit: 'cover',
+                  objectPosition: 'center',
+                }}
+              />
+            }
+            {/* <div
               className='absolute inset-0'
               style={{
                 backgroundImage:
                   'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 34.71%, rgba(0, 0, 0, 0.60) 77.95%)',
                 borderRadius: 12,
               }}
-            ></div>
+            ></div> */}
           </div>
         </div>
 
@@ -171,7 +189,7 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
           <div className='flex items-center text-base mt-1'>
             <div className='flex items-center justify-center mr-2'>
               <FaThumbsUp className='text-[#FFB800] mr-1' />
-              <span className='text-[14px] text-white opacity-70'>{getScore(data,false)}</span>
+              <span className='text-[14px] text-white opacity-70'>{getScore(data, false)}</span>
             </div>
             <div className='flex items-center justify-center text-white opacity-70 text-[14px]'>
               <span className='mr-2 w-[11px]'>●</span>{' '}

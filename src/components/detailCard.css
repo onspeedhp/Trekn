@@ -1,0 +1,32 @@
+.ant-carousel {
+    height: 100%;
+    width: 100%;
+}
+
+.ant-carousel .slick-list,
+.ant-carousel .slick-list .slick-track,
+.ant-carousel .slick-list .slick-track .slick-slide,
+.ant-carousel .slick-list .slick-track .slick-slide div {
+    height: 100%;
+}
+
+.ant-carousel .slick-dots li,
+.ant-carousel .slick-dots li.slick-active {
+    width: auto;
+}
+
+.ant-carousel .slick-dots li button {
+    width: 8px;
+    height: 8px;
+    border-radius: 100%;
+}
+
+.ant-carousel .slick-dots {
+    bottom: 14px;
+}
+
+.detail-card .ant-carousel .slick-dots {
+    bottom: 24px;
+    right: 24px;
+    inset-inline-start: unset;
+}

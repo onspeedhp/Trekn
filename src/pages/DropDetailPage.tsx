@@ -15,7 +15,7 @@ import {
   FaBolt,
   FaThumbsUp,
 } from 'react-icons/fa';
-import { Button, Drawer, Modal } from 'antd';
+import { Button, Carousel, Drawer, Modal } from 'antd';
 import { CustomWebcam } from '../components/CustomWebcam';
 import {
   FaChevronDown,
@@ -151,16 +151,29 @@ export const DropDetailPage = () => {
                 </div>
               </div>
               <div>
-                <img
-                  src={`${selectedLocation.image}`}
-                  style={{
-                    width: windowSize.width - 40,
-                    height: 335,
-                    objectFit: 'cover',
-                    objectPosition: 'center',
-                  }}
-                  className='rounded-xl mb-4'
-                />
+                <div style={{
+                  height: 335,
+                }}
+                  className='mb-4'>
+                  {selectedLocation.imageArray ?
+                    <Carousel swipeToSlide draggable style={{ height: '100%', width: '100%' }}>
+                      {selectedLocation.imageArray.map((item: string, idx: number) => (
+                        <img
+                          key={idx}
+                          src={`${item}`}
+                          alt=''
+                          className='rounded-xl h-full w-full object-cover object-center'
+                        />
+                      ))}
+                    </Carousel>
+                    :
+                    <img
+                      src={`${selectedLocation.image}`}
+                      alt=''
+                      className='rounded-xl h-full w-full object-cover object-center'
+                    />
+                  }
+                </div>
                 <div className='text-[#02030380] font-medium text-[15px] leading-6 px-2'>
                   {selectedLocation.description}
                 </div>
@@ -188,7 +201,7 @@ export const DropDetailPage = () => {
                     longitude={selectedLocation.lng}
                     latitude={selectedLocation.lat}
                     anchor='bottom'
-                    onClick={() => {}}
+                    onClick={() => { }}
                   >
                     <FaMapPin size={24} className='text-[#278EFF]' />
                   </Marker>
