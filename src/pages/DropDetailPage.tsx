@@ -141,7 +141,7 @@ export const DropDetailPage = () => {
                   <div className='font-medium flex items-center gap-1'>
                     <FaThumbsUp className='w-3 h-3 text-[#FFB800]' />
                     <div className='text-[13px] text-[#000000b3] font-medium whitespace-nowrap'>
-                      {selectedLocation && getScore(selectedLocation)}
+                      {selectedLocation && getScore(selectedLocation, true)}
                     </div>
                   </div>
                   <div className='rounded-full bg-[#dfdfdfb3] w-2 h-2'></div>

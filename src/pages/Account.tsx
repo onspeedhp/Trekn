@@ -118,12 +118,14 @@ export const Account = () => {
                   <FaShare className='w-3 h-3' />
                 </div>
                 <div
-                  className='rounded-full border border-black text-base font-medium py-2 px-4'
+                  className='rounded-full border border-black py-[6px] px-4'
                   onClick={() => {
                     navigate('/account/edit');
                   }}
                 >
-                  Edit profile
+                  <p className='text-base font-medium leading-4 tracking-[-0.08px]'>
+                    Edit profile
+                  </p>
                 </div>
               </div>
             </div>
@@ -143,9 +145,8 @@ export const Account = () => {
         <div className='collection'>
           <div className='collection__tab relative w-full mb-6 h-8 flex items-center justify-center border-b border-[#D9D9D9] text-base font-semibold'>
             <div
-              className={`flex items-center justify-center w-1/2 ${
-                activeTab === 'timeline' ? 'text-black' : 'text-[#00000080]'
-              }`}
+              className={`flex items-center justify-center w-1/2 ${activeTab === 'timeline' ? 'text-black' : 'text-[#00000080]'
+                }`}
               onClick={() => setActiveTab('timeline')}
             >
               Timeline
@@ -153,9 +154,8 @@ export const Account = () => {
             <div className='h-4 w-px bg-gray-400 absolute left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%]'></div>
 
             <div
-              className={`flex items-center justify-center w-1/2 ${
-                activeTab === 'feed' ? 'text-black' : 'text-[#00000080]'
-              }`}
+              className={`flex items-center justify-center w-1/2 ${activeTab === 'feed' ? 'text-black' : 'text-[#00000080]'
+                }`}
               onClick={() => setActiveTab('feed')}
             >
               Feed
@@ -169,7 +169,7 @@ export const Account = () => {
                     className='bg-[#F3F3F3] w-44 py-2 pr-4 rounded-tr-full rounded-br-full flex items-center justify-end relative'
                     key={dataIdx}
                   >
-                    <span className='font-medium'>{key}</span>
+                    <span className='font-medium text-[13px]'>{key}</span>
                     <div className='absolute w-2 h-2 rounded-full bg-[#0500FF] left-[32.5%]'>
                       <div className='absolute w-[2px] h-16 bg-[#0500FF] left-1/2 translate-x-[-50%]'></div>
                     </div>
@@ -207,7 +207,7 @@ export const Account = () => {
                             ) : (
                               <FaPlusCircle className='w-3 h-3' />
                             )}
-                            <div className='font-[13px] text-xs text-[#02030380]'>
+                            <div className='text-[13px] font-medium text-[#02030380]'>
                               {item?.type === 'minted'
                                 ? 'Checked-in'
                                 : 'Created'}{' '}
@@ -221,7 +221,7 @@ export const Account = () => {
                             <div className='flex gap-[2px] items-center'>
                               <FaThumbsUp className='w-3 h-3 text-[#FFB800]' />
                               <div className='text-[13px] text-[#000000b3] font-medium'>
-                                {getScore(item)}
+                                {getScore(item,true)}
                               </div>
                             </div>
                             <div className='flex gap-2 items-center'>

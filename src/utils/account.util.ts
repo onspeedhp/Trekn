@@ -37,15 +37,15 @@ export const checkClassNameAccountItem = (
     : "h-9";
 };
 
-export const getScore = (data: any) => {
+export const getScore = (data: any,count: boolean) => {
   if (data.type === "minted") {
-    return calculateScore(data?.drop?.reaction_counts);
+    return calculateScore(data?.drop?.reaction_counts,count);
   } else {
-    return calculateScore(data?.reaction_counts);
+    return calculateScore(data?.reaction_counts,count);
   }
 };
 
-const calculateScore = (data: any) => {
+const calculateScore = (data: any, count: boolean) => {
   let total = 0;
   let totalScore = 0;
   Object.entries(data).map(([key, item]: any) => {
@@ -67,7 +67,11 @@ const calculateScore = (data: any) => {
         totalScore += 1 * Number(item);
     }
   });
-  return `${total === 0 ? 0 : totalScore / total} (${total})`;
+  if(count) {
+    return `${total === 0 ? 0 : totalScore / total} (${total})`;
+  } else{
+    return `${total === 0 ? 0 : totalScore / total}`;
+  }
 };
 
 const isTodayOrYesterday = (date: any) => {

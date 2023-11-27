@@ -12,6 +12,7 @@ import {
 } from '../functions/calculateDistance';
 import { getUserByDropId } from '../middleware/data/user';
 import LazyImageCustom from './LazyImageCustom';
+import { getScore } from '../utils/account.util';
 
 interface ImageProps {
   src: string;
@@ -44,7 +45,7 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
             if (userChecked.minted.length > 0) {
               const have_last_checked =
                 moment().unix() -
-                  moment(userChecked.minted[0].created_at).unix() <=
+                moment(userChecked.minted[0].created_at).unix() <=
                 60 * 60 * 24 * 2;
 
               if (have_last_checked) {
@@ -99,7 +100,7 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
             ) : (
               <FaPlusCircle className='w-3 h-3' />
             )}
-            <span className='font-medium text-black opacity-50 ml-1'>
+            <span className='font-medium text-black text-[13px] opacity-50 ml-1'>
               {checkTimeAgo(data.created_at)}
             </span>
           </div>
@@ -170,52 +171,52 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
           <div className='flex items-center text-base mt-1'>
             <div className='flex items-center justify-center mr-2'>
               <FaThumbsUp className='text-[#FFB800] mr-1' />
-              <span className='text-[14px] text-white opacity-70'>4.9</span>
+              <span className='text-[14px] text-white opacity-70'>{getScore(data,false)}</span>
             </div>
             <div className='flex items-center justify-center text-white opacity-70 text-[14px]'>
               <span className='mr-2 w-[11px]'>●</span>{' '}
               {isHome()
                 ? label
                 : convertDistance(
-                    calculateDistance(
-                      data.lat || data?.drop.lat,
-                      data.lng || data?.drop.lng,
-                      data.user.lat,
-                      data.user.lng
-                    )
-                  )}{' '}
+                  calculateDistance(
+                    data.lat || data?.drop.lat,
+                    data.lng || data?.drop.lng,
+                    data.user.lat,
+                    data.user.lng
+                  )
+                )}{' '}
               away
             </div>
           </div>
-          <div className='mt-4 flex items-center'>
-            <div
-              className='relative h-[27.5px] flex justify-start items-center'
-              style={{ width: getWidth() }}
-            >
-              {userChecked.map((item: any, idx: number) => (
-                <LazyImageCustom
-                  key={idx}
-                  src={item.profileImage}
-                  alt={item.profileImage}
-                  size={[30, 30]}
-                  style={{
-                    border: '1.146px solid #FFF',
-                    position: 'absolute',
-                    width: '27.5px',
-                    height: '27.5px',
-                    borderRadius: '50%',
-                    left: `${idx * overlap}px`, // Chồng lên 40%
-                    zIndex: idx + 1,
-                  }}
-                />
-              ))}
-            </div>
-            {userChecked?.length > 0 && (
+          {userChecked.length > 0 &&
+            <div className='mt-4 flex items-center'>
+              <div
+                className='relative h-[27.5px] flex justify-start items-center'
+                style={{ width: getWidth() }}
+              >
+                {userChecked.map((item: any, idx: number) => (
+                  <LazyImageCustom
+                    key={idx}
+                    src={item.profileImage}
+                    alt={item.profileImage}
+                    size={[30, 30]}
+                    style={{
+                      border: '1.146px solid #FFF',
+                      position: 'absolute',
+                      width: '27.5px',
+                      height: '27.5px',
+                      borderRadius: '50%',
+                      left: `${idx * overlap}px`, // Chồng lên 40%
+                      zIndex: idx + 1,
+                    }}
+                  />
+                ))}
+              </div>
               <div className='bg-white text-black ml-2 p-2 text-[13px] font-medium rounded-full'>
                 {userChecked.length} checked-in
               </div>
-            )}
-          </div>
+            </div>
+          }
         </div>
       </div>
       {isHome() && <div className='border-b mt-6'></div>}
