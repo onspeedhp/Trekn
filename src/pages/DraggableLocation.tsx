@@ -120,7 +120,7 @@ export const DraggableLocation = () => {
     <>
       <div
         className='bg-black absolute'
-        style={{ height: 812, width: windowSize.width }}
+        style={{ minHeight: windowSize.height, width: windowSize.width }}
       >
         <div className='m-5 text-white font-semibold'>
           {edit ? (

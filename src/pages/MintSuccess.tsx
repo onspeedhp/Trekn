@@ -6,7 +6,7 @@ import { FaExternalLinkAlt, FaShare } from 'react-icons/fa';
 
 export const MintSuccess = () => {
   const navigate = useNavigate();
-  const { metadata } = useAuthContext();
+  const { metadata, windowSize } = useAuthContext();
 
   const handleError = () => {
     const modal = Modal.error({
@@ -34,7 +34,7 @@ export const MintSuccess = () => {
   });
 
   return (
-    <div className='bg-black absolute w-full' style={{ height: 812 }}>
+    <div className='bg-black absolute w-full' style={{ minHeight: windowSize.height }}>
       <div className='mx-5 text-white font-semibold' style={{ marginTop: 58 }}>
         <div className='flex-col'>
           <div className='text-2xl mb-3 font-bold flex items-center gap-3'>

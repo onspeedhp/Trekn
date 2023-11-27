@@ -6,7 +6,7 @@ import { ImageUpload } from '../components/ImageUpload';
 import { useSelector } from 'react-redux';
 
 export const UploadImage = () => {
-  const { setMetadata } = useAuthContext();
+  const { setMetadata, windowSize } = useAuthContext();
   const user = useSelector((state: any) => state.user);
 
   const handleError = () => {
@@ -38,7 +38,7 @@ export const UploadImage = () => {
 
   return (
     <>
-      <div className='bg-black absolute' style={{ height: 812 }}>
+      <div className='bg-black absolute' style={{ height: windowSize.height }}>
         <div className='m-5 text-white font-semibold'>
           <svg
             xmlns='http://www.w3.org/2000/svg'
