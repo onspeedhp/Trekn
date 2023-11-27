@@ -131,27 +131,29 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
           >
             {data?.drop?.imageArray || data?.imageArray ?
               <>
-                <Carousel swipeToSlide draggable style={{ height: '100%', width: '100%' }}>
+                <Carousel swipeToSlide draggable style={{ height: '100%', width: '100%'}}>
                   {(data.imageArray
                     ? data.imageArray
                     : data?.drop?.imageArray
                   )?.map((item: string, idx: number) => (
-                    <LazyImageCustom
-                      key={idx}
-                      src={item}
-                      alt='Drop Img'
-                      className='skeleton h-full object-cover rounded-xl object-center'
-                    />
+                    <div className='relative'>
+                      <LazyImageCustom
+                        key={idx}
+                        src={item}
+                        alt='Drop Img'
+                        className='skeleton h-full object-cover rounded-xl object-center'
+                      />
+                      <div
+                        className='absolute inset-0'
+                        style={{
+                          backgroundImage:
+                            'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 34.71%, rgba(0, 0, 0, 0.60) 77.95%)',
+                          borderRadius: 12,
+                        }}
+                      ></div>
+                    </div>
                   ))}
                 </Carousel>
-                <div
-                  className='absolute bottom-0 h-[50%] w-full'
-                  style={{
-                    backgroundImage:
-                      'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 34.71%, rgba(0, 0, 0, 0.60) 77.95%)',
-                    borderRadius: 12,
-                  }}
-                ></div>
               </>
               :
               <>
