@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router';
 import CustomiseInput from '../components/CustomiseInput';
 import { updateUserDB } from '../middleware/data/user';
 import { updateUser } from '../redux/slides/userSlides';
-import { Spin } from 'antd';
+import { Modal, Spin } from 'antd';
 import { supabase } from '../utils/supabaseClients';
 
 interface initFormType { label: string; type: string; key: string };
@@ -43,11 +43,29 @@ export default function EditProfile() {
         }
     }
 
+    const handleError = (e: any) => {
+        const modal = Modal.error({
+            title: 'Error',
+            content: `Something is wrong ${e}`,
+            okButtonProps: {
+                type: 'default',
+                style: {
+                    background: 'red',
+                    color: 'white',
+                },
+            },
+        });
+
+        setTimeout(() => {
+            modal.destroy();
+        }, 2000);
+    };
+
     const handleSubmit = async () => {
         setLoading(true);
         setIsDisabled(true);
         try {
-            let fileName
+            let fileName;
             if (updateAvatar) {
                 const fileExt = updateAvatar.name.split('.').pop();
                 fileName = `${Math.random()}.${fileExt}`;
@@ -58,18 +76,18 @@ export default function EditProfile() {
                 userId: user.id,
                 updateData: {
                     ...profileForm,
-                    profileImage: `${process.env.REACT_APP_SUPABASE_URL}/storage/v1/object/public/user_avatar/${fileName}`
+                    ...(fileName && { profileImage: `${process.env.REACT_APP_SUPABASE_URL}/storage/v1/object/public/user_avatar/${fileName}` })
                 },
                 onSuccess: (data) => {
                     dispatch(updateUser(data));
                 }
             })
+            navigate('/account');
         } catch (e) {
-            console.log(e);
+            handleError(e)
         }
         setLoading(false);
         setIsDisabled(false);
-        navigate('/account');
     };
     return (
         <>
