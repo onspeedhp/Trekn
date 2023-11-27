@@ -1,7 +1,9 @@
 .ant-menu-item:hover,
 .ant-menu-submenu-title:hover {
-  background-color: transparent !important; /* Set the background color to transparent on hover */
-  color: inherit !important; /* Inherit the text color on hover */
+  background-color: transparent !important;
+  /* Set the background color to transparent on hover */
+  color: inherit !important;
+  /* Inherit the text color on hover */
 }
 
 * {
@@ -18,10 +20,15 @@
   animation: skeleton-loading 1s linear infinite alternate;
 }
 
+.ant-spin .ant-spin-dot-item {
+  background-color: black;
+}
+
 @keyframes skeleton-loading {
   0% {
     background-color: hsl(200, 20%, 80%);
   }
+
   100% {
     background-color: hsl(200, 20%, 95%);
   }

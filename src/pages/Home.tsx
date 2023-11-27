@@ -122,7 +122,7 @@ function Home() {
                 <Spin
                   tip='Loading nearby'
                   spinning={loadingNearBy}
-                  className='flex items-center mt-10'
+                  className='flex items-center mt-10 text-black font-semibold'
                 >
                   {nearBy.length !== 0 ? (
                     <ListDetail status={'Nearby'} data={nearBy} />

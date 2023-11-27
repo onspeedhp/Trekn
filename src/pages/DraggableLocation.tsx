@@ -2,7 +2,7 @@ import Map, { Layer, Marker, Source } from 'react-map-gl';
 import { useAuthContext } from '../context/AuthContext';
 import { deepEqual } from './MapGoogle'; // Hãy chắc chắn rằng bạn đã có hàm calculateDistance để tính toán khoảng cách.
 import { useState, useCallback, useEffect } from 'react';
-import type { MarkerDragEvent, LngLat, CircleLayer } from 'react-map-gl';
+import type { MarkerDragEvent, LngLat, CircleLayer, ViewStateChangeEvent } from 'react-map-gl';
 import { calculateDistance } from '../functions/calculateDistance';
 import type { FeatureCollection } from 'geojson';
 import { useNavigate } from 'react-router';
@@ -71,6 +71,14 @@ export const DraggableLocation = () => {
 
       await handleReverseGeocode(event.lngLat.lat, event.lngLat.lng);
     }
+  }, []);
+
+  const onMapMove = useCallback(async (event: ViewStateChangeEvent) => {
+    setMarker({
+      longitude: event.viewState.longitude,
+      latitude: event.viewState.latitude,
+    });
+    await handleReverseGeocode(event.viewState.latitude, event.viewState.longitude);
   }, []);
 
   const onMarkerDragEnd = useCallback((event: MarkerDragEvent) => {
@@ -209,14 +217,23 @@ export const DraggableLocation = () => {
                 borderRadius: 24,
               }}
               mapStyle='mapbox://styles/mapbox/streets-v9'
+              onDrag={onMapMove}
+              onZoom={onMapMove}
             >
               {edit && (
                 <Source id='my-data' type='geojson' data={geojson}>
                   <Layer {...layerStyle} />
                 </Source>
               )}
+                            <Marker
+                longitude={marker.longitude}
+                latitude={marker.latitude}
+                anchor='center'
+              >
+                <FaMapPin size={24} className='text-[#278EFF]' />
+              </Marker>
 
-              <Marker
+              {/* <Marker
                 longitude={marker.longitude}
                 latitude={marker.latitude}
                 anchor='center'
@@ -226,7 +243,7 @@ export const DraggableLocation = () => {
                 onDragEnd={onMarkerDragEnd}
               >
                 <FaMapPin size={24} className='text-[#278EFF]' />
-              </Marker>
+              </Marker> */}
             </Map>
           </div>
 
