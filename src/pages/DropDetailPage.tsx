@@ -126,7 +126,7 @@ export const DropDetailPage = () => {
                     </div>
                     <div className='flex items-center gap-1 leading-4'>
                       <FaCirclePlus className='w-3 h-3' />
-                      <div className='text-[13px] text-[#02030380]'>
+                      <div className='text-[13px] text-[#02030380] font-medium'>
                         {moment(selectedLocation.created_at).format(
                           'Do MMM, h:mm A'
                         )}
@@ -139,13 +139,13 @@ export const DropDetailPage = () => {
                 </div>
                 <div className='flex items-center gap-2'>
                   <div className='font-medium flex items-center gap-1'>
-                    <FaThumbsUp className='w-3 h-3 text-[#FFB800]' />
-                    <div className='text-[13px] text-[#000000b3] font-medium whitespace-nowrap'>
+                    <FaThumbsUp className='w-4 h-4 text-[#FFB800]' />
+                    <div className='text-[13px] text-[#000000b3] font-medium whitespace-nowrap leading-5'>
                       {selectedLocation && getScore(selectedLocation, true)}
                     </div>
                   </div>
-                  <div className='rounded-full bg-[#dfdfdfb3] w-2 h-2'></div>
-                  <div className='text-[13px] text-[#02030380] font-medium truncate'>
+                  <div className='rounded-full bg-[#dfdfdf70] min-w-[8px] h-2'></div>
+                  <div className='text-[13px] text-[#02030380] font-medium truncate leading-4'>
                     {selectedLocation.location_name}
                   </div>
                 </div>
