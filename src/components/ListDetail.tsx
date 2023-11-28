@@ -21,12 +21,12 @@ export const ListDetail = ({ data, status }: { data: any; status: any }) => {
     <div className='w-full'>
       <div className='grid grid-cols-1 sm:grid-cols-3'>
         {data?.slice(0, amountShowItem).map((item: any, index: any) => (
-          <DetailCard key={index} data={item} status={status} />
+          <DetailCard key={index} data={item} status={status} last={(index + 1) === amountShowItem} />
         ))}
       </div>
       {isShowShowMore && (
         <div
-          className='w-full flex justify-center text-sm font-semibold text-[#00A868] cursor-pointer'
+          className='w-full flex justify-center text-sm font-semibold pb-5 cursor-pointer'
           onClick={() => handleShowMore()}
         >
           View more

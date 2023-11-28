@@ -21,7 +21,7 @@ interface ImageProps {
   alt?: string;
 }
 
-export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
+export const DetailCard = ({ data, status, last }: { data: any; status?: any; last?: boolean }) => {
   const navigate = useNavigate();
   const { Icon, label } = getLabelLocation(status, data?.distance);
   const { windowSize } = useAuthContext();
@@ -252,7 +252,7 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
           }
         </div>
       </div>
-      {isHome() && <div className='border-b mt-6'></div>}
+      {isHome() && !last && <div className='border-b mt-6'></div>}
     </div>
   );
 };
