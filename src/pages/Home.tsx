@@ -96,11 +96,11 @@ function Home() {
         {!leaderBoard ? (
           <>
             <div className='mt-10'>
-              <div className='text-[14px] text-black opacity-70 font-medium mb-2'>
+              <div className='text-[14px] text-black opacity-70 font-medium mb-2 leading-[18px]'>
                 {moment().format('dddd, Do MMM')}
               </div>
 
-              <div className='font-semibold text-[28px]'>
+              <div className='font-semibold text-[28px] leading-9'>
                 Nearby experiences
               </div>
 
