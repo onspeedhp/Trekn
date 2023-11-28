@@ -116,7 +116,7 @@ export default function EditProfile() {
                 </div>
                 <div className='flex flex-col items-center justify-center gap-4 mt-9'>
                     <img
-                        className='rounded-full w-[100px] h-[100px]'
+                        className='rounded-full w-[100px] h-[100px] object-cover object-center'
                         src={`${updateAvatar ? window.URL.createObjectURL(updateAvatar) : user.profileImage}`}
                         alt=''
                     />
