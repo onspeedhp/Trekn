@@ -221,7 +221,7 @@ export const Account = () => {
                             <div className='flex gap-[2px] items-center'>
                               <FaThumbsUp className='w-3 h-3 text-[#FFB800]' />
                               <div className='text-[13px] text-[#000000b3] font-medium'>
-                                {getScore(item,true)}
+                                {getScore(item, true)}
                               </div>
                             </div>
                             <div className='flex gap-2 items-center'>
@@ -257,7 +257,7 @@ export const Account = () => {
                         navigate(`/drop/details/${item?.drop_id || item?.id}`);
                       }}
                     >
-                      <DetailCard key={itemIdx} data={{ ...item, user }} />
+                      <DetailCard key={itemIdx} data={{ ...item, user }} last={(itemIdx + 1) === data?.length && (dataIdx + 1) === Object.entries(userData)?.length} />
                     </div>
                   ))}
                 </>

@@ -141,7 +141,7 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
                         key={idx}
                         src={item}
                         alt='Drop Img'
-                        className='skeleton h-full object-cover rounded-xl object-center'
+                        className='skeleton h-full object-cover rounded-xl object-center w-full'
                       />
                       <div
                         className='absolute inset-0'
@@ -160,7 +160,7 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
                 <LazyImageCustom
                   src={data?.drop?.image || data?.image}
                   alt='Drop Img'
-                  className='skeleton  object-cover rounded-xl object-center'
+                  className='skeleton object-cover rounded-xl object-center w-full'
                   size={[windowSize.width - 40, 377]}
                   style={{
                     width: windowSize.width - 40,
@@ -252,7 +252,7 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
           }
         </div>
       </div>
-      {isHome() && !last && <div className='border-b mt-6'></div>}
+      {!last && <div className='border-b mt-6'></div>}
     </div>
   );
 };
