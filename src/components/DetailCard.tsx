@@ -163,7 +163,6 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
                   className='skeleton object-cover rounded-xl object-center w-full'
                   size={[windowSize.width - 40, 377]}
                   style={{
-                    width: windowSize.width - 40,
                     height: 377,
                     borderRadius: 12,
                     objectFit: 'cover',
@@ -200,7 +199,7 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
           <div className='font-semibold	text-base'>
             {data?.name || data?.drop?.name}
           </div>
-          <div className='flex items-center text-base mt-1'>
+          <div className='flex items-center text-base mt-1 leading-5'>
             <div className='flex items-center justify-center mr-2'>
               <FaThumbsUp className='text-[#FFB800] mr-1' />
               <span className='text-[14px] text-white opacity-70'>{getScore(data, false)}</span>
