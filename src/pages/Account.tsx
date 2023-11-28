@@ -185,7 +185,7 @@ export const Account = () => {
                           );
                         }}
                       >
-                        <div className='w-[88px] h-[88px] relative'>
+                        <div className='w-[88px] h-[88px] relative z-20'>
                           <LazyImageCustom
                             src={item?.drop?.image || item?.image}
                             alt='Drop Img'
