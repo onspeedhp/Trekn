@@ -91,14 +91,15 @@ export default function EditProfile() {
     };
     return (
         <>
-            <div className='absolute w-full h-screen overflow-scroll'>
-                <div className='m-4 font-semibold flex items-center'>
+            <div className='w-full h-screen'>
+                <div className='m-4 font-semibold flex items-center relative'>
                     <svg
                         xmlns='http://www.w3.org/2000/svg'
                         width='17'
                         height='16'
                         viewBox='0 0 17 16'
                         fill='none'
+                        className='absolute'
                         onClick={() => {
                             navigate('/account');
                         }}
