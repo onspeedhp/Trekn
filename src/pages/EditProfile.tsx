@@ -91,14 +91,15 @@ export default function EditProfile() {
     };
     return (
         <>
-            <div className='absolute w-full h-screen overflow-scroll'>
-                <div className='m-4 font-semibold flex items-center'>
+            <div className='w-full h-screen'>
+                <div className='m-4 font-semibold flex items-center relative'>
                     <svg
                         xmlns='http://www.w3.org/2000/svg'
                         width='17'
                         height='16'
                         viewBox='0 0 17 16'
                         fill='none'
+                        className='absolute'
                         onClick={() => {
                             navigate('/account');
                         }}
@@ -115,7 +116,7 @@ export default function EditProfile() {
                 </div>
                 <div className='flex flex-col items-center justify-center gap-4 mt-9'>
                     <img
-                        className='rounded-full w-[100px] h-[100px]'
+                        className='rounded-full w-[100px] h-[100px] object-cover object-center'
                         src={`${updateAvatar ? window.URL.createObjectURL(updateAvatar) : user.profileImage}`}
                         alt=''
                     />

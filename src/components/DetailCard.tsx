@@ -21,7 +21,7 @@ interface ImageProps {
   alt?: string;
 }
 
-export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
+export const DetailCard = ({ data, status, last }: { data: any; status?: any; last?: boolean }) => {
   const navigate = useNavigate();
   const { Icon, label } = getLabelLocation(status, data?.distance);
   const { windowSize } = useAuthContext();
@@ -141,7 +141,7 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
                         key={idx}
                         src={item}
                         alt='Drop Img'
-                        className='skeleton h-full object-cover rounded-xl object-center'
+                        className='skeleton h-full object-cover rounded-xl object-center w-full'
                       />
                       <div
                         className='absolute inset-0'
@@ -160,10 +160,9 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
                 <LazyImageCustom
                   src={data?.drop?.image || data?.image}
                   alt='Drop Img'
-                  className='skeleton  object-cover rounded-xl object-center'
+                  className='skeleton object-cover rounded-xl object-center w-full'
                   size={[windowSize.width - 40, 377]}
                   style={{
-                    width: windowSize.width - 40,
                     height: 377,
                     borderRadius: 12,
                     objectFit: 'cover',
@@ -200,7 +199,7 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
           <div className='font-semibold	text-base'>
             {data?.name || data?.drop?.name}
           </div>
-          <div className='flex items-center text-base mt-1'>
+          <div className='flex items-center text-base mt-1 leading-5'>
             <div className='flex items-center justify-center mr-2'>
               <FaThumbsUp className='text-[#FFB800] mr-1' />
               <span className='text-[14px] text-white opacity-70'>{getScore(data, false)}</span>
@@ -240,18 +239,19 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
                       borderRadius: '50%',
                       left: `${idx * overlap}px`, // Chồng lên 40%
                       zIndex: idx + 1,
+                      backgroundColor: 'white'
                     }}
                   />
                 ))}
               </div>
-              <div className='bg-white text-black ml-2 p-2 text-[13px] font-medium rounded-full'>
+              <div className='bg-white text-black ml-2 p-2 text-[13px] font-medium rounded-full leading-[9px]'>
                 {userChecked.length} checked-in
               </div>
             </div>
           }
         </div>
       </div>
-      {isHome() && <div className='border-b mt-6'></div>}
+      {!last && <div className='border-b mt-6'></div>}
     </div>
   );
 };
