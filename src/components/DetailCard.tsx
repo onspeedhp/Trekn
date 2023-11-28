@@ -240,11 +240,12 @@ export const DetailCard = ({ data, status }: { data: any; status?: any }) => {
                       borderRadius: '50%',
                       left: `${idx * overlap}px`, // Chồng lên 40%
                       zIndex: idx + 1,
+                      backgroundColor: 'white'
                     }}
                   />
                 ))}
               </div>
-              <div className='bg-white text-black ml-2 p-2 text-[13px] font-medium rounded-full'>
+              <div className='bg-white text-black ml-2 p-2 text-[13px] font-medium rounded-full leading-[9px]'>
                 {userChecked.length} checked-in
               </div>
             </div>
