@@ -17,6 +17,8 @@ import { DropDetailPage } from '../pages/DropDetailPage';
 import EditProfile from '../pages/EditProfile';
 import { EnterDropInfo } from '../pages/EnterDropInfo';
 import CheckinWPhoto from '../pages/CheckinWPhoto';
+import CheckinNearBy from '../pages/CheckinNearBy';
+import EditLocation from '../pages/EditLocation';
 
 const AppRoutes = () => (
   <BrowserRouter basename='/'>
@@ -30,16 +32,6 @@ const AppRoutes = () => (
         element={
           <App header={Header} hideHeader={true} layout={DropOnboarding} />
         }
-      ></Route>
-
-      <Route
-        path='/drop-onboarding/enter-info'
-        element={<App header={Header} hideHeader={true} layout={EnterDropInfo} />}
-      ></Route>
-
-      <Route
-        path='/drop-onboarding/upload-image'
-        element={<App header={Header} hideHeader={true} layout={UploadImage} />}
       ></Route>
 
       <Route
@@ -70,8 +62,39 @@ const AppRoutes = () => (
       ></Route>
 
       <Route
-        path='/collect-with-photo'
+        path='/check-in/nearby'
+        element={
+          <App header={Header} hideHeader={true} layout={CheckinNearBy} />
+        }
+      ></Route>
+
+      <Route
+        path='/check-in/:id'
         element={<App header={Header} hideHeader={true} layout={CheckinWPhoto} />}
+      ></Route>
+
+      <Route
+        path='/check-in/upload-image'
+        element={<App header={Header} hideHeader={true} layout={UploadImage} />}
+      ></Route>
+
+      <Route
+        path='/check-in/drag-location'
+        element={
+          <App header={Header} hideHeader={true} layout={DraggableLocation} />
+        }
+      ></Route>
+
+      <Route
+        path='/check-in/edit-location'
+        element={
+          <App header={Header} hideHeader={true} layout={EditLocation} />
+        }
+      ></Route>
+
+      <Route
+        path='/check-in/enter-info'
+        element={<App header={Header} hideHeader={true} layout={EnterDropInfo} />}
       ></Route>
 
       <Route
@@ -87,13 +110,6 @@ const AppRoutes = () => (
       <Route
         path='/map-view'
         element={<App header={Header} hideHeader={true} layout={MapGL} />}
-      ></Route>
-
-      <Route
-        path='/drop-onboarding/drag-location'
-        element={
-          <App header={Header} hideHeader={true} layout={DraggableLocation} />
-        }
       ></Route>
 
       <Route

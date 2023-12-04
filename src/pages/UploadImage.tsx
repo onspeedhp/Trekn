@@ -48,7 +48,7 @@ export const UploadImage = () => {
             fill='none'
             className='mb-6'
             onClick={() => {
-              navigate('/');
+              navigate(-1);
             }}
           >
             <path

@@ -135,7 +135,7 @@ export const SelectLocation: React.FC = () => {
           fill='none'
           className='mb-6'
           onClick={() => {
-            navigate('/drop-onboarding/upload-image');
+            navigate('/check-in/upload-image');
           }}
         >
           <path

@@ -33,9 +33,10 @@ export const userSlide = createSlice({
       localStorage.setItem('user', JSON.stringify(state));
     },
     updateCoordinate: (state, action) => {
-      const { lat, lng } = action.payload;
+      const { lat, lng, country } = action.payload;
       state.lat = lat ? lat : state.lat;
       state.lng = lng ? lng : state.lng;
+      state.country = country ? country : state.country;
       localStorage.setItem('user', JSON.stringify(state)); // Update localStorage
     },
     resetUser: (state) => {
