@@ -17,6 +17,7 @@ import { DropDetailPage } from '../pages/DropDetailPage';
 import EditProfile from '../pages/EditProfile';
 import { EnterDropInfo } from '../pages/EnterDropInfo';
 import CheckinWPhoto from '../pages/CheckinWPhoto';
+import CheckinNearBy from '../pages/CheckinNearBy';
 
 const AppRoutes = () => (
   <BrowserRouter basename='/'>
@@ -24,6 +25,13 @@ const AppRoutes = () => (
       <Route path='/' element={<App layout={Home} header={Header} />}>
         <Route path='home' element={<Home />} />
       </Route>
+
+      <Route
+        path='/check-in/nearby'
+        element={
+          <App header={Header} hideHeader={true} layout={CheckinNearBy} />
+        }
+      ></Route>
 
       <Route
         path='/drop-onboarding'
