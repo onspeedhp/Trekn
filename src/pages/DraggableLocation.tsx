@@ -33,7 +33,7 @@ export const DraggableLocation = () => {
     setTimeout(() => {
       setMetadata({});
       modal.destroy();
-      navigate('/drop-onboarding/upload-image');
+      navigate('/check-in/upload-image');
     }, 2000);
   };
 
@@ -154,7 +154,7 @@ export const DraggableLocation = () => {
                 fill='none'
                 className='mb-6'
                 onClick={() => {
-                  navigate('/drop-onboarding/upload-image');
+                  navigate('/check-in/upload-image');
                 }}
               >
                 <path
@@ -195,7 +195,7 @@ export const DraggableLocation = () => {
                   className='absolute inset-y-0 right-0 text-[#99FF48] flex w-20'
                   style={{ width: 80 }}
                   onClick={() => {
-                    setEdit(true);
+                    navigate('/check-in/edit-location')
                   }}
                 >
                   Edit location
@@ -217,15 +217,15 @@ export const DraggableLocation = () => {
                 borderRadius: 24,
               }}
               mapStyle='mapbox://styles/mapbox/streets-v9'
-              onDrag={onMapMove}
-              onZoom={onMapMove}
+              dragPan={false}
+              scrollZoom={false}
             >
               {edit && (
                 <Source id='my-data' type='geojson' data={geojson}>
                   <Layer {...layerStyle} />
                 </Source>
               )}
-                            <Marker
+              <Marker
                 longitude={marker.longitude}
                 latitude={marker.latitude}
                 anchor='center'
@@ -261,7 +261,7 @@ export const DraggableLocation = () => {
                   lat: marker.latitude,
                   lng: marker.longitude,
                 });
-                navigate('/drop-onboarding/enter-info');
+                navigate('/check-in/enter-info');
               }
             }}
           >

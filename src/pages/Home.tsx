@@ -133,7 +133,7 @@ function Home() {
                       <Button className='flex gap-2 items-center justify-center border-none rounded-3xl bg-black text-white text-base font-semibold w-full h-auto mt-6 py-3'
                         onClick={async () => {
                           if (user.id) {
-                            navigate('/drop-onboarding/upload-image');
+                            navigate('/check-in/upload-image');
                           } else {
                             setLoading(true);
                             await init();

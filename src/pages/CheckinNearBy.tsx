@@ -53,6 +53,7 @@ export default function CheckinNearBy() {
                             </div>
                             <Button
                                 className='bg-[#2C2C2C] text-white py-3 h-auto rounded-3xl font-semibold text-base border-0 w-full mb-5'
+                                onClick={()=>navigate('/check-in/upload-image')}
                             >
                                 Create a new place
                             </Button>
@@ -69,13 +70,13 @@ export default function CheckinNearBy() {
                             </div>
                             {locationList.map((location: any, idx: number) => (
                                 <>
-                                    <div key={idx} className="text-white font-medium" onClick={() => navigate(`/checkin/${location.id}`)}>
+                                    <div key={idx} className="text-white font-medium" onClick={() => navigate(`/check-in/${location.id}`)}>
                                         <div className="text-base leading-[120%] mb-2">{location.name}</div>
                                         <div className="text-[13px] leading-[120%] text-ellipsis overflow-hidden line-clamp-1 text-[#FFFFFF70]">{location.location_name}</div>
                                         <div className="h-[1px] my-4 bg-[#626262]"></div>
                                     </div>
                                     {idx + 1 === locationList.length && (
-                                        <div className="text-[#99FF48] text-[13px] leading-6 mb-4">
+                                        <div className="text-[#99FF48] text-[13px] leading-6 mb-4" onClick={()=>navigate('/check-in/upload-image')}>
                                             Add a new place
                                         </div>
                                     )}

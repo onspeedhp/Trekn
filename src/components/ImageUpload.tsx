@@ -138,7 +138,7 @@ export const ImageUpload: React.FC = () => {
               });
               setLoading(false);
 
-              navigate(`/drop-onboarding/drag-location`);
+              navigate(`/check-in/drag-location`);
             }}
           >
             Continue

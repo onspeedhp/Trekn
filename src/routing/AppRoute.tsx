@@ -27,27 +27,10 @@ const AppRoutes = () => (
       </Route>
 
       <Route
-        path='/check-in/nearby'
-        element={
-          <App header={Header} hideHeader={true} layout={CheckinNearBy} />
-        }
-      ></Route>
-
-      <Route
         path='/drop-onboarding'
         element={
           <App header={Header} hideHeader={true} layout={DropOnboarding} />
         }
-      ></Route>
-
-      <Route
-        path='/drop-onboarding/enter-info'
-        element={<App header={Header} hideHeader={true} layout={EnterDropInfo} />}
-      ></Route>
-
-      <Route
-        path='/drop-onboarding/upload-image'
-        element={<App header={Header} hideHeader={true} layout={UploadImage} />}
       ></Route>
 
       <Route
@@ -78,8 +61,39 @@ const AppRoutes = () => (
       ></Route>
 
       <Route
-        path='/checkin/:id'
+        path='/check-in/nearby'
+        element={
+          <App header={Header} hideHeader={true} layout={CheckinNearBy} />
+        }
+      ></Route>
+
+      <Route
+        path='/check-in/:id'
         element={<App header={Header} hideHeader={true} layout={CheckinWPhoto} />}
+      ></Route>
+
+      <Route
+        path='/check-in/upload-image'
+        element={<App header={Header} hideHeader={true} layout={UploadImage} />}
+      ></Route>
+
+      <Route
+        path='/check-in/drag-location'
+        element={
+          <App header={Header} hideHeader={true} layout={DraggableLocation} />
+        }
+      ></Route>
+
+      <Route
+        path='/check-in/edit-location'
+        element={
+          <App header={Header} hideHeader={true} layout={DraggableLocation} />
+        }
+      ></Route>
+
+      <Route
+        path='/check-in/enter-info'
+        element={<App header={Header} hideHeader={true} layout={EnterDropInfo} />}
       ></Route>
 
       <Route
@@ -95,13 +109,6 @@ const AppRoutes = () => (
       <Route
         path='/map-view'
         element={<App header={Header} hideHeader={true} layout={MapGL} />}
-      ></Route>
-
-      <Route
-        path='/drop-onboarding/drag-location'
-        element={
-          <App header={Header} hideHeader={true} layout={DraggableLocation} />
-        }
       ></Route>
 
       <Route

@@ -31,7 +31,7 @@ export const EnterDropInfo = () => {
     setTimeout(() => {
       setMetadata({});
       modal.destroy();
-      navigate('/drop-onboarding/upload-image');
+      navigate('/check-in/upload-image');
     }, 2000);
   };
 
@@ -60,7 +60,7 @@ export const EnterDropInfo = () => {
             fill='none'
             className='mb-6'
             onClick={() => {
-              navigate('/drop-onboarding/drag-location');
+              navigate('/check-in/drag-location');
             }}
           >
             <path
@@ -79,7 +79,7 @@ export const EnterDropInfo = () => {
                 </div>
               }
             </div>
-            <div className="py-2 px-4 bg-white rounded-full text-black font-medium" onClick={() => navigate('/drop-onboarding/upload-image')}>Edit media</div>
+            <div className="py-2 px-4 bg-white rounded-full text-black font-medium" onClick={() => navigate('/check-in/upload-image')}>Edit media</div>
           </div>
 
           <div className='relative flex flex-col gap-4'>
