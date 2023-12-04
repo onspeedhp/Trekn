@@ -78,7 +78,7 @@ const AppRoutes = () => (
       ></Route>
 
       <Route
-        path='/collect-with-photo'
+        path='/checkin/:id'
         element={<App header={Header} hideHeader={true} layout={CheckinWPhoto} />}
       ></Route>
 

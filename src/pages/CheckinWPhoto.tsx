@@ -4,11 +4,13 @@ import { useAuthContext } from '../context/AuthContext';
 import { FaPlusCircle, FaTimesCircle, FaUpload } from 'react-icons/fa';
 import { FaCirclePlus } from 'react-icons/fa6';
 import { Button } from 'antd';
+import { useNavigate } from 'react-router';
 
 export default function CheckinWPhoto() {
   const { windowSize } = useAuthContext();
   const [files, setFiles] = useState<File | null>(null);
   const [desc, setDesc] = useState<string>('');
+  const navigate = useNavigate();
 
   const fileSelectedHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -77,6 +79,7 @@ export default function CheckinWPhoto() {
             <Button
               className='bg-[#2C2C2C] text-white py-3 h-auto rounded-3xl font-semibold text-base border-0'
               style={{ width: (windowSize.width - 40 - 12) / 2 }}
+              onClick={()=>navigate(-1)}
             >
               Cancel
             </Button>

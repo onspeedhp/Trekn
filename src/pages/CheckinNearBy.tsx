@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAuthContext } from '../context/AuthContext'
 import DefaultBlackBg from '../components/DefaultBlackBg';
 import { useNavigate } from 'react-router';
@@ -10,8 +10,10 @@ import { Button } from 'antd';
 export default function CheckinNearBy() {
     const { windowSize } = useAuthContext();
     const navigate = useNavigate();
-    const readyToCollectData = useSelector((state: any) => state?.location?.readyToCollect)
+    const [locationList, setLocationList] = useState([]);
+    const readyToCollectData = useSelector((state: any) => state?.location?.nearBy)
     useEffect(() => {
+        setLocationList(readyToCollectData)
         console.log(readyToCollectData);
     }, [])
     return (
@@ -40,7 +42,7 @@ export default function CheckinNearBy() {
                         Check-in
                     </div>
                 </div>
-                {!readyToCollectData.length ?
+                {!locationList.length ?
                     <>
                         <div className='flex-1 flex flex-col items-center'>
                             <div className="flex-grow flex flex-col items-center justify-center w-[234px]">
@@ -60,6 +62,25 @@ export default function CheckinNearBy() {
                     <>
                         <div className='mb-6'>
                             <CustomiseInputWIco style={'dark'} value={''} onChange={() => { }} label={null} placeholder='Where are you?' leftIco={<FaSearch size={16} />} />
+                        </div>
+                        <div className="px-2">
+                            <div className="font-medium text-[13px] text-[#FFFFFF70] leading-[120%] mb-6">
+                                {locationList.length} places
+                            </div>
+                            {locationList.map((location: any, idx: number) => (
+                                <>
+                                    <div key={idx} className="text-white font-medium" onClick={() => navigate(`/checkin/${location.id}`)}>
+                                        <div className="text-base leading-[120%] mb-2">{location.name}</div>
+                                        <div className="text-[13px] leading-[120%] text-ellipsis overflow-hidden line-clamp-1 text-[#FFFFFF70]">{location.location_name}</div>
+                                        <div className="h-[1px] my-4 bg-[#626262]"></div>
+                                    </div>
+                                    {idx + 1 === locationList.length && (
+                                        <div className="text-[#99FF48] text-[13px] leading-6 mb-4">
+                                            Add a new place
+                                        </div>
+                                    )}
+                                </>
+                            ))}
                         </div>
                     </>}
             </div>
