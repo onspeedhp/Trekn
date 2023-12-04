@@ -3,13 +3,14 @@ import { useAuthContext } from '../context/AuthContext';
 
 interface defaultBlackBgProps {
     children: ReactNode,
+    className?: string
 }
 
-export default function DefaultBlackBg({children}: defaultBlackBgProps) {
+export default function DefaultBlackBg({className,children}: defaultBlackBgProps) {
     const {windowSize} = useAuthContext();
   return (
     <div
-      className='bg-black'
+      className={`bg-black ${className} relative`}
       style={{ width: windowSize.width, height: windowSize.height }}
     >
       {children}

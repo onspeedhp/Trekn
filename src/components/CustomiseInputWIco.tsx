@@ -1,22 +1,24 @@
 import React from 'react'
-import { FaSearch } from 'react-icons/fa';
 
 interface customiseInputProps {
-    value: string;
     label: string | null;
-    itemKey?: string;
     onChange: CallableFunction;
+    value?: string;
+    itemKey?: string;
+    style?: string;
+    placeholder?: string;
+    leftIco?: any
 }
 
-export default function CustomiseInputWIco({ value = '', label, onChange }: customiseInputProps) {
-
+export default function CustomiseInputWIco({ value = '', label, onChange, style = 'light', placeholder, leftIco }: customiseInputProps) {
     return (
         <div>
-            {label && 
-            <label className='text-[13px] text-[#000000b3] font-medium leading-4'>{label}</label>
+            {label &&
+                <label className='text-[13px] text-[#000000b3] font-medium leading-4'>{label}</label>
             }
-            <div className="border rounded-xl overflow-hidden mt-1">
-                <input type="text" className='py-4 px-3 w-full focus-visible:outline-none text-base font-medium' value={value} />
+            <div className={`py-4 px-3 rounded-xl overflow-hidden ${style === 'dark' ? 'bg-[#212121de] text-white' : 'border'} flex items-center gap-2`}>
+                {leftIco}
+                <input type="text" className='w-full focus-visible:outline-none text-base font-medium bg-transparent' value={value} placeholder={placeholder} />
             </div>
         </div>
     )

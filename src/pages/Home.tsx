@@ -53,18 +53,18 @@ function Home() {
     setLoadingNearBy(false);
   };
 
-  // const getReadyToCollect = async (lat: number, log: number) => {
-  //   setLoadingReadyToCollet(true);
-  //   const res = await request.post('drop/getReadyToCollect', {
-  //     lat: lat,
-  //     lng: log,
-  //   });
+  const getReadyToCollect = async (lat: number, log: number) => {
+    setLoadingReadyToCollet(true);
+    const res = await request.post('drop/getReadyToCollect', {
+      lat: lat,
+      lng: log,
+    });
 
-  //   dispatch(updateReadyToCollect({ readyToCollect: res.data.data }));
-  //   dispatch(setLastFetch());
-  //   setReadyToCollect(res.data.data);
-  //   setLoadingReadyToCollet(false);
-  // };
+    dispatch(updateReadyToCollect({ readyToCollect: res.data.data }));
+    dispatch(setLastFetch());
+    setReadyToCollect(res.data.data);
+    setLoadingReadyToCollet(false);
+  };
 
   useEffect(() => {
     if (user.lat) {
@@ -73,7 +73,7 @@ function Home() {
         location.lastFetch === -1 ||
         (location.lastFetch - new Date().getTime()) / 1000 > 300
       ) {
-        // getReadyToCollect(user.lat, user.lng);
+        getReadyToCollect(user.lat, user.lng);
       } else {
         setReadyToCollect(location.readyToCollect);
       }
