@@ -18,10 +18,10 @@ export default function CheckinNearBy() {
     }, [])
     const handleFilterLocation = (value: string) => {
         setLocationFilter(value);
-        if(value) {
+        if (value) {
             const result = readyToCollectData.filter((location: any) => location.name.toLowerCase().includes(value));
             setLocationList(result);
-        } else{
+        } else {
             setLocationList(readyToCollectData)
         }
 
@@ -53,8 +53,8 @@ export default function CheckinNearBy() {
                     </div>
                 </div>
                 <div className='mb-6'>
-                            <CustomiseInputWIco style={'dark'} value={locationFilter} onChange={handleFilterLocation} label={null} placeholder='Where are you?' leftIco={<FaSearch size={16} />} />
-                        </div>
+                    <CustomiseInputWIco style={'dark'} value={locationFilter} onChange={handleFilterLocation} label={null} placeholder='Where are you?' leftIco={<FaSearch size={16} className="text-[#ffffff70]" />} />
+                </div>
                 {!locationList.length ?
                     <>
                         <div className='flex-1 flex flex-col items-center'>
@@ -66,7 +66,7 @@ export default function CheckinNearBy() {
                             </div>
                             <Button
                                 className='bg-[#2C2C2C] text-white py-3 h-auto rounded-3xl font-semibold text-base border-0 w-full mb-5'
-                                onClick={()=>navigate('/check-in/upload-image')}
+                                onClick={() => navigate('/check-in/upload-image')}
                             >
                                 Create a new place
                             </Button>
@@ -86,7 +86,7 @@ export default function CheckinNearBy() {
                                         <div className="h-[1px] my-4 bg-[#626262]"></div>
                                     </div>
                                     {idx + 1 === locationList.length && (
-                                        <div className="text-[#99FF48] text-[13px] leading-6 mb-4" onClick={()=>navigate('/check-in/upload-image')}>
+                                        <div className="text-[#99FF48] text-[13px] leading-6 mb-4" onClick={() => navigate('/check-in/upload-image')}>
                                             Add a new place
                                         </div>
                                     )}
