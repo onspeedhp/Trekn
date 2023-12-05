@@ -11,11 +11,21 @@ export default function CheckinNearBy() {
     const { windowSize } = useAuthContext();
     const navigate = useNavigate();
     const [locationList, setLocationList] = useState([]);
+    const [locationFilter, setLocationFilter] = useState('')
     const readyToCollectData = useSelector((state: any) => state?.location?.nearBy)
     useEffect(() => {
-        setLocationList(readyToCollectData)
-        console.log(readyToCollectData);
+        setLocationList(readyToCollectData);
     }, [])
+    const handleFilterLocation = (value: string) => {
+        setLocationFilter(value);
+        if(value) {
+            const result = readyToCollectData.filter((location: any) => location.name.toLowerCase().includes(value));
+            setLocationList(result);
+        } else{
+            setLocationList(readyToCollectData)
+        }
+
+    }
     return (
         <DefaultBlackBg className={'p-4'}>
             <div className="flex flex-col h-full">
@@ -42,6 +52,9 @@ export default function CheckinNearBy() {
                         Check-in
                     </div>
                 </div>
+                <div className='mb-6'>
+                            <CustomiseInputWIco style={'dark'} value={locationFilter} onChange={handleFilterLocation} label={null} placeholder='Where are you?' leftIco={<FaSearch size={16} />} />
+                        </div>
                 {!locationList.length ?
                     <>
                         <div className='flex-1 flex flex-col items-center'>
@@ -61,9 +74,6 @@ export default function CheckinNearBy() {
                     </>
                     :
                     <>
-                        <div className='mb-6'>
-                            <CustomiseInputWIco style={'dark'} value={''} onChange={() => { }} label={null} placeholder='Where are you?' leftIco={<FaSearch size={16} />} />
-                        </div>
                         <div className="px-2">
                             <div className="font-medium text-[13px] text-[#FFFFFF70] leading-[120%] mb-6">
                                 {locationList.length} places

@@ -18,6 +18,7 @@ import EditProfile from '../pages/EditProfile';
 import { EnterDropInfo } from '../pages/EnterDropInfo';
 import CheckinWPhoto from '../pages/CheckinWPhoto';
 import CheckinNearBy from '../pages/CheckinNearBy';
+import EditLocation from '../pages/EditLocation';
 
 const AppRoutes = () => (
   <BrowserRouter basename='/'>
@@ -87,7 +88,7 @@ const AppRoutes = () => (
       <Route
         path='/check-in/edit-location'
         element={
-          <App header={Header} hideHeader={true} layout={DraggableLocation} />
+          <App header={Header} hideHeader={true} layout={EditLocation} />
         }
       ></Route>
 
