@@ -18,7 +18,7 @@ export default function CustomiseInputWIco({ value = '', label, onChange, style 
             }
             <div className={`py-4 px-3 rounded-xl overflow-hidden ${style === 'dark' ? 'bg-[#212121de] text-white' : 'border'} flex items-center gap-2`}>
                 {leftIco}
-                <input type="text" onChange={(e)=>onChange(e.currentTarget.value)} className='w-full focus-visible:outline-none text-base font-medium bg-transparent' value={value} placeholder={placeholder} />
+                <input type="text" onChange={(e)=>onChange(e.currentTarget.value)} className='placeholder:text-[#ffffff50] w-full focus-visible:outline-none text-base font-medium bg-transparent' value={value} placeholder={placeholder} />
             </div>
         </div>
     )

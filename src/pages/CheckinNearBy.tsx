@@ -18,14 +18,51 @@ export default function CheckinNearBy() {
     }, [])
     const handleFilterLocation = (value: string) => {
         setLocationFilter(value);
-        if (value) {
-            const result = readyToCollectData.filter((location: any) => location.name.toLowerCase().includes(value));
-            setLocationList(result);
-        } else {
-            setLocationList(readyToCollectData)
-        }
-
+        const result = value ? readyToCollectData.filter((location: any) => location.name.toLowerCase().includes(value)) : readyToCollectData;
+        setLocationList(result);
     }
+    const noLocationList = () => (
+        <>
+            <div className='flex-1 flex flex-col items-center'>
+                <div className="flex-grow flex flex-col items-center justify-center w-[234px]">
+                    <div className="mb-4 px-[37.5px]">
+                        <img src="/spyglass.svg" alt="spyglass" />
+                    </div>
+                    <p className='text-[#BDBDBD] text-[13px] font-medium text-center leading-[140%]'>Seems like this is a whole new place for you to explore and share, be the first one!</p>
+                </div>
+                <Button
+                    className='bg-[#2C2C2C] text-white py-3 h-auto rounded-3xl font-semibold text-base border-0 w-full mb-5'
+                    onClick={() => navigate('/check-in/upload-image')}
+                >
+                    Create a new place
+                </Button>
+            </div>
+        </>
+    )
+
+    const renderLocationList = () => (
+        <>
+            <div className="px-2">
+                <div className="font-medium text-[13px] text-[#FFFFFF70] leading-[120%] mb-6">
+                    {locationList.length} places
+                </div>
+                {locationList.map((location: any, idx: number) => (
+                    <>
+                        <div key={idx} className="text-white font-medium" onClick={() => navigate(`/check-in/${location.id}`)}>
+                            <div className="text-base leading-[120%] mb-2">{location.name}</div>
+                            <div className="text-[13px] leading-[120%] text-ellipsis overflow-hidden line-clamp-1 text-[#FFFFFF70]">{location.location_name}</div>
+                            <div className="h-[1px] my-4 bg-[#626262]"></div>
+                        </div>
+                        {idx + 1 === locationList.length && (
+                            <div className="text-[#99FF48] text-[13px] leading-6 mb-4" onClick={() => navigate('/check-in/upload-image')}>
+                                Add a new place
+                            </div>
+                        )}
+                    </>
+                ))}
+            </div>
+        </>
+    )
     return (
         <DefaultBlackBg className={'p-4'}>
             <div className="flex flex-col h-full">
@@ -55,45 +92,7 @@ export default function CheckinNearBy() {
                 <div className='mb-6'>
                     <CustomiseInputWIco style={'dark'} value={locationFilter} onChange={handleFilterLocation} label={null} placeholder='Where are you?' leftIco={<FaSearch size={16} className="text-[#ffffff70]" />} />
                 </div>
-                {!locationList.length ?
-                    <>
-                        <div className='flex-1 flex flex-col items-center'>
-                            <div className="flex-grow flex flex-col items-center justify-center w-[234px]">
-                                <div className="mb-4 px-[37.5px]">
-                                    <img src="/spyglass.svg" alt="spyglass" />
-                                </div>
-                                <p className='text-[#BDBDBD] text-[13px] font-medium text-center leading-[140%]'>Seems like this is a whole new place for you to explore and share, be the first one!</p>
-                            </div>
-                            <Button
-                                className='bg-[#2C2C2C] text-white py-3 h-auto rounded-3xl font-semibold text-base border-0 w-full mb-5'
-                                onClick={() => navigate('/check-in/upload-image')}
-                            >
-                                Create a new place
-                            </Button>
-                        </div>
-                    </>
-                    :
-                    <>
-                        <div className="px-2">
-                            <div className="font-medium text-[13px] text-[#FFFFFF70] leading-[120%] mb-6">
-                                {locationList.length} places
-                            </div>
-                            {locationList.map((location: any, idx: number) => (
-                                <>
-                                    <div key={idx} className="text-white font-medium" onClick={() => navigate(`/check-in/${location.id}`)}>
-                                        <div className="text-base leading-[120%] mb-2">{location.name}</div>
-                                        <div className="text-[13px] leading-[120%] text-ellipsis overflow-hidden line-clamp-1 text-[#FFFFFF70]">{location.location_name}</div>
-                                        <div className="h-[1px] my-4 bg-[#626262]"></div>
-                                    </div>
-                                    {idx + 1 === locationList.length && (
-                                        <div className="text-[#99FF48] text-[13px] leading-6 mb-4" onClick={() => navigate('/check-in/upload-image')}>
-                                            Add a new place
-                                        </div>
-                                    )}
-                                </>
-                            ))}
-                        </div>
-                    </>}
+                {!locationList.length ? noLocationList() : renderLocationList()}
             </div>
         </DefaultBlackBg>
     )
