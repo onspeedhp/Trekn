@@ -1,16 +1,22 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import DefaultBlackBg from '../components/DefaultBlackBg'
 import { useNavigate } from 'react-router';
 import { FaChevronRight, FaSearch } from 'react-icons/fa';
 import CustomiseInputWIco from '../components/CustomiseInputWIco';
+import useApi from '../hooks/useAPI';
 
 export default function EditLocation() {
     const navigate = useNavigate();
+    const apiService = useApi();
     const [currentEdit, setCurrentEdit] = useState('');
     const [searchValue, setSearchValue] = useState('');
     const handleFilterLocation = (value: string) => {
         setSearchValue(value);
     }
+
+    useEffect(()=>{
+        // if()
+    },[currentEdit])
     return (
         <DefaultBlackBg className={'p-4'}>
             <div className='font-semibold flex items-center relative text-white mb-6'>
@@ -53,7 +59,7 @@ export default function EditLocation() {
                 </>
             }
 
-            {currentEdit === 'state' &&
+            {currentEdit === 'cities' || currentEdit === 'state' || currentEdit === 'district' &&
                 <div className='flex flex-col gap-6'>
                     <CustomiseInputWIco style={'dark'} value={searchValue} onChange={handleFilterLocation} label={null} placeholder='Quận/Huyện, Phường/Xã' leftIco={<FaSearch size={16} className="text-[#ffffff70]"/>} />
                     <div className="font-medium text-[13px] text-[#FFFFFF70] leading-[120%]">
