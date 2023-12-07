@@ -10,6 +10,7 @@ import Torus from '@toruslabs/solana-embed';
 import { insertUser, isUserIsExisted } from '../middleware/data/user';
 import { updateCoordinate, updateUser } from '../redux/slides/userSlides';
 import { useDispatch } from 'react-redux';
+import useApi from '../hooks/useAPI';
 
 export const AuthContext = createContext({} as AuthContextProps);
 export const useAuthContext = () => useContext(AuthContext);
@@ -17,6 +18,7 @@ export const useAuthContext = () => useContext(AuthContext);
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [nftMetada, setNFTMetadata] = useState<IDrop>({} as IDrop);
   const dispatch = useDispatch();
+  const { get } = useApi();
   const [torus, setTorus] = useState(new Torus());
   const [leaderBoard, setLeaderBoard] = useState(false);
 
@@ -43,12 +45,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       ({ coords: { longitude, latitude } }) => {
-        dispatch(
-          updateCoordinate({
-            lat: latitude,
-            lng: longitude,
-          })
-        );
+        (async () => {
+          const countryInfo: any = await get(`https://nominatim.openstreetmap.org/reverse.php?lat=${latitude}&lon=${longitude}&zoom=3&format=jsonv2`);
+          dispatch(
+            updateCoordinate({
+              lat: latitude,
+              lng: longitude,
+              country: countryInfo?.address?.country
+            })
+          );
+        })()
+
       }
     );
   }, []);
