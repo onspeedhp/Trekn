@@ -140,7 +140,7 @@ export const DropDetailPage = () => {
                 <div className='flex items-center gap-2'>
                   <div className='font-medium flex items-center gap-1'>
                     <FaThumbsUp className='w-4 h-4 text-[#FFB800]' />
-                    <div className='text-[13px] text-[#000000b3] font-medium whitespace-nowrap leading-5'>
+                    <div className={`text-[13px] ${selectedLocation && Number(getScore(selectedLocation, false)) ? 'text-[#000000b3]' : 'text-[#02030380]' } font-medium whitespace-nowrap leading-5`}>
                       {selectedLocation && getScore(selectedLocation, true)}
                     </div>
                   </div>
@@ -181,7 +181,7 @@ export const DropDetailPage = () => {
               </div>
               <div className='flex flex-col gap-4'>
                 <div className='leading-10 text-xl font-bold leading-[13px]'>Location</div>
-                <div className='leading-4 text-[#02030380] font-medium leading-1'>
+                <div className='leading-4 text-[#02030380] font-medium leading-1 text-[13px]'>
                   {selectedLocation.location}
                 </div>
                 <Map
