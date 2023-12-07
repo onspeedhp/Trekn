@@ -31,6 +31,7 @@ import { mintCompressedNFT } from '../functions/mintCompressedNFT';
 import { PublicKey } from '@solana/web3.js';
 import moment from 'moment';
 import { getScore } from '../utils/account.util';
+import { formatLocation } from '../functions/text';
 
 export const DropDetailPage = () => {
   const { dropId } = useParams();
@@ -182,7 +183,7 @@ export const DropDetailPage = () => {
               <div className='flex flex-col gap-4'>
                 <div className='leading-10 text-xl font-bold leading-[13px]'>Location</div>
                 <div className='leading-4 text-[#02030380] font-medium leading-1 text-[13px]'>
-                  {selectedLocation.location}
+                  {formatLocation(selectedLocation.location)}
                 </div>
                 <Map
                   mapboxAccessToken={`${process.env.REACT_APP_MAP_BOX_ACCESS_TOKEN}`}
