@@ -40,7 +40,7 @@ const Header = ({ hidden }: { hidden: boolean }) => {
 
             {user.id ? (
               <>
-                <img src={user.profileImage} alt="" onClick={() => {navigate('/account')}} className='w-9 h-9 rounded-full border box-border'/>
+                <img src={user.profileImage} alt="" onClick={() => {navigate('/account')}} className='w-9 h-9 rounded-full border box-border object-cover object-center'/>
               </>
             ) : (
               <>

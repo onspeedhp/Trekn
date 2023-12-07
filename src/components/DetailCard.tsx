@@ -136,22 +136,26 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
                     ? data.imageArray
                     : data?.drop?.imageArray
                   )?.map((item: string, idx: number) => (
-                    <div className='relative'>
-                      <LazyImageCustom
-                        key={idx}
-                        src={item}
-                        alt='Drop Img'
-                        className='skeleton h-full object-cover rounded-xl object-center w-full'
-                      />
-                      <div
-                        className='absolute inset-0'
-                        style={{
-                          backgroundImage:
-                            'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 34.71%, rgba(0, 0, 0, 0.60) 77.95%)',
-                          borderRadius: 12,
-                        }}
-                      ></div>
-                    </div>
+                    <>
+                      {idx < 3 &&
+                        <div className='relative' >
+                          <LazyImageCustom
+                            key={idx}
+                            src={item}
+                            alt='Drop Img'
+                            className='skeleton h-full object-cover rounded-xl object-center w-full'
+                          />
+                          <div
+                            className='absolute inset-0'
+                            style={{
+                              backgroundImage:
+                                'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 34.71%, rgba(0, 0, 0, 0.60) 77.95%)',
+                              borderRadius: 12,
+                            }}
+                          ></div>
+                        </div>
+                      }
+                    </>
                   ))}
                 </Carousel>
               </>
@@ -252,6 +256,6 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
         </div>
       </div>
       {!last && <div className='border-b mt-6'></div>}
-    </div>
+    </div >
   );
 };

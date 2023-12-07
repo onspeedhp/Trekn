@@ -11,3 +11,14 @@ body {
   top: 20px;
   right: 0;
 }
+
+:where(.css-dev-only-do-not-override-6j9yrn).ant-spin-nested-loading .ant-spin-blur {
+  clear: unset;
+  opacity: 1;
+  user-select: unset;
+  pointer-events: unset;
+}
+
+.ant-spin-blur::after{
+  display: none;
+}
