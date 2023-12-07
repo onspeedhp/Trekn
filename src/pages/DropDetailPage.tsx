@@ -241,7 +241,7 @@ export const DropDetailPage = () => {
                 )}
               </div>
 
-              <Button
+              {/* <Button
                 className='h-12 rounded-3xl text-white bg-black'
                 style={{ width: windowSize.width - 40 }}
                 loading={loading}
@@ -251,7 +251,7 @@ export const DropDetailPage = () => {
                 disabled={disable}
               >
                 {mintStatus}
-              </Button>
+              </Button> */}
 
               <Drawer
                 height={265}

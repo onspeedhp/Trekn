@@ -121,7 +121,7 @@ function Home() {
                 > */}
                 {nearBy.length !== 0 && (
                   <ListDetail
-                    status={'ReadyToCollect_'}
+                    status={'Nearby'}
                     data={readyToCollect}
                   />
                 )}

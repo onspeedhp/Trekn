@@ -131,7 +131,7 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
           >
             {data?.drop?.imageArray || data?.imageArray ?
               <>
-                <Carousel swipeToSlide draggable style={{ height: '100%', width: '100%'}}>
+                <Carousel swipeToSlide draggable style={{ height: '100%', width: '100%' }}>
                   {(data.imageArray
                     ? data.imageArray
                     : data?.drop?.imageArray
