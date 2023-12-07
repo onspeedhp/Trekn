@@ -72,8 +72,8 @@ function Home() {
   useEffect(() => {
     if (user.lat) {
       (async () => {
-        const countryInfo: any = await get(`https://nominatim.openstreetmap.org/reverse.php?lat=${user.lat}&lon=${user.lng}&zoom=3&format=jsonv2`);
-        dispatch(updateCountry({ country: countryInfo?.address?.country || countryInfo.name || 'Vietnam' }));
+        const countryInfo: any = await get(`https://nominatim.openstreetmap.org/reverse.php?lat=${user.lat}&lon=${user.lng}&zoom=3&format=jsonv2&accept-language=en`);
+        dispatch(updateCountry({ country: countryInfo?.address?.country }));
       })();
 
       if (
