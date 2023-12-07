@@ -12,7 +12,7 @@ export default function CheckinNearBy() {
     const navigate = useNavigate();
     const [locationList, setLocationList] = useState([]);
     const [locationFilter, setLocationFilter] = useState('')
-    const readyToCollectData = useSelector((state: any) => state?.location?.nearBy)
+    const readyToCollectData = useSelector((state: any) => state?.location?.readyToCollect)
     useEffect(() => {
         setLocationList(readyToCollectData);
     }, [])

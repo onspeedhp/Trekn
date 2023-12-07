@@ -35,210 +35,13 @@ export default function EditLocation() {
         }
     }
 
-    const fetchSuggestAddress = useDebouncedCallback(async (value) => {
+    const fetchSuggestAddress = useDebouncedCallback(async (value: any) => {
         let subValue = '';
         Object.entries(addressForm).reverse().map(([_, value]) => {
             subValue += ` ${value},`
         })
-        // const {items}: any = await apiService.get(`https://autosuggest.search.hereapi.com/v1/autosuggest?at=${user.lat},${user.lng}&limit=3&lang=en&q=${`${value} ${subValue}`}&apiKey=${process.env.REACT_APP_HERE_API_KEY}`)
-        // setFilteredDataList([
-        //     {
-        //         "title": "2/34 Đường Cao Thắng, Phường 5, Quận 3, Ho Chi Minh City (Thành Phố Hồ Chí Minh), Vietnam",
-        //         "id": "here:af:streetsection:dBWMxoxyxWoJwCwN8GWwdB:CggIBCDyxrWwAxABGgQyLzM0",
-        //         "resultType": "houseNumber",
-        //         "houseNumberType": "PA",
-        //         "address": {
-        //             "label": "2/34 Đường Cao Thắng, Phường 5, Quận 3, Ho Chi Minh City, Vietnam"
-        //         },
-        //         "position": {
-        //             "lat": 10.77018,
-        //             "lng": 106.68558
-        //         },
-        //         "access": [
-        //             {
-        //                 "lat": 10.77041,
-        //                 "lng": 106.68572
-        //             }
-        //         ],
-        //         "distance": 8717,
-        //         "mapView": {
-        //             "west": 106.68213,
-        //             "south": 10.76829,
-        //             "east": 106.68572,
-        //             "north": 10.77061
-        //         },
-        //         "highlights": {
-        //             "title": [
-        //                 {
-        //                     "start": 2,
-        //                     "end": 4
-        //                 },
-        //                 {
-        //                     "start": 11,
-        //                     "end": 20
-        //                 },
-        //                 {
-        //                     "start": 22,
-        //                     "end": 28
-        //                 },
-        //                 {
-        //                     "start": 32,
-        //                     "end": 36
-        //                 },
-        //                 {
-        //                     "start": 58,
-        //                     "end": 67
-        //                 }
-        //             ],
-        //             "address": {
-        //                 "label": [
-        //                     {
-        //                         "start": 2,
-        //                         "end": 4
-        //                     },
-        //                     {
-        //                         "start": 11,
-        //                         "end": 20
-        //                     },
-        //                     {
-        //                         "start": 22,
-        //                         "end": 28
-        //                     },
-        //                     {
-        //                         "start": 32,
-        //                         "end": 36
-        //                     }
-        //                 ]
-        //             }
-        //         }
-        //     },
-        //     {
-        //         "title": "34 Đường Cao Thắng, Phường 17, Quận Phú Nhuận, Ho Chi Minh City (Thành Phố Hồ Chí Minh), Vietnam",
-        //         "id": "here:af:streetsection:OaWJ89wkFJ7Jz0v-gshF.A:CggIBCDGz7_mAhABGgIzNA",
-        //         "resultType": "houseNumber",
-        //         "houseNumberType": "PA",
-        //         "address": {
-        //             "label": "34 Đường Cao Thắng, Phường 17, Quận Phú Nhuận, Ho Chi Minh City, Vietnam"
-        //         },
-        //         "position": {
-        //             "lat": 10.79424,
-        //             "lng": 106.68283
-        //         },
-        //         "access": [
-        //             {
-        //                 "lat": 10.79419,
-        //                 "lng": 106.68288
-        //             }
-        //         ],
-        //         "distance": 6962,
-        //         "mapView": {
-        //             "west": 106.68123,
-        //             "south": 10.79226,
-        //             "east": 106.68333,
-        //             "north": 10.79477
-        //         },
-        //         "highlights": {
-        //             "title": [
-        //                 {
-        //                     "start": 0,
-        //                     "end": 2
-        //                 },
-        //                 {
-        //                     "start": 9,
-        //                     "end": 18
-        //                 },
-        //                 {
-        //                     "start": 20,
-        //                     "end": 26
-        //                 },
-        //                 {
-        //                     "start": 31,
-        //                     "end": 39
-        //                 },
-        //                 {
-        //                     "start": 65,
-        //                     "end": 74
-        //                 }
-        //             ],
-        //             "address": {
-        //                 "label": [
-        //                     {
-        //                         "start": 0,
-        //                         "end": 2
-        //                     },
-        //                     {
-        //                         "start": 9,
-        //                         "end": 18
-        //                     },
-        //                     {
-        //                         "start": 20,
-        //                         "end": 26
-        //                     },
-        //                     {
-        //                         "start": 31,
-        //                         "end": 39
-        //                     }
-        //                 ]
-        //             }
-        //         }
-        //     },
-        //     {
-        //         "title": "Đường Cao Thắng, Phường 3, Quận 3, Ho Chi Minh City (Thành Phố Hồ Chí Minh), Vietnam",
-        //         "id": "here:af:streetsection:RgzYKOtybnbJfx2reoZOvA",
-        //         "resultType": "street",
-        //         "address": {
-        //             "label": "Đường Cao Thắng, Phường 3, Quận 3, Ho Chi Minh City, Vietnam"
-        //         },
-        //         "position": {
-        //             "lat": 10.77138,
-        //             "lng": 106.68059
-        //         },
-        //         "distance": 8224,
-        //         "mapView": {
-        //             "west": 106.67906,
-        //             "south": 10.77003,
-        //             "east": 106.68213,
-        //             "north": 10.77274
-        //         },
-        //         "highlights": {
-        //             "title": [
-        //                 {
-        //                     "start": 6,
-        //                     "end": 15
-        //                 },
-        //                 {
-        //                     "start": 17,
-        //                     "end": 23
-        //                 },
-        //                 {
-        //                     "start": 27,
-        //                     "end": 31
-        //                 },
-        //                 {
-        //                     "start": 53,
-        //                     "end": 62
-        //                 }
-        //             ],
-        //             "address": {
-        //                 "label": [
-        //                     {
-        //                         "start": 6,
-        //                         "end": 15
-        //                     },
-        //                     {
-        //                         "start": 17,
-        //                         "end": 23
-        //                     },
-        //                     {
-        //                         "start": 27,
-        //                         "end": 31
-        //                     }
-        //                 ]
-        //             }
-        //         }
-        //     }
-        // ]);
-        setFilteredDataList([]);
+        const {items}: any = await apiService.get(`https://autosuggest.search.hereapi.com/v1/autosuggest?at=${user.lat},${user.lng}&limit=3&lang=en&q=${`${value} ${subValue}`}&apiKey=${process.env.REACT_APP_HERE_API_KEY}`)
+        setFilteredDataList(items);
     }, 1000)
 
     useEffect(() => {
@@ -304,28 +107,31 @@ export default function EditLocation() {
         setCurrentEdit('cities');
     }
 
-    const handleConfirmAddress = async (itemAccess?: any) => {
-        if (itemAccess) {
-            setAddressLocation({ ...itemAccess });
+    const handleConfirmAddress = async (item?: any) => {
+        if (item) {
+            console.log(item)
+            setAddressLocation({ lng: item.position.lng, lat: item.position.lat, label: item.address.label });
+
         } else {
             const locationInfo: any = await apiService.get(`https://nominatim.openstreetmap.org/search.php?q=${addressForm.subDistrict ? `${addressForm.subDistrict} ${addressForm.district}` : `${addressForm.city} ${addressForm.state}`}&polygon_geojson=1&format=jsonv2`)
-            setAddressLocation({ lng: locationInfo[0].lon, lat: locationInfo[0].lat });
+            setAddressLocation({ lng: locationInfo[0].lon, lat: locationInfo[0].lat, label: searchValue });
         }
         setCurrentEdit('confirm');
     }
 
     const onMapMove = useCallback(async (event: ViewStateChangeEvent) => {
-        setAddressLocation({
+        setAddressLocation((prev: any)=>({
+            ...prev,
             lng: event.viewState.longitude,
             lat: event.viewState.latitude,
-        });
+        }));
     }, []);
 
     const handleSubmit = () => {
         setMetadata({
             ...metadata, 
-            location: searchValue,
-            location_name: searchValue,
+            location: addressLocation.label,
+            location_name: addressLocation.label,
             lat: addressLocation.lat,
             lng: addressLocation.lng,
         })
@@ -400,9 +206,9 @@ export default function EditLocation() {
                                     <div className={`font-medium text-[13px] text-[#FFFFFF70] leading-[120%] mb-6`}>
                                         {capitalizeFirstLetter(currentEdit)}
                                     </div>
-                                    {filteredDataList?.length && filteredDataList.map((item, idx) =>
+                                    {filteredDataList?.length > 0 && filteredDataList.map((item, idx) =>
                                         <div key={idx}>
-                                            <div className="text-base text-white font-medium leading-[120%]" onClick={() => currentEdit !== 'address' ? handleChoose(item) : handleConfirmAddress(item?.access)}>
+                                            <div className="text-base text-white font-medium leading-[120%]" onClick={() => currentEdit !== 'address' ? handleChoose(item) : handleConfirmAddress(item)}>
                                                 {item.name || item.title}
                                             </div>
                                             {idx + 1 !== filteredDataList.length &&
@@ -414,7 +220,7 @@ export default function EditLocation() {
                             </>
                         </div>
                     }
-                    {currentEdit === 'address' && !filteredDataList?.length && searchValue &&
+                    {currentEdit === 'address' && searchValue &&
                         <Button
                             className='bg-[#2C2C2C] absolute bottom-0 left-1/2 -translate-x-1/2 text-white py-3 h-auto rounded-3xl font-semibold text-base border-0 w-full mb-5'
                             style={{ width: 'calc(100% - 32px)' }}
@@ -427,7 +233,7 @@ export default function EditLocation() {
                         <div className='absolute left-0 right-0' style={{ height: windowSize.height - 80 }}>
                             <div className="absolute top-[11px] left-5 right-5 bg-white px-3 py-4 z-50">
                                 <div className="text-[13px] text-[#00000050] leading-[120%] font-medium">Location address</div>
-                                <div className="text-base text-[#353535] leading-[120%] font-semibold px-1">{searchValue}</div>
+                                <div className="text-base text-[#353535] leading-[120%] font-semibold px-1">{addressLocation.label}</div>
                             </div>
                             <Button
                                 className='bg-[#2C2C2C] absolute bottom-0 left-1/2 -translate-x-1/2 text-white py-3 h-auto rounded-3xl font-semibold text-base border-0 w-full mb-5 z-50'
