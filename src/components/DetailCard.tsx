@@ -88,7 +88,7 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
       <div className='flex items-center' key={data.id}>
         <img
           src={`${data.user.profileImage}`}
-          className='w-10 h-10 mr-2 rounded-full'
+          className='w-10 h-10 mr-2 rounded-full object-cover object-center'
           alt=''
         />
 

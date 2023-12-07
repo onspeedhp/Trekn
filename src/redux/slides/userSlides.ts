@@ -33,10 +33,9 @@ export const userSlide = createSlice({
       localStorage.setItem('user', JSON.stringify(state));
     },
     updateCoordinate: (state, action) => {
-      const { lat, lng, country } = action.payload;
+      const { lat, lng } = action.payload;
       state.lat = lat ? lat : state.lat;
       state.lng = lng ? lng : state.lng;
-      state.country = country ? country : state.country;
       localStorage.setItem('user', JSON.stringify(state)); // Update localStorage
     },
     resetUser: (state) => {
@@ -50,9 +49,13 @@ export const userSlide = createSlice({
 
       localStorage.removeItem('user');
     },
+    updateCountry: (state, action)=>{
+      const { country } = action.payload;
+      state.country = country ? country : state.country;
+    }
   },
 });
 
-export const { updateUser, resetUser, updateCoordinate } = userSlide.actions;
+export const { updateUser, resetUser, updateCoordinate, updateCountry } = userSlide.actions;
 
 export default userSlide.reducer;

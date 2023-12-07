@@ -15,9 +15,12 @@ import {
   updateReadyToCollect,
 } from '../redux/slides/locationSlides';
 import moment from 'moment';
+import { updateCoordinate, updateCountry } from '../redux/slides/userSlides';
+import useApi from '../hooks/useAPI';
 
 function Home() {
   const { windowSize, leaderBoard, init } = useAuthContext();
+  const { get } = useApi();
   const [readyToCollect, setReadyToCollect] = useState<IDrop[]>([]);
   const user = useSelector((state: any) => state.user);
   const location = useSelector((state: any) => state.location);
@@ -68,6 +71,13 @@ function Home() {
 
   useEffect(() => {
     if (user.lat) {
+      if (!user.country) {
+        (async () => {
+          const countryInfo: any = await get(`https://nominatim.openstreetmap.org/reverse.php?lat=${user.lat}&lon=${user.lng}&zoom=3&format=jsonv2`);
+          dispatch(updateCountry({ country: countryInfo?.address?.country }));
+        })();
+      }
+
       if (
         location.readyToCollect.length === 0 ||
         location.lastFetch === -1 ||
@@ -108,14 +118,14 @@ function Home() {
                 {/* <Spin
                   tip='Loading...'
                   className='flex items-center mt-10'
-                >
-                  {nearBy.length !== 0 && (
-                    <ListDetail
-                      status={'ReadyToCollect'}
-                      data={readyToCollect}
-                    />
-                  )}
-                </Spin> */}
+                > */}
+                {nearBy.length !== 0 && (
+                  <ListDetail
+                    status={'ReadyToCollect_'}
+                    data={readyToCollect}
+                  />
+                )}
+                {/* </Spin> */}
               </div>
 
               <div style={{ marginTop: 0 }}>

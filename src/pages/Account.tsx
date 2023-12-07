@@ -109,7 +109,7 @@ export const Account = () => {
 
             <div className='flex items-center justify-between mb-4'>
               <img
-                className='rounded-full w-[100px] h-[100px]'
+                className='rounded-full w-[100px] h-[100px] object-cover object-center'
                 src={`${user.profileImage}`}
                 alt=''
               />
