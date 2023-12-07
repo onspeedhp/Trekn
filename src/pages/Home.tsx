@@ -71,12 +71,10 @@ function Home() {
 
   useEffect(() => {
     if (user.lat) {
-      if (!user.country) {
-        (async () => {
-          const countryInfo: any = await get(`https://nominatim.openstreetmap.org/reverse.php?lat=${user.lat}&lon=${user.lng}&zoom=3&format=jsonv2`);
-          dispatch(updateCountry({ country: countryInfo?.address?.country || countryInfo.name || 'Vietnam' }));
-        })();
-      }
+      (async () => {
+        const countryInfo: any = await get(`https://nominatim.openstreetmap.org/reverse.php?lat=${user.lat}&lon=${user.lng}&zoom=3&format=jsonv2`);
+        dispatch(updateCountry({ country: countryInfo?.address?.country || countryInfo.name || 'Vietnam' }));
+      })();
 
       if (
         location.readyToCollect.length === 0 ||
