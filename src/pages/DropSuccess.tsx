@@ -23,7 +23,7 @@ export const DropSuccess = () => {
     setTimeout(() => {
       setMetadata({});
       modal.destroy();
-      navigate('/drop-onboarding/upload-image');
+      navigate('/check-in/upload-image');
     }, 2000);
   };
 

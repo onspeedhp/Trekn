@@ -31,7 +31,7 @@ export const EnterDropInfo = () => {
     setTimeout(() => {
       setMetadata({});
       modal.destroy();
-      navigate('/drop-onboarding/upload-image');
+      navigate('/check-in/upload-image');
     }, 2000);
   };
 
@@ -60,7 +60,7 @@ export const EnterDropInfo = () => {
             fill='none'
             className='mb-6'
             onClick={() => {
-              navigate('/drop-onboarding/drag-location');
+              navigate('/check-in/drag-location');
             }}
           >
             <path
@@ -71,7 +71,9 @@ export const EnterDropInfo = () => {
           </svg>
           <div className='flex items-center justify-between mb-6'>
             <div className="relative w-[120px] h-[120px] rounded-xl overflow-hidden">
-              <img className='w-full h-full object-cover' src={URL.createObjectURL(metadata.image || metadata.imageArray[0])} alt="" />
+              {(metadata.image || metadata.imageArray) &&
+                <img className='w-full h-full object-cover' src={URL.createObjectURL(metadata.image || metadata?.imageArray[0])} alt="" />
+              }
 
               {metadata.imageArray?.length > 1 &&
                 <div className="absolute px-3 py-1 bg-[#ffffff70] text-black bottom-2 right-2 rounded-[999px] font-medium text-[13px]">
@@ -79,30 +81,36 @@ export const EnterDropInfo = () => {
                 </div>
               }
             </div>
-            <div className="py-2 px-4 bg-white rounded-full text-black font-medium" onClick={() => navigate('/drop-onboarding/upload-image')}>Edit media</div>
+            <div className="py-2 px-4 bg-white rounded-full text-black font-medium" onClick={() => navigate('/check-in/upload-image')}>Edit media</div>
           </div>
 
           <div className='relative flex flex-col gap-4'>
-            <label className='text-[13px] text-[#BDBDBA] font-medium leading-4'>Drop name</label>
-            <div className="border-none rounded-xl overflow-hidden mt-1">
-              <input defaultValue={metadata.name}
-                onChange={(e) => {
-                  setMetadata({ ...metadata, name: e.target.value });
-                }} type="text" className='py-4 px-3 w-full focus-visible:outline-none text-base font-medium bg-[#212121de] text-white' />
+            <div>
+              <label className='text-[13px] text-[#BDBDBA] font-medium leading-4'>Location name</label>
+              <div className="border-none rounded-xl overflow-hidden mt-1">
+                <input defaultValue={metadata.name}
+                  onChange={(e) => {
+                    setMetadata({ ...metadata, name: e.target.value });
+                  }} type="text" className='py-4 px-3 w-full focus-visible:outline-none text-base font-medium bg-[#212121de] text-white' />
+              </div>
             </div>
-            <label className='text-[13px] text-[#BDBDBA] font-medium leading-4'>Drop description</label>
-            <div className="border-none overflow-hidden mt-1">
-              <textarea onChange={(e) => {
-                setMetadata({ ...metadata, description: e.target.value });
-              }} value={metadata.description}
-                className="py-4 px-3 w-full h-32 rounded-xl focus-visible:outline-none text-base font-medium resize-none bg-[#212121de] text-white"
-              />
+            <div>
+              <label className='text-[13px] text-[#BDBDBA] font-medium leading-4'>Description</label>
+              <div className="border-none overflow-hidden mt-1">
+                <textarea onChange={(e) => {
+                  setMetadata({ ...metadata, description: e.target.value });
+                }} value={metadata.description}
+                  className="py-4 px-3 w-full h-32 rounded-xl focus-visible:outline-none text-base font-medium resize-none bg-[#212121de] text-white"
+                />
+              </div>
             </div>
-            <label className='text-[13px] text-[#BDBDBA] font-medium leading-4'>Drop location</label>
-            <div className="border-none rounded-xl overflow-hidden mt-1 relative">
-              <input defaultValue={metadata.location} disabled={true} className='text-ellipsis py-4 px-3 pr-12 w-full focus-visible:outline-none text-base font-medium bg-[#212121de] text-white' />
-              <div className="rounded-full bg-[#373737] p-2 absolute top-3 right-3">
-                <FaPen />
+            <div>
+              <label className='text-[13px] text-[#BDBDBA] font-medium leading-4'>Location address</label>
+              <div className="border-none rounded-xl overflow-hidden mt-1 relative">
+                <input defaultValue={metadata.location} disabled={true} className='text-ellipsis py-4 px-3 pr-12 w-full focus-visible:outline-none text-base font-medium bg-[#212121de] text-white' />
+                <div className="rounded-full bg-[#373737] p-2 absolute top-3 right-3">
+                  <FaPen onClick={() => navigate('/check-in/edit-location')} />
+                </div>
               </div>
             </div>
           </div>
