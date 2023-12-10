@@ -94,7 +94,7 @@ export const MintSuccess = () => {
         <Button
           className='bg-[#2E2E2E] text-white border-0  w-full h-12 rounded-3xl font-semibold text-base'
           onClick={() => {
-            navigate('/reaction-drop');
+            navigate('/');
           }}
         >
           Done

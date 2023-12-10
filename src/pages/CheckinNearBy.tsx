@@ -89,9 +89,11 @@ export default function CheckinNearBy() {
                         Check-in
                     </div>
                 </div>
-                <div className='mb-6'>
-                    <CustomiseInputWIco style={'dark'} value={locationFilter} onChange={handleFilterLocation} label={null} placeholder='Where are you?' leftIco={<FaSearch size={16} className="text-[#ffffff70]" />} />
-                </div>
+                {!locationList.length && locationFilter &&
+                    <div className='mb-6'>
+                        <CustomiseInputWIco style={'dark'} value={locationFilter} onChange={handleFilterLocation} label={null} placeholder='Where are you?' leftIco={<FaSearch size={16} className="text-[#ffffff70]" />} />
+                    </div>
+                }
                 {!locationList.length ? noLocationList() : renderLocationList()}
             </div>
         </DefaultBlackBg>

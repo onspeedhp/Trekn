@@ -15,6 +15,7 @@ import LazyImageCustom from './LazyImageCustom';
 import { getScore } from '../utils/account.util';
 import { Carousel } from 'antd';
 import './detailCard.css';
+import { useSelector } from 'react-redux';
 
 interface ImageProps {
   src: string;
@@ -29,6 +30,7 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
   const [userChecked, setUserChecked] = useState([]);
   const location = useLocation();
   const [lastChecked, setLastChecked] = useState<any>(null);
+  const user = useSelector((state: any) => state.user)
 
   const overlap = 13.75;
 
@@ -210,14 +212,12 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
             </div>
             <div className='flex items-center justify-center text-white opacity-70 text-[14px]'>
               <span className='mr-2 w-[11px]'>●</span>{' '}
-              {isHome()
-                ? label
-                : convertDistance(
+              {convertDistance(
                   calculateDistance(
                     data.lat || data?.drop.lat,
                     data.lng || data?.drop.lng,
-                    data.user.lat,
-                    data.user.lng
+                    data.user.lat || user.lat,
+                    data.user.lng || user.lng
                   )
                 )}{' '}
               away

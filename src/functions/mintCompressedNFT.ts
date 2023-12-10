@@ -13,13 +13,17 @@ import { supabase } from '../utils/supabaseClients';
 export const mintCompressedNFT = async ({
   drop,
   userAddress,
+  image,
+  description,
   onSuccess,
   userId,
-  onError = () => {},
+  onError = () => { },
 }: {
   drop: any;
   userAddress: PublicKey;
   userId: any;
+  image?: string;
+  description?: string;
   onSuccess: (data: any) => void;
   onError: (error: any) => void;
 }) => {
@@ -90,6 +94,8 @@ export const mintCompressedNFT = async ({
         await createMinted({
           userId: userId,
           drop: drop,
+          ...(image && { image }),
+          ...(description && { description }),
 
           onSuccess: () => {
             onSuccess(sig);
