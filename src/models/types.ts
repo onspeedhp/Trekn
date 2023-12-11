@@ -8,7 +8,6 @@ export interface IDrop {
   creator_addess: string;
   lat: number;
   lng: number;
-  attributes?: any;
   symbol?: any;
   sig?: any;
   distance?: number;

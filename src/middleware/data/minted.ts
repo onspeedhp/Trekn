@@ -5,8 +5,8 @@ export const createMinted = async ({
   drop,
   image,
   description,
-  onSuccess = () => { },
-  onError = () => { },
+  onSuccess = () => {},
+  onError = () => {},
 }: {
   userId: any;
   drop: any;
@@ -18,8 +18,8 @@ export const createMinted = async ({
   const { data, error } = await supabase
     .from('minted')
     .insert({
-      ownerId: userId, 
-      drop_id: drop.id, 
+      ownerId: userId,
+      drop_id: drop.id,
       ...(image && { image }),
       ...(description && { description }),
     })
@@ -40,7 +40,7 @@ export const createMinted = async ({
       .update({ collected: drop.collected + 1 })
       .eq('author_id', drop.user.id);
 
-    onSuccess(data);
+    onSuccess(data[0]);
   } else {
     onError('');
   }
@@ -48,8 +48,8 @@ export const createMinted = async ({
 
 export const getMintedByUserAddress = async ({
   userId,
-  onSuccess = () => { },
-  onError = () => { },
+  onSuccess = () => {},
+  onError = () => {},
 }: {
   userId: number;
   onSuccess?: (data: any) => void;
@@ -69,8 +69,8 @@ export const getMintedByUserAddress = async ({
 
 export const getMintedById = async ({
   mintedId,
-  onSuccess = () => { },
-  onError = () => { },
+  onSuccess = () => {},
+  onError = () => {},
 }: {
   mintedId: string;
   onSuccess?: (data: any, count: number) => void;

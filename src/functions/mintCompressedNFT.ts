@@ -17,7 +17,7 @@ export const mintCompressedNFT = async ({
   description,
   onSuccess,
   userId,
-  onError = () => { },
+  onError = () => {},
 }: {
   drop: any;
   userAddress: PublicKey;
@@ -61,55 +61,58 @@ export const mintCompressedNFT = async ({
       key: collectionMint,
     };
 
-    let uri = `${process.env.REACT_APP_BACKEND}/drop/get-uri/${drop.id}`;
+    // Add minted to minted table
 
-    const nftArgs = {
-      name: drop.name,
-      symbol: 'TNFT',
-      uri: uri,
-      creators: [],
-      editionNonce: 253,
-      tokenProgramVersion: TokenProgramVersion.Original,
-      tokenStandard: TokenStandard.NonFungible,
-      uses: null,
-      collection: collection,
-      primarySaleHappened: false,
-      sellerFeeBasisPoints: 0,
-      isMutable: false,
-    };
-    try {
-      const sig = await createCompressNftTnx(
-        connection,
-        nftArgs,
-        serverKeypair,
-        userAddress,
-        treeAddress,
-        collectionMint,
-        collectionMetadataAccount,
-        collectionMasterEditionAccount
-      );
+    await createMinted({
+      userId: userId,
+      drop: drop,
+      ...(image && { image }),
+      ...(description && { description }),
 
-      // // web 2 side
-      if (sig) {
-        await createMinted({
-          userId: userId,
-          drop: drop,
-          ...(image && { image }),
-          ...(description && { description }),
+      onSuccess: async (data: any) => {
+        let uri = `${process.env.REACT_APP_BACKEND}/drop/get-uri/${data.id}`;
 
-          onSuccess: () => {
+        const nftArgs = {
+          name: drop.name,
+          symbol: 'TNFT',
+          uri: uri,
+          creators: [],
+          editionNonce: 253,
+          tokenProgramVersion: TokenProgramVersion.Original,
+          tokenStandard: TokenStandard.NonFungible,
+          uses: null,
+          collection: collection,
+          primarySaleHappened: false,
+          sellerFeeBasisPoints: 0,
+          isMutable: false,
+        };
+
+        try {
+          const sig = await createCompressNftTnx(
+            connection,
+            nftArgs,
+            serverKeypair,
+            userAddress,
+            treeAddress,
+            collectionMint,
+            collectionMetadataAccount,
+            collectionMasterEditionAccount
+          );
+
+          // web 2 side
+          if (sig) {
             onSuccess(sig);
-          },
-          onError: () => {
+          } else {
             onError('Cannot mint this NFT');
-          },
-        });
-      } else {
+          }
+        } catch (error) {
+          onError(error);
+        }
+      },
+      onError: () => {
         onError('Cannot mint this NFT');
-      }
-    } catch (error) {
-      onError(error);
-    }
+      },
+    });
   } else {
     onError('You have already collect this NFT');
   }
