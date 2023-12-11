@@ -48,7 +48,7 @@ export default function EditLocation() {
     }
   };
 
-  const [fetchSuggestAddress] = useDebouncedCallback(async (value: any) => {
+  const fetchSuggestAddress = useDebouncedCallback(async (value: any) => {
     let subValue = '';
     setLoading(true);
     Object.entries(addressForm)
