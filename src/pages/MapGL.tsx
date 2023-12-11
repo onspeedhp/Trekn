@@ -188,7 +188,7 @@ export const MapGL = () => {
 
           <Button
             onClick={() => {
-              navigate('/drop-onboarding');
+              navigate('/check-in/nearby');
             }}
             style={{
               marginLeft: Math.round((windowSize.width - 64) / 2),

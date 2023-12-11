@@ -29,7 +29,6 @@ export const Account = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('timeline');
   const [userData, setUserData] = useState<any[]>([]);
-  const [test, setTest] = useState('');
   const user = useSelector((state: any) => state.user);
 
   useEffect(() => {
@@ -109,7 +108,7 @@ export const Account = () => {
 
             <div className='flex items-center justify-between mb-4'>
               <img
-                className='rounded-full w-[100px] h-[100px]'
+                className='rounded-full w-[100px] h-[100px] object-cover object-center'
                 src={`${user.profileImage}`}
                 alt=''
               />
@@ -220,8 +219,8 @@ export const Account = () => {
                           <div className='flex items-center gap-2 leading-4'>
                             <div className='flex gap-[2px] items-center'>
                               <FaThumbsUp className='w-3 h-3 text-[#FFB800]' />
-                              <div className='text-[13px] text-[#000000b3] font-medium'>
-                                {getScore(item, true)}
+                              <div className={`text-[13px] ${Number(getScore(item, false)) ? 'text-[#000000b3]' : 'text-[#02030380]'} font-medium`}>
+                                {getScore(item, false)}
                               </div>
                             </div>
                             <div className='flex gap-2 items-center'>

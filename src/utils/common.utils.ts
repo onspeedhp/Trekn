@@ -121,6 +121,8 @@ export const checkTimeAgo = (date: string)=> {
       return `${diffInHours} hours ago`;
     } else if(diffInMin) {
       return `${diffInMin} minutes ago`;
+    } else {
+      return 'recent'
     }
   } else {
     // If more than 2 days, you can customize the format further if needed

@@ -68,7 +68,7 @@ const calculateScore = (data: any, count: boolean) => {
     }
   });
   if(count) {
-    return `${total === 0 ? 'no rating' : `${totalScore / total} ${total}`}`;
+    return `${total === 0 ? 'no rating' : `${totalScore / total} (${total})`}`;
   } else{
     return `${total === 0 ? 'no rating' : totalScore / total}`;
   }

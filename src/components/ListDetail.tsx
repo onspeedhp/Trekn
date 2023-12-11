@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { DetailCard } from './DetailCard';
 
 export const ListDetail = ({ data, status }: { data: any; status: any }) => {
@@ -17,6 +17,28 @@ export const ListDetail = ({ data, status }: { data: any; status: any }) => {
     return data?.length > 0 && amountShowItem < data?.length;
   }, [amountShowItem, data]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+      // Check if the user has scrolled to the bottom of the page
+      if (windowHeight + scrollTop >= documentHeight - 10 && isShowShowMore) {
+        // User has scrolled to the bottom
+        handleShowMore();
+      }
+    };
+
+    // Attach the scroll event listener
+    window.addEventListener('scroll', handleScroll);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [amountShowItem, data]);
+
   return (
     <div className='w-full'>
       <div className='grid grid-cols-1 sm:grid-cols-3'>
@@ -24,14 +46,14 @@ export const ListDetail = ({ data, status }: { data: any; status: any }) => {
           <DetailCard key={index} data={item} status={status} last={(index + 1) === amountShowItem} />
         ))}
       </div>
-      {isShowShowMore && (
+      {/* {isShowShowMore && (
         <div
           className='w-full flex justify-center text-sm font-semibold pb-5 cursor-pointer'
           onClick={() => handleShowMore()}
         >
           View more
         </div>
-      )}
+      )} */}
     </div>
   );
 };

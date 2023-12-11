@@ -15,6 +15,7 @@ import LazyImageCustom from './LazyImageCustom';
 import { getScore } from '../utils/account.util';
 import { Carousel } from 'antd';
 import './detailCard.css';
+import { useSelector } from 'react-redux';
 
 interface ImageProps {
   src: string;
@@ -29,6 +30,7 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
   const [userChecked, setUserChecked] = useState([]);
   const location = useLocation();
   const [lastChecked, setLastChecked] = useState<any>(null);
+  const user = useSelector((state: any) => state.user)
 
   const overlap = 13.75;
 
@@ -88,7 +90,7 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
       <div className='flex items-center' key={data.id}>
         <img
           src={`${data.user.profileImage}`}
-          className='w-10 h-10 mr-2 rounded-full'
+          className='w-10 h-10 mr-2 rounded-full object-cover object-center'
           alt=''
         />
 
@@ -131,27 +133,31 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
           >
             {data?.drop?.imageArray || data?.imageArray ?
               <>
-                <Carousel swipeToSlide draggable style={{ height: '100%', width: '100%'}}>
+                <Carousel swipeToSlide draggable style={{ height: '100%', width: '100%' }}>
                   {(data.imageArray
                     ? data.imageArray
                     : data?.drop?.imageArray
                   )?.map((item: string, idx: number) => (
-                    <div className='relative'>
-                      <LazyImageCustom
-                        key={idx}
-                        src={item}
-                        alt='Drop Img'
-                        className='skeleton h-full object-cover rounded-xl object-center w-full'
-                      />
-                      <div
-                        className='absolute inset-0'
-                        style={{
-                          backgroundImage:
-                            'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 34.71%, rgba(0, 0, 0, 0.60) 77.95%)',
-                          borderRadius: 12,
-                        }}
-                      ></div>
-                    </div>
+                    <>
+                      {idx < 3 &&
+                        <div className='relative' >
+                          <LazyImageCustom
+                            key={idx}
+                            src={item}
+                            alt='Drop Img'
+                            className='skeleton h-full object-cover rounded-xl object-center w-full'
+                          />
+                          <div
+                            className='absolute inset-0'
+                            style={{
+                              backgroundImage:
+                                'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 34.71%, rgba(0, 0, 0, 0.60) 77.95%)',
+                              borderRadius: 12,
+                            }}
+                          ></div>
+                        </div>
+                      }
+                    </>
                   ))}
                 </Carousel>
               </>
@@ -206,14 +212,12 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
             </div>
             <div className='flex items-center justify-center text-white opacity-70 text-[14px]'>
               <span className='mr-2 w-[11px]'>●</span>{' '}
-              {isHome()
-                ? label
-                : convertDistance(
+              {convertDistance(
                   calculateDistance(
                     data.lat || data?.drop.lat,
                     data.lng || data?.drop.lng,
-                    data.user.lat,
-                    data.user.lng
+                    data.user.lat || user.lat,
+                    data.user.lng || user.lng
                   )
                 )}{' '}
               away
@@ -252,6 +256,6 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
         </div>
       </div>
       {!last && <div className='border-b mt-6'></div>}
-    </div>
+    </div >
   );
 };

@@ -3,17 +3,26 @@ import { supabase } from '../../utils/supabaseClients';
 export const createMinted = async ({
   userId,
   drop,
-  onSuccess = () => {},
-  onError = () => {},
+  image,
+  description,
+  onSuccess = () => { },
+  onError = () => { },
 }: {
   userId: any;
   drop: any;
+  image?: string;
+  description?: string;
   onSuccess?: (data: any) => void;
   onError?: (error: any) => void;
 }) => {
   const { data, error } = await supabase
     .from('minted')
-    .insert({ ownerId: userId, drop_id: drop.id })
+    .insert({
+      ownerId: userId, 
+      drop_id: drop.id, 
+      ...(image && { image }),
+      ...(description && { description }),
+    })
     .select('*');
 
   if (!error) {
@@ -39,8 +48,8 @@ export const createMinted = async ({
 
 export const getMintedByUserAddress = async ({
   userId,
-  onSuccess = () => {},
-  onError = () => {},
+  onSuccess = () => { },
+  onError = () => { },
 }: {
   userId: number;
   onSuccess?: (data: any) => void;
@@ -60,8 +69,8 @@ export const getMintedByUserAddress = async ({
 
 export const getMintedById = async ({
   mintedId,
-  onSuccess = () => {},
-  onError = () => {},
+  onSuccess = () => { },
+  onError = () => { },
 }: {
   mintedId: string;
   onSuccess?: (data: any, count: number) => void;

@@ -1,20 +1,90 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ImageUpload } from '../components/ImageUpload';
 import { useAuthContext } from '../context/AuthContext';
 import { FaPlusCircle, FaTimesCircle, FaUpload } from 'react-icons/fa';
 import { FaCirclePlus } from 'react-icons/fa6';
-import { Button } from 'antd';
+import { Button, Modal, Spin } from 'antd';
+import { useNavigate, useParams } from 'react-router';
+import { useSelector } from 'react-redux';
+import { mintCompressedNFT } from '../functions/mintCompressedNFT';
+import { getDropByID } from '../middleware/data/drop';
+import { PublicKey } from '@solana/web3.js';
+import { supabase } from '../utils/supabaseClients';
 
 export default function CheckinWPhoto() {
-  const { windowSize } = useAuthContext();
+  const { id: dropId } = useParams();
+  const { windowSize, setMetadata, metadata } = useAuthContext();
+  const user = useSelector((state: any) => state.user)
   const [files, setFiles] = useState<File | null>(null);
   const [desc, setDesc] = useState<string>('');
+  const [selectedLocation, setSelectedLocation] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(false)
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (dropId) {
+      getDropByID({
+        dropId,
+        onSuccess: (data: any) => {
+          setSelectedLocation(data[0]);
+        }
+      })
+    }
+  }, [])
 
   const fileSelectedHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       setFiles(event.target.files[0]);
     }
   };
+
+  const handleSubmit = async () => {
+    if (user.address) {
+      setLoading(true)
+      let imageUrl: string | undefined;
+
+      if (files) {
+        const fileExt = files.name.split('.').pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const newFilePath = `${fileName}`;
+        imageUrl = `${process.env.REACT_APP_SUPABASE_URL}/storage/v1/object/public/minted_image/${fileName}`
+        await supabase.storage
+          .from('minted_image')
+          .upload(newFilePath, files);
+        setMetadata({ ...metadata, image: imageUrl })
+      }
+
+      await mintCompressedNFT({
+        drop: selectedLocation,
+        userAddress: new PublicKey(user.address),
+        userId: user.id,
+        ...(imageUrl && { image: imageUrl }),
+        ...(desc && { description: desc }),
+        onSuccess: (data: any) => {
+          setMetadata({
+            sig: data,
+            ...selectedLocation,
+            ...(imageUrl && { image: imageUrl }),
+            ...(desc && { description: desc }),
+          });
+          navigate('/collect-success');
+        },
+        onError: (error) => {
+          Modal.error({
+            title: 'Error',
+            content: error,
+            okButtonProps: {
+              type: 'default',
+              style: {
+                background: 'red',
+                color: 'white',
+              },
+            },
+          });
+        },
+      });
+    }
+  }
   return (
     <>
       <div
@@ -77,19 +147,20 @@ export default function CheckinWPhoto() {
             <Button
               className='bg-[#2C2C2C] text-white py-3 h-auto rounded-3xl font-semibold text-base border-0'
               style={{ width: (windowSize.width - 40 - 12) / 2 }}
+              onClick={() => navigate(-1)}
             >
               Cancel
             </Button>
             <Button
               className='bg-[#2C2C2C] text-white py-3 h-auto rounded-3xl font-semibold text-base border-0'
-              disabled={true}
               style={{
-                backgroundColor: files && desc ? '#99FF48' : '#2E2E2E',
+                backgroundColor: files && desc && !loading ? '#99FF48' : '#2E2E2E',
                 color: files && desc ? 'black' : '#FFFFFF80',
                 width: (windowSize.width - 40 - 12) / 2,
               }}
+              onClick={handleSubmit}
             >
-              Confirm
+              {loading ? <Spin /> : 'Confirm'}
             </Button>
           </div>
         </div>

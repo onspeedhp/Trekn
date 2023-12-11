@@ -31,6 +31,7 @@ import { mintCompressedNFT } from '../functions/mintCompressedNFT';
 import { PublicKey } from '@solana/web3.js';
 import moment from 'moment';
 import { getScore } from '../utils/account.util';
+import { formatLocation } from '../functions/text';
 
 export const DropDetailPage = () => {
   const { dropId } = useParams();
@@ -140,7 +141,7 @@ export const DropDetailPage = () => {
                 <div className='flex items-center gap-2'>
                   <div className='font-medium flex items-center gap-1'>
                     <FaThumbsUp className='w-4 h-4 text-[#FFB800]' />
-                    <div className='text-[13px] text-[#000000b3] font-medium whitespace-nowrap leading-5'>
+                    <div className={`text-[13px] ${selectedLocation && Number(getScore(selectedLocation, false)) ? 'text-[#000000b3]' : 'text-[#02030380]' } font-medium whitespace-nowrap leading-5`}>
                       {selectedLocation && getScore(selectedLocation, true)}
                     </div>
                   </div>
@@ -181,8 +182,8 @@ export const DropDetailPage = () => {
               </div>
               <div className='flex flex-col gap-4'>
                 <div className='leading-10 text-xl font-bold leading-[13px]'>Location</div>
-                <div className='leading-4 text-[#02030380] font-medium leading-1'>
-                  {selectedLocation.location}
+                <div className='leading-4 text-[#02030380] font-medium leading-1 text-[13px]'>
+                  {formatLocation(selectedLocation.location)}
                 </div>
                 <Map
                   mapboxAccessToken={`${process.env.REACT_APP_MAP_BOX_ACCESS_TOKEN}`}
@@ -241,7 +242,7 @@ export const DropDetailPage = () => {
                 )}
               </div>
 
-              <Button
+              {/* <Button
                 className='h-12 rounded-3xl text-white bg-black'
                 style={{ width: windowSize.width - 40 }}
                 loading={loading}
@@ -251,7 +252,7 @@ export const DropDetailPage = () => {
                 disabled={disable}
               >
                 {mintStatus}
-              </Button>
+              </Button> */}
 
               <Drawer
                 height={265}
