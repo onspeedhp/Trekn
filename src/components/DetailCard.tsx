@@ -164,7 +164,7 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
               :
               <>
                 <LazyImageCustom
-                  src={data?.drop?.image || data?.image}
+                  src={data?.image || data?.drop?.image}
                   alt='Drop Img'
                   className='skeleton object-cover rounded-xl object-center w-full'
                   size={[windowSize.width - 40, 377]}

@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import { capitalizeFirstLetter } from '../functions/text';
 import { useDebouncedCallback } from 'use-debounce';
 import { useAuthContext } from '../context/AuthContext';
-import { Button } from 'antd';
+import { Button, Spin } from 'antd';
 import Map, { Layer, Marker, Source, ViewStateChangeEvent } from 'react-map-gl';
 
 export default function EditLocation() {
@@ -28,6 +28,7 @@ export default function EditLocation() {
   const [filteredDataList, setFilteredDataList] = useState<Array<any>>([]);
   const [currentCode, setCurrentCode] = useState(null);
   const [addressLocation, setAddressLocation] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
   const stepList =
     user.country === 'Vietnam'
       ? ['cities', 'district', 'subDistrict']
@@ -49,6 +50,7 @@ export default function EditLocation() {
 
   const [fetchSuggestAddress] = useDebouncedCallback(async (value: any) => {
     let subValue = '';
+    setLoading(true);
     Object.entries(addressForm)
       .reverse()
       .map(([_, value]) => {
@@ -63,6 +65,7 @@ export default function EditLocation() {
       }`
     );
     setFilteredDataList(items);
+    setLoading(false);
   }, 1000);
 
   useEffect(() => {
@@ -319,11 +322,11 @@ export default function EditLocation() {
           )}
           {currentEdit === 'address' && searchValue && (
             <Button
-              className='bg-[#2C2C2C] absolute bottom-0 left-1/2 -translate-x-1/2 text-white py-3 h-auto rounded-3xl font-semibold text-base border-0 w-full mb-5'
+              className={`${loading ? 'bg-[#ccc] pointer-events-none' : 'bg-[#2C2C2C]' } absolute bottom-0 left-1/2 -translate-x-1/2 text-white py-3 h-auto rounded-3xl font-semibold text-base border-0 w-full mb-5`}
               style={{ width: 'calc(100% - 32px)' }}
               onClick={() => handleConfirmAddress()}
             >
-              Confirm
+              {loading ? <Spin /> : 'Confirm'}
             </Button>
           )}
           {currentEdit === 'confirm' && (
