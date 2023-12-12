@@ -51,8 +51,7 @@ export const userSlide = createSlice({
     },
     updateInit: (state, action)=>{
       const { country, follow } = action.payload;
-      state.follow = follow ? follow: state.follow;
-      state.country = country ? country : state.country;
+      state = {...state,...(follow && {follow}),...(country && {country})}
     }
   },
 });

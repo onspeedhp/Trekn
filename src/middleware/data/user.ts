@@ -1,4 +1,4 @@
-import { supabase } from '../../utils/supabaseClients';
+import { supabase } from "../../utils/supabaseClients";
 
 export const insertUser = async ({
   props,
@@ -7,7 +7,7 @@ export const insertUser = async ({
   props: any;
   onSuccess: (data: any) => void;
 }) => {
-  const { data, error } = await supabase.from('user').insert(props).select('*');
+  const { data, error } = await supabase.from("user").insert(props).select("*");
   if (!error) {
     onSuccess(data[0]);
   }
@@ -15,9 +15,9 @@ export const insertUser = async ({
 
 export const isUserIsExisted = async ({ email }: { email: any }) => {
   const { data, error } = await supabase
-    .from('user')
-    .select('*')
-    .eq('email', email);
+    .from("user")
+    .select("*")
+    .eq("email", email);
 
   if (!error) {
     if (data?.length === 0) {
@@ -36,10 +36,10 @@ export const getLeaderBoardPoint = async ({
   onSuccess: (data: any) => void;
 }) => {
   const { data, error } = await supabase
-    .from('user')
-    .select('*')
-    .gt('point', 0)
-    .order('point', { ascending: false })
+    .from("user")
+    .select("*")
+    .gt("point", 0)
+    .order("point", { ascending: false })
     .limit(10);
 
   if (!error) {
@@ -54,7 +54,7 @@ export const getUserByDropId = async ({
   dropId: number;
   onSuccess: (data: any) => void;
 }) => {
-  const { data, error } = await supabase.from('user').select('*, minted(*)');
+  const { data, error } = await supabase.from("user").select("*, minted(*)");
 
   if (!error) {
     const result = data
@@ -84,9 +84,9 @@ export const updateUserDB = async ({
   onSuccess: (data: any) => void;
 }) => {
   const { data, error } = await supabase
-    .from('user')
+    .from("user")
     .update({ ...updateData })
-    .eq('id', userId)
+    .eq("id", userId)
     .select();
 
   if (!error) {
@@ -96,17 +96,18 @@ export const updateUserDB = async ({
 
 export const getFollowingById = async ({
   userId,
-  onSuccess
+  onSuccess,
 }: {
   userId: number;
   onSuccess: (data: any) => void;
 }) => {
-  const { data, error } = await supabase
-  .from('user')
-  .select("following")
-  .eq('id', userId);
+  const { data, error }: any = await supabase
+    .from("user")
+    .select("follow(following)")
+    .eq("id", userId);
 
   if (!error) {
-    onSuccess(data[0]);
+    const result = data[0].follow.map((item: any) => item.following);
+    onSuccess(result);
   }
-}
+};

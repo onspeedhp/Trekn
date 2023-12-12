@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { ListDetail } from '../components/ListDetail';
 import { useAuthContext } from '../context/AuthContext';
 import { FaPlus } from 'react-icons/fa6';
@@ -18,6 +18,10 @@ import moment from 'moment';
 import { updateInit } from '../redux/slides/userSlides';
 import useApi from '../hooks/useAPI';
 import { capitalizeFirstLetter } from '../functions/text';
+import { getDropByUserAddress } from '../middleware/data/drop';
+import { getMintedByUserAddress } from '../middleware/data/minted';
+import { sortDataByTimeline } from '../utils/account.util';
+import Feed from '../components/Feed';
 
 function Home() {
   const { windowSize, leaderBoard, init } = useAuthContext();
@@ -32,6 +36,7 @@ function Home() {
   const [loadingPoint, setLoadingPoint] = useState(false);
   const [loadingNearBy, setLoadingNearBy] = useState(false);
   const [loadingReadyToCollect, setLoadingReadyToCollet] = useState(false);
+  const [follow, setFollowData] = useState({});
   const [currentView, setCurrentView] = useState('exploring')
   const navigate = useNavigate();
 
@@ -73,7 +78,6 @@ function Home() {
 
   useEffect(() => {
     if (user.lat) {
-
       if (
         location.readyToCollect.length === 0 ||
         location.lastFetch === -1 ||
@@ -94,7 +98,7 @@ function Home() {
         setNearBy(location.nearBy);
       }
     }
-  }, [user]);
+  }, [user.lat]);
 
   useEffect(() => {
     if (user.id) {
@@ -104,13 +108,41 @@ function Home() {
             dispatch(updateInit({ follow: followingList }));
           }
         })
+        if (user.follow.length > 1) {
+          const userData: any = [];
+          await getDropByUserAddress({
+            userId: user.follow,
+            onSuccess: (res: any) => {
+              userData.push(
+                ...res.map((item: any) => {
+                  item.type = 'drop';
+                  return item;
+                })
+              );
+            },
+          });
+
+          await getMintedByUserAddress({
+            userId: user.follow,
+            onSuccess: (res: any) => {
+              userData.push(
+                ...res.map((item: any) => {
+                  item.type = 'minted';
+                  return item;
+                })
+              );
+            },
+          });
+
+          setFollowData(sortDataByTimeline(userData));
+        }
       })();
-      if (!user.country) {
-        (async () => {
-          const countryInfo: any = await get(`https://nominatim.openstreetmap.org/reverse.php?lat=${user.lat}&lon=${user.lng}&zoom=3&format=jsonv2&accept-language=en`);
-          dispatch(updateInit({ country: countryInfo?.address?.country }));
-        })();
-      }
+    }
+    if (!user.country) {
+      (async () => {
+        const countryInfo: any = await get(`https://nominatim.openstreetmap.org/reverse.php?lat=${user.lat}&lon=${user.lng}&zoom=3&format=jsonv2&accept-language=en`);
+        dispatch(updateInit({ country: countryInfo?.address?.country }));
+      })();
     }
   }, [])
 
@@ -209,8 +241,16 @@ function Home() {
                 }
               </>
               :
-              <div>
-                aaa
+              <div className='mt-9'>
+                {Object.entries(follow).map(([key, data]: any, dataIdx) => (
+                  <Fragment key={dataIdx}>
+                    {data.map((item: any, itemIdx: number) => (
+                      <Fragment key={itemIdx}>
+                        <Feed wrapperData={follow} data={data} dataIdx={dataIdx} item={item} itemIdx={itemIdx} />
+                      </Fragment>
+                    ))}
+                  </Fragment>
+                ))}
               </div>
             }
           </>

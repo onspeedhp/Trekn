@@ -39,6 +39,7 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
   };
 
   useEffect(() => {
+    // get to check user checked
     getUserByDropId({
       dropId: data.drop_id || data.id,
       onSuccess: (res) => {

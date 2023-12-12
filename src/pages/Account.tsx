@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Button } from 'antd';
 import {
   FaClone,
@@ -25,6 +25,7 @@ import { DetailCard } from '../components/DetailCard';
 import moment from 'moment';
 import LazyImageCustom from '../components/LazyImageCustom';
 import CheckinItem from '../components/CheckedinItem';
+import Feed from '../components/Feed';
 
 export const Account = () => {
   const navigate = useNavigate();
@@ -249,23 +250,13 @@ export const Account = () => {
           ) : (
             <div className='collection__feed'>
               {Object.entries(userData).map(([key, data], dataIdx) => (
-                <>
+                <Fragment key={dataIdx}>
                   {data.map((item: any, itemIdx: number) => (
-                    <>
-                      {item.type === 'minted' && item.image ?
-                        <CheckinItem data={{ ...item, user }} last={(itemIdx + 1) === data?.length && (dataIdx + 1) === Object.entries(userData)?.length}/> :
-                        <div
-                          className='mx-5'
-                          onClick={() => {
-                            navigate(`/drop/details/${item?.drop_id || item?.id}`);
-                          }}
-                        >
-                          <DetailCard key={itemIdx} data={{ ...item, user }} last={(itemIdx + 1) === data?.length && (dataIdx + 1) === Object.entries(userData)?.length} />
-                        </div>
-                      }
-                    </>
+                    <Fragment key={itemIdx}>
+                      <Feed wrapperData={userData} data={data} dataIdx={dataIdx} item={item} itemIdx={itemIdx}/>
+                    </Fragment>
                   ))}
-                </>
+                </Fragment>
               ))}
             </div>
           )}
