@@ -140,7 +140,6 @@ export default function EditLocation() {
 
   const handleConfirmAddress = async (item?: any) => {
     if (item) {
-      console.log(item);
       setAddressLocation({
         lng: item.position.lng,
         lat: item.position.lat,

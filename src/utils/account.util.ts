@@ -20,7 +20,6 @@ export const sortDataByTimeline = (data: any) => {
     const key = isTodayOrYesterday(date);
     result[key] = [...(result[key] || []), item];
   });
-  console.log(result);
   return result;
 };
 

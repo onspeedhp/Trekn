@@ -24,6 +24,7 @@ import {
 import { DetailCard } from '../components/DetailCard';
 import moment from 'moment';
 import LazyImageCustom from '../components/LazyImageCustom';
+import CheckinItem from '../components/CheckedinItem';
 
 export const Account = () => {
   const navigate = useNavigate();
@@ -250,21 +251,26 @@ export const Account = () => {
               {Object.entries(userData).map(([key, data], dataIdx) => (
                 <>
                   {data.map((item: any, itemIdx: number) => (
-                    <div
-                      className='mx-5'
-                      onClick={() => {
-                        navigate(`/drop/details/${item?.drop_id || item?.id}`);
-                      }}
-                    >
-                      <DetailCard key={itemIdx} data={{ ...item, user }} last={(itemIdx + 1) === data?.length && (dataIdx + 1) === Object.entries(userData)?.length} />
-                    </div>
+                    <>
+                      {item.type === 'minted' && item.image ?
+                        <CheckinItem data={{ ...item, user }} last={(itemIdx + 1) === data?.length && (dataIdx + 1) === Object.entries(userData)?.length}/> :
+                        <div
+                          className='mx-5'
+                          onClick={() => {
+                            navigate(`/drop/details/${item?.drop_id || item?.id}`);
+                          }}
+                        >
+                          <DetailCard key={itemIdx} data={{ ...item, user }} last={(itemIdx + 1) === data?.length && (dataIdx + 1) === Object.entries(userData)?.length} />
+                        </div>
+                      }
+                    </>
                   ))}
                 </>
               ))}
             </div>
           )}
         </div>
-      </div>
+      </div >
     </>
   );
 };
