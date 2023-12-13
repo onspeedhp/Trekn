@@ -43,7 +43,7 @@ export const Account = () => {
       (async () => {
         const userData: any = [];
         await getDropByUserAddress({
-          userId: user.id,
+          userId: [user.id],
           onSuccess: (res: any) => {
             userData.push(
               ...res.map((item: any) => {
@@ -55,7 +55,7 @@ export const Account = () => {
         });
 
         await getMintedByUserAddress({
-          userId: user.id,
+          userId: [user.id],
           onSuccess: (res: any) => {
             userData.push(
               ...res.map((item: any) => {

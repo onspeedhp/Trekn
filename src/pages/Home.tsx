@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router';
 import request from '../axios';
 import { IDrop } from '../models/types';
 import { Button, Spin } from 'antd';
-import { getLeaderBoardPoint } from '../middleware/data/user';
+import { getFollowingById, getLeaderBoardPoint } from '../middleware/data/user';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   setLastFetch,
@@ -15,8 +15,9 @@ import {
   updateReadyToCollect,
 } from '../redux/slides/locationSlides';
 import moment from 'moment';
-import { updateCoordinate, updateCountry } from '../redux/slides/userSlides';
+import { updateInit } from '../redux/slides/userSlides';
 import useApi from '../hooks/useAPI';
+import { capitalizeFirstLetter } from '../functions/text';
 
 function Home() {
   const { windowSize, leaderBoard, init } = useAuthContext();
@@ -31,6 +32,7 @@ function Home() {
   const [loadingPoint, setLoadingPoint] = useState(false);
   const [loadingNearBy, setLoadingNearBy] = useState(false);
   const [loadingReadyToCollect, setLoadingReadyToCollet] = useState(false);
+  const [currentView, setCurrentView] = useState('exploring')
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -71,12 +73,6 @@ function Home() {
 
   useEffect(() => {
     if (user.lat) {
-      if(!user.country) {
-        (async () => {
-          const countryInfo: any = await get(`https://nominatim.openstreetmap.org/reverse.php?lat=${user.lat}&lon=${user.lng}&zoom=3&format=jsonv2&accept-language=en`);
-          dispatch(updateCountry({ country: countryInfo?.address?.country }));
-        })();
-      }
 
       if (
         location.readyToCollect.length === 0 ||
@@ -100,80 +96,122 @@ function Home() {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (user.id) {
+      (async () => {
+        await getFollowingById({
+          userId: user.id, onSuccess: (followingList: any) => {
+            dispatch(updateInit({ follow: followingList }));
+          }
+        })
+      })();
+      if (!user.country) {
+        (async () => {
+          const countryInfo: any = await get(`https://nominatim.openstreetmap.org/reverse.php?lat=${user.lat}&lon=${user.lng}&zoom=3&format=jsonv2&accept-language=en`);
+          dispatch(updateInit({ country: countryInfo?.address?.country }));
+        })();
+      }
+    }
+  }, [])
+
+  const ChangeViewButton = ({ label }: { label: string }) => (
+    <div
+      className={`w-1/2 font-bold text-[14.65px] leading-[18px] text-center py-2 rounded-[10px] transition duration-300 ${currentView !== label ? 'bg-transparent text-[#00000070]' : 'bg-white'
+        }`}
+      onClick={() => setCurrentView(label)}
+    >
+      {capitalizeFirstLetter(label)}
+    </div>
+  )
+
   return (
     <>
       <div className='w-full px-[20px] sm:px-0 relative'>
+        {user &&
+          <div className="p-1 bg-[#ECECEC] rounded-[10px] mt-10 flex items-center">
+            <ChangeViewButton label={'exploring'} />
+            <ChangeViewButton label={'following'} />
+          </div>
+        }
         {!leaderBoard ? (
           <>
-            <div className='mt-10'>
-              <div className='text-[14px] text-black opacity-70 font-medium mb-2 leading-[18px]'>
-                {moment().format('dddd, Do MMM')}
-              </div>
+            {currentView === 'exploring' ?
+              <>
+                <div className={`${user ? 'mt-9' : 'mt-10'}`}>
+                  <div className='text-[14px] text-black opacity-70 font-medium mb-2 leading-[18px]'>
+                    {moment().format('dddd, Do MMM')}
+                  </div>
 
-              <div className='font-semibold text-[28px] leading-9'>
-                Nearby experiences
-              </div>
+                  <div className='font-semibold text-[28px] leading-9'>
+                    Nearby experiences
+                  </div>
 
-              <div style={{ marginTop: 24 }}>
-                {/* <Spin
+                  <div style={{ marginTop: 24 }}>
+                    {/* <Spin
                   tip='Loading...'
                   className='flex items-center mt-10'
                 > */}
-                {nearBy.length !== 0 && (
-                  <ListDetail
-                    status={'Nearby'}
-                    data={readyToCollect}
-                  />
-                )}
-                {/* </Spin> */}
-              </div>
+                    {nearBy.length !== 0 && (
+                      <ListDetail
+                        status={'Nearby'}
+                        data={readyToCollect}
+                      />
+                    )}
+                    {/* </Spin> */}
+                  </div>
 
-              <div style={{ marginTop: 0 }}>
-                <Spin
-                  tip='Loading nearby'
-                  spinning={loadingNearBy}
-                  className='flex items-center mt-10 text-black font-semibold'
-                >
-                  {nearBy.length !== 0 ? (
-                    <ListDetail status={'Nearby'} data={nearBy} />
-                  ) :
-                    <div className="flex flex-col items-center">
-                      <img src="/Route_search.svg" alt="" />
-                      <p className='text-center text-[15px] text-black opacity-50'>Seems like this is a whole new place for you to explore and share, be the first one!</p>
-                      <Button className='flex gap-2 items-center justify-center border-none rounded-3xl bg-black text-white text-base font-semibold w-full h-auto mt-6 py-3'
-                        onClick={async () => {
-                          if (user.id) {
-                            navigate('/check-in/upload-image');
-                          } else {
-                            setLoading(true);
-                            await init();
-                            setLoading(false);
-                          }
-                        }}>
-                        <FaPlus size={24} />
-                        <span>Drop a new experience</span>
-                      </Button>
-                    </div>
-                  }
-                </Spin>
+                  <div style={{ marginTop: 0 }}>
+                    <Spin
+                      tip='Loading nearby'
+                      spinning={loadingNearBy}
+                      className='flex items-center mt-10 text-black font-semibold'
+                    >
+                      {nearBy.length !== 0 ? (
+                        <ListDetail status={'Nearby'} data={nearBy} />
+                      ) :
+                        <div className="flex flex-col items-center">
+                          <img src="/Route_search.svg" alt="" />
+                          <p className='text-center text-[15px] text-black opacity-50'>Seems like this is a whole new place for you to explore and share, be the first one!</p>
+                          <Button className='flex gap-2 items-center justify-center border-none rounded-3xl bg-black text-white text-base font-semibold w-full h-auto mt-6 py-3'
+                            onClick={async () => {
+                              if (user.id) {
+                                navigate('/check-in/upload-image');
+                              } else {
+                                setLoading(true);
+                                await init();
+                                setLoading(false);
+                              }
+                            }}>
+                            <FaPlus size={24} />
+                            <span>Drop a new experience</span>
+                          </Button>
+                        </div>
+                      }
+                    </Spin>
+                  </div>
+                </div>
+                {nearBy.length !== 0 && !loadingNearBy &&
+                  <Button
+                    className='fixed top-[90%] right-4 w-[56px] h-[56px] rounded-full border-0'
+                    style={{ backgroundColor: 'rgba(148, 255, 65, 0.80)' }}
+                    onClick={async () => {
+                      if (user.id) {
+                        navigate('/check-in/nearby');
+                      } else {
+                        setLoading(true);
+                        await init();
+                        setLoading(false);
+                      }
+                    }}
+                  >
+                    <FaPlus size={24} className='text-black' />
+                  </Button>
+                }
+              </>
+              :
+              <div>
+                aaa
               </div>
-            </div>
-            {nearBy.length !== 0 && !loadingNearBy &&
-              <Button
-                className='fixed top-[90%] right-4 w-[56px] h-[56px] rounded-full border-0'
-                style={{ backgroundColor: 'rgba(148, 255, 65, 0.80)' }}
-                onClick={async () => {
-                  if (user.id) {
-                    navigate('/check-in/nearby');
-                  } else {
-                    setLoading(true);
-                    await init();
-                    setLoading(false);
-                  }
-                }}
-              >
-                <FaPlus size={24} className='text-black' />
-              </Button>
             }
           </>
         ) : (

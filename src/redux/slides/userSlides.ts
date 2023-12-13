@@ -49,13 +49,14 @@ export const userSlide = createSlice({
 
       localStorage.removeItem('user');
     },
-    updateCountry: (state, action)=>{
-      const { country } = action.payload;
+    updateInit: (state, action)=>{
+      const { country, follow } = action.payload;
+      state.follow = follow ? follow: state.follow;
       state.country = country ? country : state.country;
     }
   },
 });
 
-export const { updateUser, resetUser, updateCoordinate, updateCountry } = userSlide.actions;
+export const { updateUser, resetUser, updateCoordinate, updateInit } = userSlide.actions;
 
 export default userSlide.reducer;

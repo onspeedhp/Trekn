@@ -93,3 +93,20 @@ export const updateUserDB = async ({
     onSuccess(data[0]);
   }
 };
+
+export const getFollowingById = async ({
+  userId,
+  onSuccess
+}: {
+  userId: number;
+  onSuccess: (data: any) => void;
+}) => {
+  const { data, error } = await supabase
+  .from('user')
+  .select("following")
+  .eq('id', userId);
+
+  if (!error) {
+    onSuccess(data[0]);
+  }
+}
