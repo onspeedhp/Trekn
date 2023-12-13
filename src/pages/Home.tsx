@@ -167,7 +167,7 @@ function Home() {
         }
         {!leaderBoard ? (
           <>
-            {currentView === 'exploring' ?
+            {currentView === 'exploring' &&
               <>
                 <div className={`${user ? 'mt-9' : 'mt-10'}`}>
                   <div className='text-[14px] text-black opacity-70 font-medium mb-2 leading-[18px]'>
@@ -240,18 +240,6 @@ function Home() {
                   </Button>
                 }
               </>
-              :
-              <div className='mt-9'>
-                {Object.entries(follow).map(([key, data]: any, dataIdx) => (
-                  <Fragment key={dataIdx}>
-                    {data.map((item: any, itemIdx: number) => (
-                      <Fragment key={itemIdx}>
-                        <Feed wrapperData={follow} data={data} dataIdx={dataIdx} item={item} itemIdx={itemIdx} />
-                      </Fragment>
-                    ))}
-                  </Fragment>
-                ))}
-              </div>
             }
           </>
         ) : (
@@ -298,6 +286,21 @@ function Home() {
           </>
         )}
       </div>
+      {currentView === 'following' &&
+        <>
+          <div className='mt-9'>
+            {Object.entries(follow).map(([key, data]: any, dataIdx) => (
+              <Fragment key={dataIdx}>
+                {data.map((item: any, itemIdx: number) => (
+                  <Fragment key={itemIdx}>
+                    <Feed wrapperData={follow} data={data} dataIdx={dataIdx} item={item} itemIdx={itemIdx} />
+                  </Fragment>
+                ))}
+              </Fragment>
+            ))}
+          </div>
+        </>
+      }
     </>
   );
 }

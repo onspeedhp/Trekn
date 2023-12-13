@@ -74,7 +74,7 @@ export const Account = () => {
 
   return (
     <>
-      <div className='absolute w-full h-screen overflow-scroll'>
+      <div className='absolute w-full h-screen overflow-y-scroll'>
         <div className='m-4 font-semibold'>
           <svg
             xmlns='http://www.w3.org/2000/svg'

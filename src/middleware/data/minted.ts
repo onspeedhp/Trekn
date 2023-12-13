@@ -57,7 +57,7 @@ export const getMintedByUserAddress = async ({
 }) => {
   const { data, error } = await supabase
     .from('minted')
-    .select(`*, drop(*, user(*))`)
+    .select(`*, drop(*, user(*)), user(*)`)
     .or(`ownerId.in.(${userId})`);
 
   if (!error) {

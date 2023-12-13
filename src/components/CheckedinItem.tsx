@@ -7,22 +7,24 @@ import { useAuthContext } from '../context/AuthContext';
 import Item from 'antd/es/list/Item';
 import { getScore } from '../utils/account.util';
 import { calculateDistance, convertDistance } from '../functions/calculateDistance';
+import { useSelector } from 'react-redux';
 
 export default function CheckedinItem({ data, last }: any) {
+    const user = useSelector((state: any) => state.user);
     const { windowSize } = useAuthContext();
     const navigate = useNavigate();
-
+    console.log(data);
     return (
         <div className='pb-8 mx-5'>
             <div className='flex items-center' key={data.id}>
                 <img
-                    src={`${data.user.profileImage}`}
+                    src={`${data?.user?.profileImage}`}
                     className='w-10 h-10 mr-2 rounded-full object-cover object-center'
                     alt=''
                 />
 
                 <div className='flex-col'>
-                    <span className='font-medium mb-2'>{data.user.name}</span>
+                    <span className='font-medium mb-2'>{data?.user?.name}</span>
                     <div className='flex items-center'>
                         {data?.type === 'minted' ? (
                             <FaMapPin className='w-3 h-3' />
@@ -88,8 +90,8 @@ export default function CheckedinItem({ data, last }: any) {
                                     calculateDistance(
                                         data?.drop.lat,
                                         data?.drop.lng,
-                                        data.user.lat,
-                                        data.user.lng
+                                        user.lat,
+                                        user.lng
                                     )
                                 )}{' '}
                                 away
