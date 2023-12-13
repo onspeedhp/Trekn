@@ -36,11 +36,11 @@ export const Account = () => {
   const [activeTab, setActiveTab] = useState('timeline');
   const [userData, setUserData] = useState<any[]>([]);
   const [userAccountData, setUserAccountData] = useState<any>({});
-  useEffect(() => {
-    if (!user.id) {
-      navigate('/home');
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!user.id) {
+  //     navigate('/home');
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (user.address) {
