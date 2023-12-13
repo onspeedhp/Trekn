@@ -112,13 +112,43 @@ export const getFollowingById = async ({
   }
 };
 
-export const getUserAccountData = async({userId}: {userId: number}) => {
-  const {data, error}:any = await supabase
-    .from('user')
-    .select('*')
-    .eq("id",userId)
+export const getFollowerById = async ({
+  userId,
+  onSuccess,
+}: {
+  userId: number;
+  onSuccess: (data: any) => void;
+}) => {
+  const { data, error }: any = await supabase
+    .from("follow")
+    .select("follower")
+    .eq("following", userId);
 
-    if (!error) {
-      return data[0];
-    }
-}
+  if (!error) {
+    const result = data.map((item: any) => item.follower);
+    onSuccess(result);
+  }
+};
+
+export const getUserAccountData = async ({ userId }: { userId: number }) => {
+  const { data, error }: any = await supabase
+    .from("user")
+    .select("*")
+    .eq("id", userId);
+
+  const { data: followerData, followerError }: any = await supabase
+    .from("follow")
+    .select("follower")
+    .eq("following", userId);
+
+  const { data: followingData, followingError }: any = await supabase
+    .from("follow")
+    .select("following")
+    .eq("follower", userId);
+
+  if (!error && !followerError && !followingError) {
+    data[0].follower = followerData?.map((item: any) => item.follower);
+    data[0].following = followingData?.map((item: any) => item.following);
+    return data[0];
+  }
+};

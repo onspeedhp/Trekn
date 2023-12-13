@@ -50,6 +50,7 @@ export const Account = () => {
       const userData: any = [];
       if (userId) {
         const userAccountData = await getUserAccountData({ userId: Number(userId) });
+        console.log(userAccountData)
         setUserAccountData(userAccountData);
       }
       await getDropByUserAddress({
@@ -84,7 +85,7 @@ export const Account = () => {
 
   const isFollowed = () => {
     if (user.id) {
-      return user.follow.find((item: number) => item === Number(userId))
+      return user.following.find((item: number) => item === Number(userId))
     }
   }
 
@@ -95,14 +96,14 @@ export const Account = () => {
     if (isFollowed()) {
       await unFollowUser({
         follower: user.id, following: Number(userId), onSuccess: () => {
-          const newFollowList = user.follow.filter((item: any) => item !== Number(userId));
-          dispath(updateInit({ follow: newFollowList }));
+          const newFollowList = user.following.filter((item: any) => item !== Number(userId));
+          dispath(updateInit({ following: newFollowList }));
         }
       })
     } else {
       await followUser({
         follower: user.id, following: Number(userId), onSuccess: (newFollow: any) => {
-          dispath(updateInit({ follow: [...user.follow, newFollow] }));
+          dispath(updateInit({ following: [...user.following, newFollow] }));
         }
       })
     }
@@ -183,9 +184,19 @@ export const Account = () => {
               <div className='desc py-3 text-sm text-[#000000b3] font-normal'>
                 {userId ? userAccountData.description : user.description}
               </div>
-              <div className='balance flex items-center gap-1'>
-                <p className='font-semibold text-base'>{userId ? userAccountData?.point : user.point}</p>
-                <FaCookie className='text-[#FFAD08] w-3 h-3' />
+              <div className="flex items-center gap-4">
+                <div className='balance flex items-center gap-1'>
+                  <p className='font-semibold text-base leading-4 tracking-[-0.08px]'>{userId ? userAccountData?.point : user.point}</p>
+                  <FaCookie className='text-[#FFAD08] w-3 h-3' />
+                </div>
+                <div className='balance flex items-center gap-1'>
+                  <p className='font-semibold text-base leading-4 tracking-[-0.08px]'>{userId ? userAccountData?.follower?.length : user.follower.length}</p>
+                  <p className='text-[13px] leading-4 tracking-[-0.08px]'>Followers</p>
+                </div>
+                <div className='balance flex items-center gap-1'>
+                  <p className='font-semibold text-base leading-4 tracking-[-0.08px]'>{userId ? userAccountData?.following?.length : user.following.length}</p>
+                  <p className='text-[13px] leading-4 tracking-[-0.08px]'>Following</p>
+                </div>
               </div>
             </div>
           </div>

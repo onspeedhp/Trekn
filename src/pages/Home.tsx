@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from 'react-router';
 import request from '../axios';
 import { IDrop } from '../models/types';
 import { Button, Spin } from 'antd';
-import { getFollowingById, getLeaderBoardPoint } from '../middleware/data/user';
+import { getFollowerById, getFollowingById, getLeaderBoardPoint } from '../middleware/data/user';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   setLastFetch,
@@ -111,9 +111,14 @@ function Home() {
       (async () => {
         await getFollowingById({
           userId: user.id, onSuccess: (followingList: any) => {
-            dispatch(updateInit({ follow: followingList }));
+            dispatch(updateInit({ following: followingList }));
           }
-        })
+        });
+        await getFollowerById({
+          userId: user.id, onSuccess: (followerList: any) => {
+            dispatch(updateInit({ follower: followerList }));
+          }
+        });
       })();
     }
     if (!user.country) {
@@ -125,12 +130,12 @@ function Home() {
   }, [user.id])
 
   useEffect(() => {
-    if (user.follow && user.follow.length > 1) {
+    if (user.following && user.following.length > 1) {
       (async () => {
         setLoadingFollow(true);
         const userData: any = [];
         await getDropByUserAddress({
-          userId: user.follow,
+          userId: user.following,
           onSuccess: (res: any) => {
             userData.push(
               ...res.map((item: any) => {
@@ -142,7 +147,7 @@ function Home() {
         });
 
         await getMintedByUserAddress({
-          userId: user.follow,
+          userId: user.following,
           onSuccess: (res: any) => {
             userData.push(
               ...res.map((item: any) => {
@@ -156,7 +161,7 @@ function Home() {
         setFollowData(sortDataByTimeline(userData));
       })()
     }
-  }, [user.follow])
+  }, [user.following])
 
   const ChangeViewButton = ({ label }: { label: string }) => (
     <div
