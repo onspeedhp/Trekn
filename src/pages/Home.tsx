@@ -104,42 +104,11 @@ function Home() {
   useEffect(() => {
     if (user.id) {
       (async () => {
-        let _follow: any;
         await getFollowingById({
           userId: user.id, onSuccess: (followingList: any) => {
-            _follow = followingList;
             dispatch(updateInit({ follow: followingList }));
           }
         })
-        if (_follow && _follow.length > 1) {
-          setLoadingFollow(true);
-          const userData: any = [];
-          await getDropByUserAddress({
-            userId: user.follow,
-            onSuccess: (res: any) => {
-              userData.push(
-                ...res.map((item: any) => {
-                  item.type = 'drop';
-                  return item;
-                })
-              );
-            },
-          });
-
-          await getMintedByUserAddress({
-            userId: user.follow,
-            onSuccess: (res: any) => {
-              userData.push(
-                ...res.map((item: any) => {
-                  item.type = 'minted';
-                  return item;
-                })
-              );
-            },
-          });
-          setLoadingFollow(false);
-          setFollowData(sortDataByTimeline(userData));
-        }
       })();
     }
     if (!user.country) {
@@ -148,7 +117,41 @@ function Home() {
         dispatch(updateInit({ country: countryInfo?.address?.country }));
       })();
     }
-  }, [])
+  }, [user.id])
+
+  useEffect(() => {
+    if (user.follow && user.follow.length > 1) {
+      (async () => {
+        setLoadingFollow(true);
+        const userData: any = [];
+        await getDropByUserAddress({
+          userId: user.follow,
+          onSuccess: (res: any) => {
+            userData.push(
+              ...res.map((item: any) => {
+                item.type = 'drop';
+                return item;
+              })
+            );
+          },
+        });
+
+        await getMintedByUserAddress({
+          userId: user.follow,
+          onSuccess: (res: any) => {
+            userData.push(
+              ...res.map((item: any) => {
+                item.type = 'minted';
+                return item;
+              })
+            );
+          },
+        });
+        setLoadingFollow(false);
+        setFollowData(sortDataByTimeline(userData));
+      })()
+    }
+  }, [user.follow])
 
   const ChangeViewButton = ({ label }: { label: string }) => (
     <div
