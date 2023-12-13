@@ -80,7 +80,9 @@ export const Account = () => {
   }, [user.address]);
 
   const isFollowed = () => {
-    return user.follow.find((item: number) => item === Number(userId))
+    if (user.id) {
+      return user.follow.find((item: number) => item === Number(userId))
+    }
   }
 
   const handleFollow = async () => {
@@ -157,9 +159,11 @@ export const Account = () => {
                       navigate('/account/edit');
                   }}
                 >
-                  <p className='text-base font-medium leading-4 tracking-[-0.08px]'>
-                    {userId ? (isFollowed() ? 'Unfollow' : 'Follow') : 'Edit profile'}
-                  </p>
+                  {user.id &&
+                    <p className='text-base font-medium leading-4 tracking-[-0.08px]'>
+                      {userId ? (isFollowed() ? 'Unfollow' : 'Follow') : 'Edit profile'}
+                    </p>
+                  }
                 </div>
               </div>
             </div>
