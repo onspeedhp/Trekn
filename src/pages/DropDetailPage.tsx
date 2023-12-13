@@ -135,13 +135,13 @@ export const DropDetailPage = () => {
                     </div>
                   </div>
                 </div>
-                <div className='text-xl leading-9 font-semibold'>
+                <div className='text-xl leading-7 font-semibold tracking-[-0.08px]'>
                   {selectedLocation.name}
                 </div>
                 <div className='flex items-center gap-2'>
                   <div className='font-medium flex items-center gap-1'>
                     <FaThumbsUp className='w-4 h-4 text-[#FFB800]' />
-                    <div className={`text-[13px] ${selectedLocation && Number(getScore(selectedLocation, false)) ? 'text-[#000000b3]' : 'text-[#02030380]' } font-medium whitespace-nowrap leading-5`}>
+                    <div className={`text-[13px] ${selectedLocation && Number(getScore(selectedLocation, false)) ? 'text-[#000000b3]' : 'text-[#02030380]'} font-medium whitespace-nowrap leading-5`}>
                       {selectedLocation && getScore(selectedLocation, true)}
                     </div>
                   </div>
@@ -235,9 +235,9 @@ export const DropDetailPage = () => {
                     </div>
                   ))
                 ) : (
-                  <div className='flex justify-center items-center flex-col gap-4 bg-[#F5F5F5] rounded-lg py-9 px-16'>
+                  <div className='flex justify-center items-center flex-col gap-4 bg-[#F5F5F5] rounded-lg py-7 px-3'>
                     <img src='/traveler.svg' alt='' />
-                    <p>Be the first one checked in here</p>
+                    <p className='text-center font-medium text-[13px] leading-5 text-[#828282] max-w-[205px]'>Go to this place and<br/>be the first one checked in here</p>
                   </div>
                 )}
               </div>

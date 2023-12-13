@@ -3,7 +3,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { ListDetail } from '../components/ListDetail';
 import { useAuthContext } from '../context/AuthContext';
 import { FaPlus } from 'react-icons/fa6';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import request from '../axios';
 import { IDrop } from '../models/types';
 import { Button, Spin } from 'antd';
@@ -25,6 +25,7 @@ import Feed from '../components/Feed';
 
 function Home() {
   const { windowSize, leaderBoard, init } = useAuthContext();
+  const { state: locationState } = useLocation();
   const { get } = useApi();
   const [readyToCollect, setReadyToCollect] = useState<IDrop[]>([]);
   const user = useSelector((state: any) => state.user);
@@ -42,6 +43,10 @@ function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (locationState?.login && !user.address) {
+      init();
+      window.history.replaceState({}, document.title)
+    }
     setLoadingPoint(true);
     getLeaderBoardPoint({
       onSuccess: (data) => {
@@ -208,23 +213,27 @@ function Home() {
                       {nearBy.length !== 0 ? (
                         <ListDetail status={'Nearby'} data={nearBy} />
                       ) :
-                        <div className="flex flex-col items-center">
-                          <img src="/Route_search.svg" alt="" />
-                          <p className='text-center text-[15px] text-black opacity-50'>Seems like this is a whole new place for you to explore and share, be the first one!</p>
-                          <Button className='flex gap-2 items-center justify-center border-none rounded-3xl bg-black text-white text-base font-semibold w-full h-auto mt-6 py-3'
-                            onClick={async () => {
-                              if (user.id) {
-                                navigate('/check-in/upload-image');
-                              } else {
-                                setLoading(true);
-                                await init();
-                                setLoading(false);
-                              }
-                            }}>
-                            <FaPlus size={24} />
-                            <span>Drop a new experience</span>
-                          </Button>
-                        </div>
+                        <>
+                          {!loadingNearBy &&
+                            <div className="flex flex-col items-center">
+                              <img src="/Route_search.svg" alt="" />
+                              <p className='text-center text-[15px] text-black opacity-50'>Seems like this is a whole new place for you to explore and share, be the first one!</p>
+                              <Button className='flex gap-2 items-center justify-center border-none rounded-3xl bg-black text-white text-base font-semibold w-full h-auto mt-6 py-3'
+                                onClick={async () => {
+                                  if (user.id) {
+                                    navigate('/check-in/upload-image');
+                                  } else {
+                                    setLoading(true);
+                                    await init();
+                                    setLoading(false);
+                                  }
+                                }}>
+                                <FaPlus size={24} />
+                                <span>Drop a new experience</span>
+                              </Button>
+                            </div>
+                          }
+                        </>
                       }
                     </Spin>
                   </div>
@@ -301,8 +310,7 @@ function Home() {
               spinning={loadingFollow}
               className='flex items-center mt-10 text-black font-semibold'
             >
-
-              {Object.entries(follow).map(([key, data]: any, dataIdx) => (
+              {Object.entries(follow).length > 0 && Object.entries(follow).map(([key, data]: any, dataIdx) => (
                 <Fragment key={dataIdx}>
                   {data.map((item: any, itemIdx: number) => (
                     <Fragment key={itemIdx}>
@@ -310,8 +318,14 @@ function Home() {
                     </Fragment>
                   ))}
                 </Fragment>
-              ))}
+              ))
+              }
             </Spin>
+            {!loadingFollow && Object.entries(follow).length === 0 &&
+              <div className='absolute top-[106px] bottom-0 left-0 right-0 flex flex-col justify-center items-center z-[-1] px-[11.736%]'>
+                <img src="/bubble-with-a-cross.svg" alt="" className='w-[152px] h-[158px] object-cover object-center mb-4' />
+                <p className='text-[13px] font-medium leading-[18.2px] text-[#707070CC] text-center'>Your Following list is empty. Start connecting! Follow people or add friends to see their updates here.</p>
+              </div>}
           </div>
         </>
       }

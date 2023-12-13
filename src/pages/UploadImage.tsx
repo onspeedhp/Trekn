@@ -60,10 +60,10 @@ export const UploadImage = () => {
 
           <div className='mb-12'>
             <div className='text-white text-2xl font-semibold mb-2'>
-              Add your moments
+              Add location images
             </div>
             <div className='text-white text-base font-normal opacity-70'>
-              Capture your moments and share it with  other explorers.
+              Upload images or video to give others a vivid and detailed view of this place.
             </div>
           </div>
 

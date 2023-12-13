@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router';
+import { redirect, useNavigate, useParams } from 'react-router';
 import { Fragment, useEffect, useState } from 'react';
 import { Button, Spin } from 'antd';
 import {
@@ -89,6 +89,9 @@ export const Account = () => {
   }
 
   const handleFollow = async () => {
+    if (user.id === 0 || !user.id) {
+      return navigate('/home', { state: { login: true } });
+    }
     if (isFollowed()) {
       await unFollowUser({
         follower: user.id, following: Number(userId), onSuccess: () => {
@@ -108,7 +111,7 @@ export const Account = () => {
   return (
     <>
 
-      <div className='absolute w-full h-screen overflow-y-scroll'>
+      <div className='absolute w-full'>
         <div className='m-4 font-semibold'>
           <svg
             xmlns='http://www.w3.org/2000/svg'
@@ -159,21 +162,19 @@ export const Account = () => {
                 <div className='rounded-full border border-black flex justify-center items-center p-[9px]'>
                   <FaShare className='w-3 h-3' />
                 </div>
-                {user.id !== 0 &&
-                  <div
-                    className='rounded-full border border-black py-[6px] px-4'
-                    onClick={() => {
-                      userId ?
-                        handleFollow()
-                        :
-                        navigate('/account/edit');
-                    }}
-                  >
-                    <p className='text-base font-medium leading-4 tracking-[-0.08px]'>
-                      {userId ? (isFollowed() ? 'Unfollow' : 'Follow') : 'Edit profile'}
-                    </p>
-                  </div>
-                }
+                <div
+                  className='rounded-full border border-black py-[6px] px-4'
+                  onClick={() => {
+                    userId ?
+                      handleFollow()
+                      :
+                      navigate('/account/edit');
+                  }}
+                >
+                  <p className='text-base font-medium leading-4 tracking-[-0.08px]'>
+                    {userId ? (isFollowed() ? 'Unfollow' : 'Follow') : 'Edit profile'}
+                  </p>
+                </div>
               </div>
             </div>
 
