@@ -1,19 +1,49 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
+import { getListUser } from '../middleware/data/user';
+import { useSelector } from 'react-redux';
+import { capitalizeFirstLetter } from '../functions/text';
+import * as Vibrant from 'node-vibrant'
 
 export default function FollowPage() {
     const navigate = useNavigate();
-    const {follower, following, id: userId} = useParams();
+    const { id: userId } = useParams();
+    const [searchParams] = useSearchParams();
+    const type: string = searchParams.get('type') || '';
+    const user = useSelector((state: any) => state.user);
+    const userAccountData = useSelector((state: any) => state.account);
+    const [data, setData] = useState([]);
+    useEffect(() => {
+        const fetchData = async () => {
+            let data;
+
+            if (userId) {
+                data = type === 'follower' ? await getListUser(userAccountData.follower) : await getListUser(userAccountData.following);
+            } else {
+                data = type === 'follower' ? await getListUser(user.follower) : await getListUser(user.following);
+            }
+
+            setData(data);
+        };
+
+        fetchData();
+    }, []);
+
+    const getColorBorder = async (url: string) => {
+        await Vibrant.from(url).getPalette().then(function(palette) {
+            console.log(palette);
+        });
+    }
     return (
-        <div className='w-full h-screen'>
-            <div className='m-4 font-semibold flex items-center relative'>
+        <div className='w-full h-screen p-4'>
+            <div className='font-semibold flex items-center relative mb-8 ml-1'>
                 <svg
                     xmlns='http://www.w3.org/2000/svg'
                     width='17'
                     height='16'
                     viewBox='0 0 17 16'
                     fill='none'
-                    className='absolute'
                     onClick={() => {
                         navigate(-1);
                     }}
@@ -25,8 +55,27 @@ export default function FollowPage() {
                     />
                 </svg>
             </div>
-            <div className="text-xl leading-4">
-                Edit Profile
+            <div className="text-2xl leading-4 font-semibold tracking-[-0.08px] mb-8">
+                {data.length} {capitalizeFirstLetter(type)}
+            </div>
+            <div className="flex flex-col gap-4">
+                {data?.map((item: any, idx: number) =>
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-[10px]">
+                            <div className={`rounded-full p-[1px] w-12 h-12 overflow-hidden border box-content border-${getColorBorder(item.profileImage)}`}>
+                                <img src={item.profileImage} alt="" className='object-center object-cover rounded-full' />
+                            </div>
+                            <div className="font-medium text-base leading-5">{item.name}</div>
+                        </div>
+                        {userId ?
+                            <>
+                            </>
+                            :
+                            <>
+                            </>
+                        }
+                    </div>
+                )}
             </div>
         </div>
     )

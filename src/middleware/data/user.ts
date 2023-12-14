@@ -152,3 +152,14 @@ export const getUserAccountData = async ({ userId }: { userId: number }) => {
     return data[0];
   }
 };
+
+export const getListUser = async (userId: Array<number>) => {
+  const { data, error }: any = await supabase
+    .from("user")
+    .select("*")
+    .or(`id.in.(${userId})`);
+
+    if(!error) {
+      return data;
+    }
+};
