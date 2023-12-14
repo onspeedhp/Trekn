@@ -13,12 +13,12 @@ export default function CheckedinItem({ data, last }: any) {
     const user = useSelector((state: any) => state.user);
     const { windowSize } = useAuthContext();
     const navigate = useNavigate();
-    console.log(data);
     return (
         <div className='pb-8 mx-5'>
             <div className='flex items-center' key={data.id}>
                 <img
                     src={`${data?.user?.profileImage}`}
+                    onClick={()=>{data?.user.id !== user.id && navigate(`/account/${data?.user?.id}`)}}
                     className='w-10 h-10 mr-2 rounded-full object-cover object-center'
                     alt=''
                 />
@@ -99,7 +99,7 @@ export default function CheckedinItem({ data, last }: any) {
                         </div>
                     </div>
                     <div className="mt-auto flex items-center gap-1">
-                        <img src={data?.drop?.user?.profileImage} alt="" className="w-4 h-4 rounded-full" />
+                        <img src={data?.drop?.user?.profileImage} onClick={()=>data?.drop?.user.id !== user.id && navigate(`/account/${data?.drop?.user?.id}`)} alt="" className="w-4 h-4 rounded-full" />
                         <p className='text-[13px] font-medium leading-4 tracking-[-0.08px] opacity-70 line-clamp-1'>{data?.drop?.user?.name}</p>
                     </div>
                 </div>

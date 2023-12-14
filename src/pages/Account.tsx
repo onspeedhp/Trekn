@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { Fragment, useEffect, useState } from 'react';
 import { Button } from 'antd';
 import {
@@ -11,7 +11,7 @@ import {
 } from 'react-icons/fa';
 import { getDropByUserAddress } from '../middleware/data/drop';
 import { getMintedByUserAddress } from '../middleware/data/minted';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   checkClassNameAccountItem,
   getScore,
@@ -21,18 +21,21 @@ import {
   calculateDistance,
   convertDistance,
 } from '../functions/calculateDistance';
-import { DetailCard } from '../components/DetailCard';
 import moment from 'moment';
 import LazyImageCustom from '../components/LazyImageCustom';
-import CheckinItem from '../components/CheckedinItem';
 import Feed from '../components/Feed';
+import { getUserAccountData } from '../middleware/data/user';
+import { followUser, unFollowUser } from '../middleware/data/follow';
+import { updateInit } from '../redux/slides/userSlides';
 
 export const Account = () => {
+  const { id: userId } = useParams();
   const navigate = useNavigate();
+  const dispath = useDispatch();
+  const user = useSelector((state: any) => state.user);
   const [activeTab, setActiveTab] = useState('timeline');
   const [userData, setUserData] = useState<any[]>([]);
-  const user = useSelector((state: any) => state.user);
-
+  const [userAccountData, setUserAccountData] = useState<any>({});
   useEffect(() => {
     if (!user.id) {
       navigate('/home');
@@ -43,8 +46,12 @@ export const Account = () => {
     if (user.address) {
       (async () => {
         const userData: any = [];
+        if (userId) {
+          const userAccountData = await getUserAccountData({ userId: Number(userId) });
+          setUserAccountData(userAccountData);
+        }
         await getDropByUserAddress({
-          userId: [user.id],
+          userId: [(Number(userId) || user.id)],
           onSuccess: (res: any) => {
             userData.push(
               ...res.map((item: any) => {
@@ -56,7 +63,7 @@ export const Account = () => {
         });
 
         await getMintedByUserAddress({
-          userId: [user.id],
+          userId: [(Number(userId) || user.id)],
           onSuccess: (res: any) => {
             userData.push(
               ...res.map((item: any) => {
@@ -71,6 +78,27 @@ export const Account = () => {
       })();
     }
   }, [user.address]);
+
+  const isFollowed = () => {
+    return user.follow.find((item: number) => item === Number(userId))
+  }
+
+  const handleFollow = async () => {
+    if (isFollowed()) {
+      await unFollowUser({
+        follower: user.id, following: Number(userId), onSuccess: () => {
+          const newFollowList = user.follow.filter((item: any) => item !== Number(userId));
+          dispath(updateInit({ follow: newFollowList }));
+        }
+      })
+    } else {
+      await followUser({
+        follower: user.id, following: Number(userId), onSuccess: (newFollow: any) => {
+          dispath(updateInit({ follow: [...user.follow, newFollow] }));
+        }
+      })
+    }
+  }
 
   return (
     <>
@@ -95,23 +123,25 @@ export const Account = () => {
           </svg>
 
           <div className='user-info mb-6 text-black'>
-            <div className='flex items-center justify-between mb-5 font-normal px-1 py-2'>
-              <div className='flex items-center gap-2 font-semibold text-xl leading-4'>
-                {user.address.slice(0, 2)}...
-                {user.address.slice(-6, -1)}
-                <FaClone className='w-3 h-3' />
+            {!userId &&
+              <div className='flex items-center justify-between mb-5 font-normal px-1 py-2'>
+                <div className='flex items-center gap-2 font-semibold text-xl leading-4'>
+                  {user.address.slice(0, 2)}...
+                  {user.address.slice(-6, -1)}
+                  <FaClone className='w-3 h-3' />
+                </div>
+                <Button className='bg-[#F4F4F4] rounded-full flex items-center justify-center border-0 py-2 px-3'>
+                  <span className='font-medium text-black'>
+                    Copy seed phrase{' '}
+                  </span>
+                </Button>
               </div>
-              <Button className='bg-[#F4F4F4] rounded-full flex items-center justify-center border-0 py-2 px-3'>
-                <span className='font-medium text-black'>
-                  Copy seed phrase{' '}
-                </span>
-              </Button>
-            </div>
+            }
 
             <div className='flex items-center justify-between mb-4'>
               <img
                 className='rounded-full w-[100px] h-[100px] object-cover object-center'
-                src={`${user.profileImage}`}
+                src={`${userId ? userAccountData?.profileImage : user.profileImage}`}
                 alt=''
               />
               <div className='flex items-center gap-2'>
@@ -121,23 +151,26 @@ export const Account = () => {
                 <div
                   className='rounded-full border border-black py-[6px] px-4'
                   onClick={() => {
-                    navigate('/account/edit');
+                    userId ?
+                      handleFollow()
+                      :
+                      navigate('/account/edit');
                   }}
                 >
                   <p className='text-base font-medium leading-4 tracking-[-0.08px]'>
-                    Edit profile
+                    {userId ? (isFollowed() ? 'Unfollow' : 'Follow') : 'Edit profile'}
                   </p>
                 </div>
               </div>
             </div>
 
             <div className='px-2'>
-              <div className='name font-semibold text-2xl'>{user.name}</div>
+              <div className='name font-semibold text-2xl'>{userId ? userAccountData?.name : user.name}</div>
               <div className='desc py-3 text-sm text-[#000000b3] font-normal'>
-                {user.description}
+                {userId ? userAccountData.description : user.description}
               </div>
               <div className='balance flex items-center gap-1'>
-                <p className='font-semibold text-base'>{user.point}</p>
+                <p className='font-semibold text-base'>{userId ? userAccountData?.point : user.point}</p>
                 <FaCookie className='text-[#FFAD08] w-3 h-3' />
               </div>
             </div>
@@ -253,7 +286,7 @@ export const Account = () => {
                 <Fragment key={dataIdx}>
                   {data.map((item: any, itemIdx: number) => (
                     <Fragment key={itemIdx}>
-                      <Feed wrapperData={userData} data={data} dataIdx={dataIdx} item={item} itemIdx={itemIdx}/>
+                      <Feed wrapperData={userData} data={data} dataIdx={dataIdx} item={item} itemIdx={itemIdx} />
                     </Fragment>
                   ))}
                 </Fragment>

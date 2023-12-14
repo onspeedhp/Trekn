@@ -92,6 +92,7 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
         <img
           src={`${data.user.profileImage}`}
           className='w-10 h-10 mr-2 rounded-full object-cover object-center'
+          onClick={()=>data?.user.id !== user.id && navigate(`/account/${data.user.id}`)}
           alt=''
         />
 

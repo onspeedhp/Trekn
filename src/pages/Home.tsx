@@ -35,6 +35,7 @@ function Home() {
   const [leaderBoardPoint, setLeaderBoardPoint] = useState([]);
   const [loadingPoint, setLoadingPoint] = useState(false);
   const [loadingNearBy, setLoadingNearBy] = useState(false);
+  const [loadingFollow, setLoadingFollow] = useState(false);
   const [loadingReadyToCollect, setLoadingReadyToCollet] = useState(false);
   const [follow, setFollowData] = useState({});
   const [currentView, setCurrentView] = useState('exploring')
@@ -103,12 +104,15 @@ function Home() {
   useEffect(() => {
     if (user.id) {
       (async () => {
+        let _follow: any;
         await getFollowingById({
           userId: user.id, onSuccess: (followingList: any) => {
+            _follow = followingList;
             dispatch(updateInit({ follow: followingList }));
           }
         })
-        if (user.follow.length > 1) {
+        if (_follow && _follow.length > 1) {
+          setLoadingFollow(true);
           const userData: any = [];
           await getDropByUserAddress({
             userId: user.follow,
@@ -133,7 +137,7 @@ function Home() {
               );
             },
           });
-
+          setLoadingFollow(false);
           setFollowData(sortDataByTimeline(userData));
         }
       })();
@@ -289,15 +293,22 @@ function Home() {
       {currentView === 'following' &&
         <>
           <div className='mt-9'>
-            {Object.entries(follow).map(([key, data]: any, dataIdx) => (
-              <Fragment key={dataIdx}>
-                {data.map((item: any, itemIdx: number) => (
-                  <Fragment key={itemIdx}>
-                    <Feed wrapperData={follow} data={data} dataIdx={dataIdx} item={item} itemIdx={itemIdx} />
-                  </Fragment>
-                ))}
-              </Fragment>
-            ))}
+            <Spin
+              tip='Loading Follow'
+              spinning={loadingFollow}
+              className='flex items-center mt-10 text-black font-semibold'
+            >
+
+              {Object.entries(follow).map(([key, data]: any, dataIdx) => (
+                <Fragment key={dataIdx}>
+                  {data.map((item: any, itemIdx: number) => (
+                    <Fragment key={itemIdx}>
+                      <Feed wrapperData={follow} data={data} dataIdx={dataIdx} item={item} itemIdx={itemIdx} />
+                    </Fragment>
+                  ))}
+                </Fragment>
+              ))}
+            </Spin>
           </div>
         </>
       }

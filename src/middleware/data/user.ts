@@ -111,3 +111,14 @@ export const getFollowingById = async ({
     onSuccess(result);
   }
 };
+
+export const getUserAccountData = async({userId}: {userId: number}) => {
+  const {data, error}:any = await supabase
+    .from('user')
+    .select('*')
+    .eq("id",userId)
+
+    if (!error) {
+      return data[0];
+    }
+}

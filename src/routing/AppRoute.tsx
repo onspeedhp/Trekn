@@ -57,6 +57,11 @@ const AppRoutes = () => (
       ></Route>
 
       <Route
+        path='/account/:id'
+        element={<App header={Header} hideHeader={true} layout={Account} />}
+      ></Route>
+
+      <Route
         path='/account/edit'
         element={<App header={Header} hideHeader={true} layout={EditProfile} />}
       ></Route>
