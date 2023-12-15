@@ -27,15 +27,16 @@ import Feed from '../components/Feed';
 import { getUserAccountData } from '../middleware/data/user';
 import { followUser, unFollowUser } from '../middleware/data/follow';
 import { updateInit } from '../redux/slides/userSlides';
+import { clearAccountData, setAccountData } from '../redux/slides/accountSlides';
 
 export const Account = () => {
   const { id: userId } = useParams();
   const navigate = useNavigate();
   const dispath = useDispatch();
   const user = useSelector((state: any) => state.user);
+  const userAccountData = useSelector((state: any) => state.account)
   const [activeTab, setActiveTab] = useState('timeline');
   const [userData, setUserData] = useState<any[]>([]);
-  const [userAccountData, setUserAccountData] = useState<any>({});
   const [loading, setLoading] = useState(false);
   // useEffect(() => {
   //   if (!user.id) {
@@ -49,9 +50,8 @@ export const Account = () => {
       setLoading(true);
       const userData: any = [];
       if (userId) {
-        const userAccountData = await getUserAccountData({ userId: Number(userId) });
-        console.log(userAccountData)
-        setUserAccountData(userAccountData);
+        const _userAccountData = await getUserAccountData({ userId: Number(userId) });
+        dispath(setAccountData(_userAccountData));
       }
       await getDropByUserAddress({
         userId: [(Number(userId) || user.id)],
@@ -122,6 +122,7 @@ export const Account = () => {
             fill='none'
             className='mb-6'
             onClick={() => {
+              dispath(clearAccountData());
               navigate('/');
             }}
           >
@@ -154,11 +155,16 @@ export const Account = () => {
             }
 
             <div className='flex items-center justify-between mb-4'>
-              <img
-                className='rounded-full w-[100px] h-[100px] object-cover object-center'
-                src={`${userId ? userAccountData?.profileImage : user.profileImage}`}
-                alt=''
-              />
+              <div className="relative rounded-full w-[100px] h-[100px] overflow-hidden">
+                <img
+                  className={`w-full h-fullobject-cover object-center`}
+                  src={`${userId ? userAccountData?.profileImage : user.profileImage}`}
+                  alt=''
+                />
+                {!userAccountData?.profileImage && userId &&
+                  <div className="absolute animate-pulse bg-gray-200 z-10 left-0 right-0 top-0 bottom-0"></div>
+                }
+              </div>
               <div className='flex items-center gap-2'>
                 <div className='rounded-full border border-black flex justify-center items-center p-[9px]'>
                   <FaShare className='w-3 h-3' />
@@ -180,7 +186,9 @@ export const Account = () => {
             </div>
 
             <div className='px-2'>
-              <div className='name font-semibold text-2xl'>{userId ? userAccountData?.name : user.name}</div>
+              <div className={`name font-semibold text-2xl ${userId && !userAccountData?.name && 'animate-pulse bg-gray-200 w-20 h-4 rounded-xl'}`}>
+                {userId ? userAccountData?.name : user.name}
+              </div>
               <div className='desc py-3 text-sm text-[#000000b3] font-normal'>
                 {userId ? userAccountData.description : user.description}
               </div>
@@ -189,11 +197,11 @@ export const Account = () => {
                   <p className='font-semibold text-base leading-4 tracking-[-0.08px]'>{userId ? userAccountData?.point : user.point}</p>
                   <FaCookie className='text-[#FFAD08] w-3 h-3' />
                 </div>
-                <div className='balance flex items-center gap-1'>
+                <div className='balance flex items-center gap-1' onClick={() => navigate(userId ? `/account/${userId}/follow?follower` : '/account/follow?follower')}>
                   <p className='font-semibold text-base leading-4 tracking-[-0.08px]'>{userId ? userAccountData?.follower?.length : user.follower.length}</p>
                   <p className='text-[13px] leading-4 tracking-[-0.08px]'>Followers</p>
                 </div>
-                <div className='balance flex items-center gap-1'>
+                <div className='balance flex items-center gap-1' onClick={() => navigate(userId ? `/account/${userId}/follow?following` : '/account/follow?following')}>
                   <p className='font-semibold text-base leading-4 tracking-[-0.08px]'>{userId ? userAccountData?.following?.length : user.following.length}</p>
                   <p className='text-[13px] leading-4 tracking-[-0.08px]'>Following</p>
                 </div>

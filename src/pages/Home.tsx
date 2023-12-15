@@ -176,7 +176,7 @@ function Home() {
   return (
     <>
       <div className='w-full px-[20px] sm:px-0 relative'>
-        {user &&
+        {user.address &&
           <div className="p-1 bg-[#ECECEC] rounded-[10px] mt-10 flex items-center">
             <ChangeViewButton label={'exploring'} />
             <ChangeViewButton label={'following'} />
