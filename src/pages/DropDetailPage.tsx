@@ -6,19 +6,10 @@ import { useAuthContext } from '../context/AuthContext';
 import { calculateDistance } from '../functions/calculateDistance';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination } from 'swiper/modules';
-import {
-  FaMapPin,
-  FaUserFriends,
-  FaCamera,
-  FaBolt,
-  FaThumbsUp,
-} from 'react-icons/fa';
+import { FaMapPin, FaCamera, FaBolt, FaThumbsUp } from 'react-icons/fa';
 import { Button, Carousel, Drawer, Modal } from 'antd';
 import { CustomWebcam } from '../components/CustomWebcam';
 import {
-  FaChevronDown,
   FaCirclePlus,
   FaFaceFrown,
   FaFaceKissWinkHeart,
@@ -32,6 +23,25 @@ import { PublicKey } from '@solana/web3.js';
 import moment from 'moment';
 import { getScore } from '../utils/account.util';
 import { formatLocation } from '../functions/text';
+
+const reactions = [
+  {
+    icon: <FaFaceSadCry size={24} className='text-black ml-auto' />,
+  },
+  {
+    icon: <FaFaceFrown size={24} className='text-black ml-auto' />,
+  },
+  {
+    icon: <FaFaceMeh size={24} className='text-black ml-auto' />,
+  },
+
+  {
+    icon: <FaFaceLaughBeam size={24} className='text-black ml-auto' />,
+  },
+  {
+    icon: <FaFaceKissWinkHeart size={24} className='text-black ml-auto' />,
+  },
+];
 
 export const DropDetailPage = () => {
   const { dropId } = useParams();
@@ -141,7 +151,14 @@ export const DropDetailPage = () => {
                 <div className='flex items-center gap-2'>
                   <div className='font-medium flex items-center gap-1'>
                     <FaThumbsUp className='w-4 h-4 text-[#FFB800]' />
-                    <div className={`text-[13px] ${selectedLocation && Number(getScore(selectedLocation, false)) ? 'text-[#000000b3]' : 'text-[#02030380]' } font-medium whitespace-nowrap leading-5`}>
+                    <div
+                      className={`text-[13px] ${
+                        selectedLocation &&
+                        Number(getScore(selectedLocation, false))
+                          ? 'text-[#000000b3]'
+                          : 'text-[#02030380]'
+                      } font-medium whitespace-nowrap leading-5`}
+                    >
                       {selectedLocation && getScore(selectedLocation, true)}
                     </div>
                   </div>
@@ -152,28 +169,36 @@ export const DropDetailPage = () => {
                 </div>
               </div>
               <div>
-                <div style={{
-                  height: 335,
-                }}
-                  className='mb-4'>
-                  {selectedLocation.imageArray ?
-                    <Carousel swipeToSlide draggable style={{ height: '100%', width: '100%' }}>
-                      {selectedLocation.imageArray.map((item: string, idx: number) => (
-                        <img
-                          key={idx}
-                          src={`${item}`}
-                          alt=''
-                          className='rounded-xl h-full w-full object-cover object-center'
-                        />
-                      ))}
+                <div
+                  style={{
+                    height: 335,
+                  }}
+                  className='mb-4'
+                >
+                  {selectedLocation.imageArray ? (
+                    <Carousel
+                      swipeToSlide
+                      draggable
+                      style={{ height: '100%', width: '100%' }}
+                    >
+                      {selectedLocation.imageArray.map(
+                        (item: string, idx: number) => (
+                          <img
+                            key={idx}
+                            src={`${item}`}
+                            alt=''
+                            className='rounded-xl h-full w-full object-cover object-center'
+                          />
+                        )
+                      )}
                     </Carousel>
-                    :
+                  ) : (
                     <img
                       src={`${selectedLocation.image}`}
                       alt=''
                       className='rounded-xl h-full w-full object-cover object-center'
                     />
-                  }
+                  )}
                 </div>
                 <div className='text-[#02030380] font-medium text-[15px] leading-6 px-2'>
                   {selectedLocation.description}
@@ -181,7 +206,9 @@ export const DropDetailPage = () => {
                 <div className='border-b mt-5'></div>
               </div>
               <div className='flex flex-col gap-4'>
-                <div className='leading-10 text-xl font-bold leading-[13px]'>Location</div>
+                <div className='leading-10 text-xl font-bold leading-[13px]'>
+                  Location
+                </div>
                 <div className='leading-4 text-[#02030380] font-medium leading-1 text-[13px]'>
                   {formatLocation(selectedLocation.location)}
                 </div>
@@ -202,7 +229,7 @@ export const DropDetailPage = () => {
                     longitude={selectedLocation.lng}
                     latitude={selectedLocation.lat}
                     anchor='bottom'
-                    onClick={() => { }}
+                    onClick={() => {}}
                   >
                     <FaMapPin size={24} className='text-[#278EFF]' />
                   </Marker>
@@ -228,10 +255,9 @@ export const DropDetailPage = () => {
                         {minted.user.address.slice(0, 2)}...
                         {minted.user.address.slice(-6, -1)}
                       </div>
-                      <FaFaceKissWinkHeart
-                        size={24}
-                        className='text-black ml-auto'
-                      />
+                      {minted.reaction_id && (
+                        <>{reactions[minted.reaction.kind].icon}</>
+                      )}
                     </div>
                   ))
                 ) : (

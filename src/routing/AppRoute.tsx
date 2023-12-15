@@ -70,7 +70,9 @@ const AppRoutes = () => (
 
       <Route
         path='/check-in/:id'
-        element={<App header={Header} hideHeader={true} layout={CheckinWPhoto} />}
+        element={
+          <App header={Header} hideHeader={true} layout={CheckinWPhoto} />
+        }
       ></Route>
 
       <Route
@@ -94,7 +96,9 @@ const AppRoutes = () => (
 
       <Route
         path='/check-in/enter-info'
-        element={<App header={Header} hideHeader={true} layout={EnterDropInfo} />}
+        element={
+          <App header={Header} hideHeader={true} layout={EnterDropInfo} />
+        }
       ></Route>
 
       <Route
@@ -103,7 +107,7 @@ const AppRoutes = () => (
       ></Route>
 
       <Route
-        path='/reaction-drop'
+        path='/reaction/:dropId'
         element={<App header={Header} hideHeader={true} layout={Reaction} />}
       ></Route>
 
