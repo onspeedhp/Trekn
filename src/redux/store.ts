@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import userSlide from './slides/userSlides';
 import locationSlide from './slides/locationSlides';
+import accountSlide from './slides/accountSlides';
 
 export const store = configureStore({
   reducer: {
     user: userSlide,
     location: locationSlide,
+    account: accountSlide
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

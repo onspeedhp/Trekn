@@ -1,6 +1,6 @@
-import { useNavigate } from 'react-router';
-import { useEffect, useState } from 'react';
-import { Button } from 'antd';
+import { redirect, useNavigate, useParams } from 'react-router';
+import { Fragment, useEffect, useState } from 'react';
+import { Button, Spin } from 'antd';
 import {
   FaClone,
   FaCookie,
@@ -11,7 +11,7 @@ import {
 } from 'react-icons/fa';
 import { getDropByUserAddress } from '../middleware/data/drop';
 import { getMintedByUserAddress } from '../middleware/data/minted';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   checkClassNameAccountItem,
   getScore,
@@ -21,60 +21,99 @@ import {
   calculateDistance,
   convertDistance,
 } from '../functions/calculateDistance';
-import { DetailCard } from '../components/DetailCard';
 import moment from 'moment';
 import LazyImageCustom from '../components/LazyImageCustom';
-import CheckinItem from '../components/CheckedinItem';
+import Feed from '../components/Feed';
+import { getUserAccountData } from '../middleware/data/user';
+import { followUser, unFollowUser } from '../middleware/data/follow';
+import { updateInit } from '../redux/slides/userSlides';
+import { clearAccountData, setAccountData } from '../redux/slides/accountSlides';
 import { supabase } from '../utils/supabaseClients';
 
 export const Account = () => {
+  const { id: userId } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const user: any = useSelector((state: any) => state.user);
+  const userAccountData = useSelector((state: any) => state.account)
   const [activeTab, setActiveTab] = useState('timeline');
   const [userData, setUserData] = useState<any[]>([]);
-  const user = useSelector((state: any) => state.user);
+  const [loading, setLoading] = useState(false);
+  // useEffect(() => {
+  //   if (!user.id) {
+  //     navigate('/home');
+  //   }
+  // }, []);
 
   useEffect(() => {
-    if (!user.id) {
-      navigate('/home');
+    // if (user.address) {
+    (async () => {
+      setLoading(true);
+      const userData: any = [];
+      if (userId && userId !== userAccountData?.id) {
+        const _userAccountData = await getUserAccountData({ userId: Number(userId) });
+        dispatch(setAccountData(_userAccountData));
+      }
+      await getDropByUserAddress({
+        userId: [(Number(userId) || user.id)],
+        onSuccess: (res: any) => {
+          userData.push(
+            ...res.map((item: any) => {
+              item.type = 'drop';
+              return item;
+            })
+          );
+        },
+      });
+
+      await getMintedByUserAddress({
+        userId: [(Number(userId) || user.id)],
+        onSuccess: (res: any) => {
+          userData.push(
+            ...res.map((item: any) => {
+              item.type = 'minted';
+              return item;
+            })
+          );
+        },
+      });
+
+      setUserData(sortDataByTimeline(userData));
+      setLoading(false);
+    })();
+    // }
+  }, [user.address, user.id, userId]);
+
+  const isFollowed = () => {
+    if (user.id) {
+      return user.following.find((item: number) => item === Number(userId))
     }
-  }, []);
+  }
 
-  useEffect(() => {
-    if (user.address) {
-      (async () => {
-        const userData: any = [];
-        await getDropByUserAddress({
-          userId: user.id,
-          onSuccess: (res: any) => {
-            userData.push(
-              ...res.map((item: any) => {
-                item.type = 'drop';
-                return item;
-              })
-            );
-          },
-        });
-
-        await getMintedByUserAddress({
-          userId: user.id,
-          onSuccess: (res: any) => {
-            userData.push(
-              ...res.map((item: any) => {
-                item.type = 'minted';
-                return item;
-              })
-            );
-          },
-        });
-
-        setUserData(sortDataByTimeline(userData));
-      })();
+  const handleFollow = async () => {
+    if (user.id === 0 || !user.id) {
+      return navigate('/home', { state: { login: true } });
     }
-  }, [user.address]);
+    if (isFollowed()) {
+      await unFollowUser({
+        follower: user.id, following: Number(userId), onSuccess: () => {
+          const newFollowList = user.following.filter((item: any) => item !== Number(userId));
+          dispatch(updateInit({ following: newFollowList }));
+        }
+      })
+    } else {
+      await followUser({
+        follower: user.id, following: Number(userId), onSuccess: (newFollow: any) => {
+          dispatch(updateInit({ following: [...user.following, newFollow] }));
+        }
+      })
+    }
+  }
 
   return (
     <>
-      <div className='absolute w-full h-screen\ overflow-scroll'>
+
+      <div className='absolute w-full'>
         <div className='m-4 font-semibold'>
           <svg
             xmlns='http://www.w3.org/2000/svg'
@@ -84,6 +123,7 @@ export const Account = () => {
             fill='none'
             className='mb-6'
             onClick={() => {
+              dispatch(clearAccountData());
               navigate('/');
             }}
           >
@@ -93,27 +133,39 @@ export const Account = () => {
               fillOpacity='0.7'
             />
           </svg>
-
-          <div className='user-info mb-6 text-black'>
-            <div className='flex items-center justify-between mb-5 font-normal px-1 py-2'>
-              <div className='flex items-center gap-2 font-semibold text-xl leading-4'>
-                {user.address.slice(0, 2)}...
-                {user.address.slice(-6, -1)}
-                <FaClone className='w-3 h-3' />
+        </div>
+        <Spin
+          tip='Loading'
+          spinning={loading}
+          className='flex items-center mt-10 text-black font-semibold'
+        >
+          <div className='user-info mx-4 mb-6 text-black'>
+            {!userId &&
+              <div className='flex items-center justify-between mb-5 font-normal px-1 py-2'>
+                <div className='flex items-center gap-2 font-semibold text-xl leading-4'>
+                  {user.address.slice(0, 2)}...
+                  {user.address.slice(-6, -1)}
+                  <FaClone className='w-3 h-3' />
+                </div>
+                <Button className='bg-[#F4F4F4] rounded-full flex items-center justify-center border-0 py-2 px-3'>
+                  <span className='font-medium text-black'>
+                    Copy seed phrase{' '}
+                  </span>
+                </Button>
               </div>
-              <Button className='bg-[#F4F4F4] rounded-full flex items-center justify-center border-0 py-2 px-3'>
-                <span className='font-medium text-black'>
-                  Copy seed phrase{' '}
-                </span>
-              </Button>
-            </div>
+            }
 
             <div className='flex items-center justify-between mb-4'>
-              <img
-                className='rounded-full w-[100px] h-[100px] object-cover object-center'
-                src={`${user.profileImage}`}
-                alt=''
-              />
+              <div className="relative rounded-full w-[100px] h-[100px] overflow-hidden">
+                <img
+                  className={`w-full h-fullobject-cover object-center`}
+                  src={`${userId ? userAccountData?.profileImage : user.profileImage}`}
+                  alt=''
+                />
+                {!userAccountData?.profileImage && userId &&
+                  <div className="absolute animate-pulse bg-gray-200 z-10 left-0 right-0 top-0 bottom-0"></div>
+                }
+              </div>
               <div className='flex items-center gap-2'>
                 <div className='rounded-full border border-black flex justify-center items-center p-[9px]'>
                   <FaShare className='w-3 h-3' />
@@ -121,200 +173,180 @@ export const Account = () => {
                 <div
                   className='rounded-full border border-black py-[6px] px-4'
                   onClick={() => {
-                    navigate('/account/edit');
+                    userId ?
+                      handleFollow()
+                      :
+                      navigate('/account/edit');
                   }}
                 >
                   <p className='text-base font-medium leading-4 tracking-[-0.08px]'>
-                    Edit profile
+                    {userId ? (isFollowed() ? 'Unfollow' : 'Follow') : 'Edit profile'}
                   </p>
                 </div>
               </div>
             </div>
 
             <div className='px-2'>
-              <div className='name font-semibold text-2xl'>{user.name}</div>
+              <div className={`name font-semibold text-2xl ${userId && !userAccountData?.name && 'animate-pulse bg-gray-200 w-20 h-4 rounded-xl'}`}>
+                {userId ? userAccountData?.name : user.name}
+              </div>
               <div className='desc py-3 text-sm text-[#000000b3] font-normal'>
-                {user.description}
+                {userId ? userAccountData.description : user.description}
               </div>
-              <div className='balance flex items-center gap-1'>
-                <p className='font-semibold text-base'>{user.point}</p>
-                <FaCookie className='text-[#FFAD08] w-3 h-3' />
+              <div className="flex items-center gap-4">
+                <div className='balance flex items-center gap-1'>
+                  <p className='font-semibold text-base leading-4 tracking-[-0.08px]'>{userId ? userAccountData?.point : user.point}</p>
+                  <FaCookie className='text-[#FFAD08] w-3 h-3' />
+                </div>
+                <div className='balance flex items-center gap-1' onClick={() => navigate(userId ? `/account/${userId}/follow?type=follower` : '/account/follow?type=follower')}>
+                  <p className='font-semibold text-base leading-4 tracking-[-0.08px]'>{userId ? userAccountData?.follower?.length : user.follower.length}</p>
+                  <p className='text-[13px] leading-4 tracking-[-0.08px]'>Followers</p>
+                </div>
+                <div className='balance flex items-center gap-1' onClick={() => navigate(userId ? `/account/${userId}/follow?type=following` : '/account/follow?type=following')}>
+                  <p className='font-semibold text-base leading-4 tracking-[-0.08px]'>{userId ? userAccountData?.following?.length : user.following.length}</p>
+                  <p className='text-[13px] leading-4 tracking-[-0.08px]'>Following</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className='collection'>
-          <div className='collection__tab relative w-full mb-6 h-8 flex items-center justify-center border-b border-[#D9D9D9] text-base font-semibold'>
-            <div
-              className={`flex items-center justify-center w-1/2 ${
-                activeTab === 'timeline' ? 'text-black' : 'text-[#00000080]'
-              }`}
-              onClick={() => setActiveTab('timeline')}
-            >
-              Timeline
-            </div>
-            <div className='h-4 w-px bg-gray-400 absolute left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%]'></div>
+          <div className='collection'>
+            <div className='collection__tab relative w-full mb-6 h-8 flex items-center justify-center border-b border-[#D9D9D9] text-base font-semibold'>
+              <div
+                className={`flex items-center justify-center w-1/2 ${activeTab === 'timeline' ? 'text-black' : 'text-[#00000080]'
+                  }`}
+                onClick={() => setActiveTab('timeline')}
+              >
+                Timeline
+              </div>
+              <div className='h-4 w-px bg-gray-400 absolute left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%]'></div>
 
-            <div
-              className={`flex items-center justify-center w-1/2 ${
-                activeTab === 'feed' ? 'text-black' : 'text-[#00000080]'
-              }`}
-              onClick={() => setActiveTab('feed')}
-            >
-              Feed
+              <div
+                className={`flex items-center justify-center w-1/2 ${activeTab === 'feed' ? 'text-black' : 'text-[#00000080]'
+                  }`}
+                onClick={() => setActiveTab('feed')}
+              >
+                Feed
+              </div>
             </div>
-          </div>
-          {activeTab === 'timeline' ? (
-            <div className='collection__timeline'>
-              {Object.entries(userData).map(([key, data], dataIdx) => (
-                <>
-                  <div
-                    className='bg-[#F3F3F3] w-44 py-2 pr-4 rounded-tr-full rounded-br-full flex items-center justify-end relative'
-                    key={dataIdx}
-                  >
-                    <span className='font-medium text-[13px]'>{key}</span>
-                    <div className='absolute w-2 h-2 rounded-full bg-[#0500FF] left-[32.5%]'>
-                      <div className='absolute w-[2px] h-16 bg-[#0500FF] left-1/2 translate-x-[-50%]'></div>
+            {activeTab === 'timeline' ? (
+              <div className='collection__timeline'>
+                {Object.entries(userData).map(([key, data], dataIdx) => (
+                  <>
+                    <div
+                      className='bg-[#F3F3F3] w-44 py-2 pr-4 rounded-tr-full rounded-br-full flex items-center justify-end relative'
+                      key={dataIdx}
+                    >
+                      <span className='font-medium text-[13px]'>{key}</span>
+                      <div className='absolute w-2 h-2 rounded-full bg-[#0500FF] left-[32.5%]'>
+                        <div className='absolute w-[2px] h-16 bg-[#0500FF] left-1/2 translate-x-[-50%]'></div>
+                      </div>
                     </div>
-                  </div>
-                  <div className='px-4 mt-9'>
-                    {data.map((item: any, itemIdx: number) => (
-                      <div
-                        className='mb-9 flex items-stretch gap-3'
-                        key={itemIdx}
-                        onClick={async () => {
-                          if (item?.type === 'minted') {
-                            const { data } = await supabase
-                              .from('reaction')
-                              .select('*')
-                              .eq('drop_id', item?.drop_id || item?.id)
-                              .eq('user_id', user?.id);
-
-                            if (data && data.length === 0) {
-                              navigate(
-                                `/reaction/${item?.drop_id || item?.id}`
-                              );
+                    <div className='px-4 mt-9'>
+                      {data.map((item: any, itemIdx: number) => (
+                        <div
+                          className='mb-9 flex items-stretch gap-3'
+                          key={itemIdx}
+                          onClick={async () => {
+                            if (item?.type === 'minted') {
+                              const { data } = await supabase
+                                .from('reaction')
+                                .select('*')
+                                .eq('drop_id', item?.drop_id || item?.id)
+                                .eq('user_id', user?.id);
+  
+                              if (data && data.length === 0) {
+                                navigate(
+                                  `/reaction/${item?.drop_id || item?.id}`
+                                );
+                              } else {
+                                navigate(
+                                  `/drop/details/${item?.drop_id || item?.id}`
+                                );
+                              }
                             } else {
                               navigate(
                                 `/drop/details/${item?.drop_id || item?.id}`
                               );
                             }
-                          } else {
-                            navigate(
-                              `/drop/details/${item?.drop_id || item?.id}`
-                            );
-                          }
-                        }}
-                      >
-                        <div className='w-[88px] h-[88px] relative z-20'>
-                          <LazyImageCustom
-                            src={item?.drop?.image || item?.image}
-                            alt='Drop Img'
-                            className='w-full h-full rounded-xl object-cover skeleton'
-                          />
-                          <div
-                            className={`absolute w-[2px] ${checkClassNameAccountItem(
-                              itemIdx,
-                              data,
-                              dataIdx,
-                              userData
-                            )} bg-[#0500FF] left-1/2 z-10`}
-                          ></div>
-                        </div>
-                        <div className='flex-grow flex flex-col justify-between my-2'>
-                          <div className='flex items-center gap-1'>
-                            {item?.type === 'minted' ? (
-                              <FaMapPin className='w-3 h-3' />
-                            ) : (
-                              <FaPlusCircle className='w-3 h-3' />
-                            )}
-                            <div className='text-[13px] font-medium text-[#02030380]'>
-                              {item?.type === 'minted'
-                                ? 'Checked-in'
-                                : 'Created'}{' '}
-                              at {moment(item?.created_at).format('hh:ss A')}
-                            </div>
-                          </div>
-                          <div className='text-[15px] font-medium leading-[18px]'>
-                            {item?.drop?.name || item?.name}
-                          </div>
-                          <div className='flex items-center gap-2 leading-4'>
-                            <div className='flex gap-[2px] items-center'>
-                              <FaThumbsUp className='w-3 h-3 text-[#FFB800]' />
-                              <div
-                                className={`text-[13px] ${
-                                  Number(getScore(item, false))
-                                    ? 'text-[#000000b3]'
-                                    : 'text-[#02030380]'
-                                } font-medium`}
-                              >
-                                {getScore(item, false)}
-                              </div>
-                            </div>
-                            <div className='flex gap-2 items-center'>
-                              <div className='rounded-full bg-[#dfdfdfb3] w-2 h-2'></div>
-                              <div className='text-[13px] text-[#02030380] font-medium'>
-                                {convertDistance(
-                                  calculateDistance(
-                                    item.lat || item?.drop.lat,
-                                    item.lng || item?.drop.lng,
-                                    user.lat,
-                                    user.lng
-                                  )
-                                )}{' '}
-                                away
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              ))}
-            </div>
-          ) : (
-            <div className='collection__feed'>
-              {Object.entries(userData).map(([key, data], dataIdx) => (
-                <>
-                  {data.map((item: any, itemIdx: number) => (
-                    <>
-                      {item.type === 'minted' && item.image ? (
-                        <CheckinItem
-                          data={{ ...item, user }}
-                          last={
-                            itemIdx + 1 === data?.length &&
-                            dataIdx + 1 === Object.entries(userData)?.length
-                          }
-                        />
-                      ) : (
-                        <div
-                          className='mx-5'
-                          key={key}
-                          onClick={() => {
-                            navigate(
-                              `/drop/details/${item?.drop_id || item?.id}`
-                            );
                           }}
                         >
-                          <DetailCard
-                            key={itemIdx}
-                            data={{ ...item, user }}
-                            last={
-                              itemIdx + 1 === data?.length &&
-                              dataIdx + 1 === Object.entries(userData)?.length
-                            }
-                          />
+                          <div className='w-[88px] h-[88px] relative z-20'>
+                            <LazyImageCustom
+                              src={item?.drop?.image || item?.image}
+                              alt='Drop Img'
+                              className='w-full h-full rounded-xl object-cover skeleton'
+                            />
+                            <div
+                              className={`absolute w-[2px] ${checkClassNameAccountItem(
+                                itemIdx,
+                                data,
+                                dataIdx,
+                                userData
+                              )} bg-[#0500FF] left-1/2 z-10`}
+                            ></div>
+                          </div>
+                          <div className='flex-grow flex flex-col justify-between my-2'>
+                            <div className='flex items-center gap-1'>
+                              {item?.type === 'minted' ? (
+                                <FaMapPin className='w-3 h-3' />
+                              ) : (
+                                <FaPlusCircle className='w-3 h-3' />
+                              )}
+                              <div className='text-[13px] font-medium text-[#02030380]'>
+                                {item?.type === 'minted'
+                                  ? 'Checked-in'
+                                  : 'Created'}{' '}
+                                at {moment(item?.created_at).format('hh:ss A')}
+                              </div>
+                            </div>
+                            <div className='text-[15px] font-medium leading-[18px]'>
+                              {item?.drop?.name || item?.name}
+                            </div>
+                            <div className='flex items-center gap-2 leading-4'>
+                              <div className='flex gap-[2px] items-center'>
+                                <FaThumbsUp className='w-3 h-3 text-[#FFB800]' />
+                                <div className={`text-[13px] ${Number(getScore(item, false)) ? 'text-[#000000b3]' : 'text-[#02030380]'} font-medium`}>
+                                  {getScore(item, false)}
+                                </div>
+                              </div>
+                              <div className='flex gap-2 items-center'>
+                                <div className='rounded-full bg-[#dfdfdfb3] w-2 h-2'></div>
+                                <div className='text-[13px] text-[#02030380] font-medium'>
+                                  {convertDistance(
+                                    calculateDistance(
+                                      item.lat || item?.drop.lat,
+                                      item.lng || item?.drop.lng,
+                                      user.lat,
+                                      user.lng
+                                    )
+                                  )}{' '}
+                                  away
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      )}
-                    </>
-                  ))}
-                </>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+                      ))}
+                    </div>
+                  </>
+                ))}
+              </div>
+            ) : (
+              <div className='collection__feed'>
+                {Object.entries(userData).map(([key, data], dataIdx) => (
+                  <Fragment key={dataIdx}>
+                    {data.map((item: any, itemIdx: number) => (
+                      <Fragment key={itemIdx}>
+                        <Feed wrapperData={userData} data={data} dataIdx={dataIdx} item={item} itemIdx={itemIdx} />
+                      </Fragment>
+                    ))}
+                  </Fragment>
+                ))}
+              </div>
+            )}
+          </div>
+        </Spin>
+      </div >
     </>
   );
 };

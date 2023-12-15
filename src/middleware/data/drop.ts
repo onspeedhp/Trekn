@@ -53,14 +53,14 @@ export const getDropByUserAddress = async ({
   onSuccess = () => {},
   onError = () => {},
 }: {
-  userId: number;
+  userId: Array<number>;
   onSuccess?: (data: any) => void;
   onError?: (error: any) => void;
 }) => {
   const { data, error } = await supabase
     .from('drop')
-    .select('*')
-    .eq('author_id', userId);
+    .select('*,user(*)')
+    .or(`author_id.in.(${userId})`);
 
   if (!error) {
     onSuccess(data);

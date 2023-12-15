@@ -19,6 +19,7 @@ import { EnterDropInfo } from '../pages/EnterDropInfo';
 import CheckinWPhoto from '../pages/CheckinWPhoto';
 import CheckinNearBy from '../pages/CheckinNearBy';
 import EditLocation from '../pages/EditLocation';
+import FollowPage from '../pages/FollowPage';
 
 const AppRoutes = () => (
   <BrowserRouter basename='/'>
@@ -54,6 +55,21 @@ const AppRoutes = () => (
       <Route
         path='/account'
         element={<App header={Header} hideHeader={true} layout={Account} />}
+      ></Route>
+
+      <Route
+        path='/account/:id'
+        element={<App header={Header} hideHeader={true} layout={Account} />}
+      ></Route>
+
+      <Route
+        path='/account/follow'
+        element={<App header={Header} hideHeader={true} layout={FollowPage} />}
+      ></Route>
+
+      <Route
+        path='/account/:id/follow'
+        element={<App header={Header} hideHeader={true} layout={FollowPage} />}
       ></Route>
 
       <Route

@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { ListDetail } from '../components/ListDetail';
 import { useAuthContext } from '../context/AuthContext';
 import { FaPlus } from 'react-icons/fa6';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import request from '../axios';
 import { IDrop } from '../models/types';
 import { Button, Spin } from 'antd';
-import { getLeaderBoardPoint } from '../middleware/data/user';
+import { getFollowerById, getFollowingById, getLeaderBoardPoint } from '../middleware/data/user';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   setLastFetch,
@@ -15,11 +15,17 @@ import {
   updateReadyToCollect,
 } from '../redux/slides/locationSlides';
 import moment from 'moment';
-import { updateCoordinate, updateCountry } from '../redux/slides/userSlides';
+import { updateInit } from '../redux/slides/userSlides';
 import useApi from '../hooks/useAPI';
+import { capitalizeFirstLetter } from '../functions/text';
+import { getDropByUserAddress } from '../middleware/data/drop';
+import { getMintedByUserAddress } from '../middleware/data/minted';
+import { sortDataByTimeline } from '../utils/account.util';
+import Feed from '../components/Feed';
 
 function Home() {
   const { windowSize, leaderBoard, init } = useAuthContext();
+  const { state: locationState } = useLocation();
   const { get } = useApi();
   const [readyToCollect, setReadyToCollect] = useState<IDrop[]>([]);
   const user = useSelector((state: any) => state.user);
@@ -30,10 +36,17 @@ function Home() {
   const [leaderBoardPoint, setLeaderBoardPoint] = useState([]);
   const [loadingPoint, setLoadingPoint] = useState(false);
   const [loadingNearBy, setLoadingNearBy] = useState(false);
+  const [loadingFollow, setLoadingFollow] = useState(false);
   const [loadingReadyToCollect, setLoadingReadyToCollet] = useState(false);
+  const [follow, setFollowData] = useState({});
+  const [currentView, setCurrentView] = useState('exploring')
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (locationState?.login && !user.address) {
+      init();
+      window.history.replaceState({}, document.title)
+    }
     setLoadingPoint(true);
     getLeaderBoardPoint({
       onSuccess: (data) => {
@@ -71,13 +84,6 @@ function Home() {
 
   useEffect(() => {
     if (user.lat) {
-      if(!user.country) {
-        (async () => {
-          const countryInfo: any = await get(`https://nominatim.openstreetmap.org/reverse.php?lat=${user.lat}&lon=${user.lng}&zoom=3&format=jsonv2&accept-language=en`);
-          dispatch(updateCountry({ country: countryInfo?.address?.country }));
-        })();
-      }
-
       if (
         location.readyToCollect.length === 0 ||
         location.lastFetch === -1 ||
@@ -98,82 +104,163 @@ function Home() {
         setNearBy(location.nearBy);
       }
     }
-  }, [user]);
+  }, [user.lat]);
+
+  useEffect(() => {
+    if (user.id) {
+      (async () => {
+        await getFollowingById({
+          userId: user.id, onSuccess: (followingList: any) => {
+            dispatch(updateInit({ following: followingList }));
+          }
+        });
+        await getFollowerById({
+          userId: user.id, onSuccess: (followerList: any) => {
+            dispatch(updateInit({ follower: followerList }));
+          }
+        });
+      })();
+    }
+    if (!user.country) {
+      (async () => {
+        const countryInfo: any = await get(`https://nominatim.openstreetmap.org/reverse.php?lat=${user.lat}&lon=${user.lng}&zoom=3&format=jsonv2&accept-language=en`);
+        dispatch(updateInit({ country: countryInfo?.address?.country }));
+      })();
+    }
+  }, [user.id])
+
+  useEffect(() => {
+    if (user.following && user.following.length > 1) {
+      (async () => {
+        setLoadingFollow(true);
+        const userData: any = [];
+        await getDropByUserAddress({
+          userId: user.following,
+          onSuccess: (res: any) => {
+            userData.push(
+              ...res.map((item: any) => {
+                item.type = 'drop';
+                return item;
+              })
+            );
+          },
+        });
+
+        await getMintedByUserAddress({
+          userId: user.following,
+          onSuccess: (res: any) => {
+            userData.push(
+              ...res.map((item: any) => {
+                item.type = 'minted';
+                return item;
+              })
+            );
+          },
+        });
+        setLoadingFollow(false);
+        setFollowData(sortDataByTimeline(userData));
+      })()
+    }
+  }, [user.following])
+
+  const ChangeViewButton = ({ label }: { label: string }) => (
+    <div
+      className={`w-1/2 font-bold text-[14.65px] leading-[18px] text-center py-2 rounded-[10px] transition duration-300 ${currentView !== label ? 'bg-transparent text-[#00000070]' : 'bg-white'
+        }`}
+      onClick={() => setCurrentView(label)}
+    >
+      {capitalizeFirstLetter(label)}
+    </div>
+  )
 
   return (
     <>
       <div className='w-full px-[20px] sm:px-0 relative'>
+        {user.address &&
+          <div className="p-1 bg-[#ECECEC] rounded-[10px] mt-10 flex items-center">
+            <ChangeViewButton label={'exploring'} />
+            <ChangeViewButton label={'following'} />
+          </div>
+        }
         {!leaderBoard ? (
           <>
-            <div className='mt-10'>
-              <div className='text-[14px] text-black opacity-70 font-medium mb-2 leading-[18px]'>
-                {moment().format('dddd, Do MMM')}
-              </div>
+            {currentView === 'exploring' &&
+              <>
+                <div className={`${user ? 'mt-9' : 'mt-10'}`}>
+                  <div className='text-[14px] text-black opacity-70 font-medium mb-2 leading-[18px]'>
+                    {moment().format('dddd, Do MMM')}
+                  </div>
 
-              <div className='font-semibold text-[28px] leading-9'>
-                Nearby experiences
-              </div>
+                  <div className='font-semibold text-[28px] leading-9'>
+                    Nearby experiences
+                  </div>
 
-              <div style={{ marginTop: 24 }}>
-                {/* <Spin
+                  <div style={{ marginTop: 24 }}>
+                    {/* <Spin
                   tip='Loading...'
                   className='flex items-center mt-10'
                 > */}
-                {nearBy.length !== 0 && (
-                  <ListDetail
-                    status={'Nearby'}
-                    data={readyToCollect}
-                  />
-                )}
-                {/* </Spin> */}
-              </div>
+                    {nearBy.length !== 0 && (
+                      <ListDetail
+                        status={'Nearby'}
+                        data={readyToCollect}
+                      />
+                    )}
+                    {/* </Spin> */}
+                  </div>
 
-              <div style={{ marginTop: 0 }}>
-                <Spin
-                  tip='Loading nearby'
-                  spinning={loadingNearBy}
-                  className='flex items-center mt-10 text-black font-semibold'
-                >
-                  {nearBy.length !== 0 ? (
-                    <ListDetail status={'Nearby'} data={nearBy} />
-                  ) :
-                    <div className="flex flex-col items-center">
-                      <img src="/Route_search.svg" alt="" />
-                      <p className='text-center text-[15px] text-black opacity-50'>Seems like this is a whole new place for you to explore and share, be the first one!</p>
-                      <Button className='flex gap-2 items-center justify-center border-none rounded-3xl bg-black text-white text-base font-semibold w-full h-auto mt-6 py-3'
-                        onClick={async () => {
-                          if (user.id) {
-                            navigate('/check-in/upload-image');
-                          } else {
-                            setLoading(true);
-                            await init();
-                            setLoading(false);
+                  <div style={{ marginTop: 0 }}>
+                    <Spin
+                      tip='Loading nearby'
+                      spinning={loadingNearBy}
+                      className='flex items-center mt-10 text-black font-semibold'
+                    >
+                      {nearBy.length !== 0 ? (
+                        <ListDetail status={'Nearby'} data={nearBy} />
+                      ) :
+                        <>
+                          {!loadingNearBy &&
+                            <div className="flex flex-col items-center">
+                              <img src="/Route_search.svg" alt="" />
+                              <p className='text-center text-[15px] text-black opacity-50'>Seems like this is a whole new place for you to explore and share, be the first one!</p>
+                              <Button className='flex gap-2 items-center justify-center border-none rounded-3xl bg-black text-white text-base font-semibold w-full h-auto mt-6 py-3'
+                                onClick={async () => {
+                                  if (user.id) {
+                                    navigate('/check-in/upload-image');
+                                  } else {
+                                    setLoading(true);
+                                    await init();
+                                    setLoading(false);
+                                  }
+                                }}>
+                                <FaPlus size={24} />
+                                <span>Drop a new experience</span>
+                              </Button>
+                            </div>
                           }
-                        }}>
-                        <FaPlus size={24} />
-                        <span>Drop a new experience</span>
-                      </Button>
-                    </div>
-                  }
-                </Spin>
-              </div>
-            </div>
-            {nearBy.length !== 0 && !loadingNearBy &&
-              <Button
-                className='fixed top-[90%] right-4 w-[56px] h-[56px] rounded-full border-0'
-                style={{ backgroundColor: 'rgba(148, 255, 65, 0.80)' }}
-                onClick={async () => {
-                  if (user.id) {
-                    navigate('/check-in/nearby');
-                  } else {
-                    setLoading(true);
-                    await init();
-                    setLoading(false);
-                  }
-                }}
-              >
-                <FaPlus size={24} className='text-black' />
-              </Button>
+                        </>
+                      }
+                    </Spin>
+                  </div>
+                </div>
+                {nearBy.length !== 0 && !loadingNearBy &&
+                  <Button
+                    className='fixed top-[90%] right-4 w-[56px] h-[56px] rounded-full border-0'
+                    style={{ backgroundColor: 'rgba(148, 255, 65, 0.80)' }}
+                    onClick={async () => {
+                      if (user.id) {
+                        navigate('/check-in/nearby');
+                      } else {
+                        setLoading(true);
+                        await init();
+                        setLoading(false);
+                      }
+                    }}
+                  >
+                    <FaPlus size={24} className='text-black' />
+                  </Button>
+                }
+              </>
             }
           </>
         ) : (
@@ -220,6 +307,33 @@ function Home() {
           </>
         )}
       </div>
+      {currentView === 'following' &&
+        <>
+          <div className='mt-9'>
+            <Spin
+              tip='Loading Follow'
+              spinning={loadingFollow}
+              className='flex items-center mt-10 text-black font-semibold'
+            >
+              {Object.entries(follow).length > 0 && Object.entries(follow).map(([key, data]: any, dataIdx) => (
+                <Fragment key={dataIdx}>
+                  {data.map((item: any, itemIdx: number) => (
+                    <Fragment key={itemIdx}>
+                      <Feed wrapperData={follow} data={data} dataIdx={dataIdx} item={item} itemIdx={itemIdx} />
+                    </Fragment>
+                  ))}
+                </Fragment>
+              ))
+              }
+            </Spin>
+            {!loadingFollow && Object.entries(follow).length === 0 &&
+              <div className='absolute top-[106px] bottom-0 left-0 right-0 flex flex-col justify-center items-center z-[-1] px-[11.736%]'>
+                <img src="/bubble-with-a-cross.svg" alt="" className='w-[152px] h-[158px] object-cover object-center mb-4' />
+                <p className='text-[13px] font-medium leading-[18.2px] text-[#707070CC] text-center'>Your Following list is empty. Start connecting! Follow people or add friends to see their updates here.</p>
+              </div>}
+          </div>
+        </>
+      }
     </>
   );
 }

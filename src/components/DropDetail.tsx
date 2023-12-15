@@ -156,6 +156,7 @@ export const DropDetail = ({
           <img
             className='rounded-full w-6 h-6'
             src={`${selectedLocation.user.profileImage}`}
+            onClick={()=>{selectedLocation?.user.id !== user.id && navigate(`/account/${selectedLocation.user.id}`)}}
             alt=''
           />
 
