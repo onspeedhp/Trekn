@@ -25,6 +25,7 @@ import { DetailCard } from '../components/DetailCard';
 import moment from 'moment';
 import LazyImageCustom from '../components/LazyImageCustom';
 import CheckinItem from '../components/CheckedinItem';
+import { supabase } from '../utils/supabaseClients';
 
 export const Account = () => {
   const navigate = useNavigate();
@@ -73,7 +74,7 @@ export const Account = () => {
 
   return (
     <>
-      <div className='absolute w-full h-screen overflow-scroll'>
+      <div className='absolute w-full h-screen\ overflow-scroll'>
         <div className='m-4 font-semibold'>
           <svg
             xmlns='http://www.w3.org/2000/svg'
@@ -145,8 +146,9 @@ export const Account = () => {
         <div className='collection'>
           <div className='collection__tab relative w-full mb-6 h-8 flex items-center justify-center border-b border-[#D9D9D9] text-base font-semibold'>
             <div
-              className={`flex items-center justify-center w-1/2 ${activeTab === 'timeline' ? 'text-black' : 'text-[#00000080]'
-                }`}
+              className={`flex items-center justify-center w-1/2 ${
+                activeTab === 'timeline' ? 'text-black' : 'text-[#00000080]'
+              }`}
               onClick={() => setActiveTab('timeline')}
             >
               Timeline
@@ -154,8 +156,9 @@ export const Account = () => {
             <div className='h-4 w-px bg-gray-400 absolute left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%]'></div>
 
             <div
-              className={`flex items-center justify-center w-1/2 ${activeTab === 'feed' ? 'text-black' : 'text-[#00000080]'
-                }`}
+              className={`flex items-center justify-center w-1/2 ${
+                activeTab === 'feed' ? 'text-black' : 'text-[#00000080]'
+              }`}
               onClick={() => setActiveTab('feed')}
             >
               Feed
@@ -179,10 +182,28 @@ export const Account = () => {
                       <div
                         className='mb-9 flex items-stretch gap-3'
                         key={itemIdx}
-                        onClick={() => {
-                          navigate(
-                            `/drop/details/${item?.drop_id || item?.id}`
-                          );
+                        onClick={async () => {
+                          if (item?.type === 'minted') {
+                            const { data } = await supabase
+                              .from('reaction')
+                              .select('*')
+                              .eq('drop_id', item?.drop_id || item?.id)
+                              .eq('user_id', user?.id);
+
+                            if (data && data.length === 0) {
+                              navigate(
+                                `/reaction/${item?.drop_id || item?.id}`
+                              );
+                            } else {
+                              navigate(
+                                `/drop/details/${item?.drop_id || item?.id}`
+                              );
+                            }
+                          } else {
+                            navigate(
+                              `/drop/details/${item?.drop_id || item?.id}`
+                            );
+                          }
                         }}
                       >
                         <div className='w-[88px] h-[88px] relative z-20'>
@@ -220,7 +241,13 @@ export const Account = () => {
                           <div className='flex items-center gap-2 leading-4'>
                             <div className='flex gap-[2px] items-center'>
                               <FaThumbsUp className='w-3 h-3 text-[#FFB800]' />
-                              <div className={`text-[13px] ${Number(getScore(item, false)) ? 'text-[#000000b3]' : 'text-[#02030380]'} font-medium`}>
+                              <div
+                                className={`text-[13px] ${
+                                  Number(getScore(item, false))
+                                    ? 'text-[#000000b3]'
+                                    : 'text-[#02030380]'
+                                } font-medium`}
+                              >
                                 {getScore(item, false)}
                               </div>
                             </div>
@@ -252,17 +279,34 @@ export const Account = () => {
                 <>
                   {data.map((item: any, itemIdx: number) => (
                     <>
-                      {item.type === 'minted' && item.image ?
-                        <CheckinItem data={{ ...item, user }} last={(itemIdx + 1) === data?.length && (dataIdx + 1) === Object.entries(userData)?.length}/> :
+                      {item.type === 'minted' && item.image ? (
+                        <CheckinItem
+                          data={{ ...item, user }}
+                          last={
+                            itemIdx + 1 === data?.length &&
+                            dataIdx + 1 === Object.entries(userData)?.length
+                          }
+                        />
+                      ) : (
                         <div
                           className='mx-5'
+                          key={key}
                           onClick={() => {
-                            navigate(`/drop/details/${item?.drop_id || item?.id}`);
+                            navigate(
+                              `/drop/details/${item?.drop_id || item?.id}`
+                            );
                           }}
                         >
-                          <DetailCard key={itemIdx} data={{ ...item, user }} last={(itemIdx + 1) === data?.length && (dataIdx + 1) === Object.entries(userData)?.length} />
+                          <DetailCard
+                            key={itemIdx}
+                            data={{ ...item, user }}
+                            last={
+                              itemIdx + 1 === data?.length &&
+                              dataIdx + 1 === Object.entries(userData)?.length
+                            }
+                          />
                         </div>
-                      }
+                      )}
                     </>
                   ))}
                 </>
@@ -270,7 +314,7 @@ export const Account = () => {
             </div>
           )}
         </div>
-      </div >
+      </div>
     </>
   );
 };
