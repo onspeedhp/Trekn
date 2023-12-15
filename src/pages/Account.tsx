@@ -32,8 +32,8 @@ import { clearAccountData, setAccountData } from '../redux/slides/accountSlides'
 export const Account = () => {
   const { id: userId } = useParams();
   const navigate = useNavigate();
-  const dispath = useDispatch();
-  const user = useSelector((state: any) => state.user);
+  const dispatch = useDispatch();
+  const user: any = useSelector((state: any) => state.user);
   const userAccountData = useSelector((state: any) => state.account)
   const [activeTab, setActiveTab] = useState('timeline');
   const [userData, setUserData] = useState<any[]>([]);
@@ -51,7 +51,7 @@ export const Account = () => {
       const userData: any = [];
       if (userId && userId !== userAccountData?.id) {
         const _userAccountData = await getUserAccountData({ userId: Number(userId) });
-        dispath(setAccountData(_userAccountData));
+        dispatch(setAccountData(_userAccountData));
       }
       await getDropByUserAddress({
         userId: [(Number(userId) || user.id)],
@@ -97,13 +97,13 @@ export const Account = () => {
       await unFollowUser({
         follower: user.id, following: Number(userId), onSuccess: () => {
           const newFollowList = user.following.filter((item: any) => item !== Number(userId));
-          dispath(updateInit({ following: newFollowList }));
+          dispatch(updateInit({ following: newFollowList }));
         }
       })
     } else {
       await followUser({
         follower: user.id, following: Number(userId), onSuccess: (newFollow: any) => {
-          dispath(updateInit({ following: [...user.following, newFollow] }));
+          dispatch(updateInit({ following: [...user.following, newFollow] }));
         }
       })
     }
@@ -122,7 +122,7 @@ export const Account = () => {
             fill='none'
             className='mb-6'
             onClick={() => {
-              dispath(clearAccountData());
+              dispatch(clearAccountData());
               navigate('/');
             }}
           >

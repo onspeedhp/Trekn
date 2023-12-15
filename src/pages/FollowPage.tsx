@@ -28,7 +28,7 @@ export default function FollowPage() {
         };
 
         fetchData();
-    }, []);
+    }, [type, user, userAccountData.follower, userAccountData.following, userId]);
     return (
         <div className='w-full h-screen p-4'>
             <div className='font-semibold flex items-center relative mb-8 ml-1'>
@@ -54,7 +54,7 @@ export default function FollowPage() {
             </div>
             <div className="flex flex-col gap-4">
                 {data?.map((item: any, idx: number) =>
-                    <FollowAccountItem item={item} userId={userId} key={idx}/>
+                    <FollowAccountItem item={item} userId={userId} key={idx} type={type}/>
                 )}
             </div>
         </div>
