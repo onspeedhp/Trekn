@@ -4,7 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import { getListUser } from '../middleware/data/user';
 import { useSelector } from 'react-redux';
 import { capitalizeFirstLetter } from '../functions/text';
-import * as Vibrant from 'node-vibrant'
+import FollowAccountItem from '../components/follow/FollowAccountItem';
 
 export default function FollowPage() {
     const navigate = useNavigate();
@@ -29,12 +29,6 @@ export default function FollowPage() {
 
         fetchData();
     }, []);
-
-    const getColorBorder = async (url: string) => {
-        await Vibrant.from(url).getPalette().then(function(palette) {
-            console.log(palette);
-        });
-    }
     return (
         <div className='w-full h-screen p-4'>
             <div className='font-semibold flex items-center relative mb-8 ml-1'>
@@ -60,21 +54,7 @@ export default function FollowPage() {
             </div>
             <div className="flex flex-col gap-4">
                 {data?.map((item: any, idx: number) =>
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-[10px]">
-                            <div className={`rounded-full p-[1px] w-12 h-12 overflow-hidden border box-content border-${getColorBorder(item.profileImage)}`}>
-                                <img src={item.profileImage} alt="" className='object-center object-cover rounded-full' />
-                            </div>
-                            <div className="font-medium text-base leading-5">{item.name}</div>
-                        </div>
-                        {userId ?
-                            <>
-                            </>
-                            :
-                            <>
-                            </>
-                        }
-                    </div>
+                    <FollowAccountItem item={item} userId={userId} key={idx}/>
                 )}
             </div>
         </div>
