@@ -28,6 +28,7 @@ import { getUserAccountData } from '../middleware/data/user';
 import { followUser, unFollowUser } from '../middleware/data/follow';
 import { updateInit } from '../redux/slides/userSlides';
 import { clearAccountData, setAccountData } from '../redux/slides/accountSlides';
+import { supabase } from '../utils/supabaseClients';
 
 export const Account = () => {
   const { id: userId } = useParams();
@@ -245,10 +246,28 @@ export const Account = () => {
                         <div
                           className='mb-9 flex items-stretch gap-3'
                           key={itemIdx}
-                          onClick={() => {
-                            navigate(
-                              `/drop/details/${item?.drop_id || item?.id}`
-                            );
+                          onClick={async () => {
+                            if (item?.type === 'minted') {
+                              const { data } = await supabase
+                                .from('reaction')
+                                .select('*')
+                                .eq('drop_id', item?.drop_id || item?.id)
+                                .eq('user_id', user?.id);
+  
+                              if (data && data.length === 0) {
+                                navigate(
+                                  `/reaction/${item?.drop_id || item?.id}`
+                                );
+                              } else {
+                                navigate(
+                                  `/drop/details/${item?.drop_id || item?.id}`
+                                );
+                              }
+                            } else {
+                              navigate(
+                                `/drop/details/${item?.drop_id || item?.id}`
+                              );
+                            }
                           }}
                         >
                           <div className='w-[88px] h-[88px] relative z-20'>
