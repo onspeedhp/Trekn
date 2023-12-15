@@ -255,8 +255,8 @@ export const DropDetailPage = () => {
                         {minted.user.address.slice(0, 2)}...
                         {minted.user.address.slice(-6, -1)}
                       </div>
-                      {minted.reaction_id && (
-                        <>{reactions[minted.reaction.kind].icon}</>
+                      {minted?.reaction_id && (
+                        <>{reactions[minted?.reaction?.kind].icon}</>
                       )}
                     </div>
                   ))
