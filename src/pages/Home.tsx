@@ -130,7 +130,7 @@ function Home() {
   }, [user.id])
 
   useEffect(() => {
-    if (user.following && user.following.length > 1) {
+    if (user.following && user.following.length > 0) {
       (async () => {
         setLoadingFollow(true);
         const userData: any = [];
@@ -213,7 +213,8 @@ function Home() {
                     <Spin
                       tip='Loading nearby'
                       spinning={loadingNearBy}
-                      className='flex items-center mt-10 text-black font-semibold'
+                      className={`flex items-center mt-10 text-black font-semibold`}
+                      style={{ top: (loadingNearBy ? 208 : 0) }}
                     >
                       {nearBy.length !== 0 ? (
                         <ListDetail status={'Nearby'} data={nearBy} />
@@ -314,6 +315,7 @@ function Home() {
               tip='Loading Follow'
               spinning={loadingFollow}
               className='flex items-center mt-10 text-black font-semibold'
+              style={{ top: (loadingFollow ? 208 : 0) }}
             >
               {Object.entries(follow).length > 0 && Object.entries(follow).map(([key, data]: any, dataIdx) => (
                 <Fragment key={dataIdx}>
