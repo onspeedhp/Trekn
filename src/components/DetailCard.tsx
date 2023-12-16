@@ -92,7 +92,7 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
         <img
           src={`${data.user.profileImage}`}
           className='w-10 h-10 mr-2 rounded-full object-cover object-center'
-          onClick={()=>data?.user.id !== user.id && navigate(`/account/${data.user.id}`)}
+          onClick={() => data?.user.id !== user.id && navigate(`/account/${data.user.id}`)}
           alt=''
         />
 
@@ -139,26 +139,24 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
                   {(data.imageArray
                     ? data.imageArray
                     : data?.drop?.imageArray
-                  )?.map((item: string, idx: number) => (
+                  )?.slice(0,3)?.map((item: string, idx: number) => (
                     <>
-                      {idx < 3 &&
-                        <div className='relative' >
-                          <LazyImageCustom
-                            key={idx}
-                            src={item}
-                            alt='Drop Img'
-                            className='skeleton h-full object-cover rounded-xl object-center w-full'
-                          />
-                          <div
-                            className='absolute inset-0'
-                            style={{
-                              backgroundImage:
-                                'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 34.71%, rgba(0, 0, 0, 0.60) 77.95%)',
-                              borderRadius: 12,
-                            }}
-                          ></div>
-                        </div>
-                      }
+                      <div className='relative' >
+                        <LazyImageCustom
+                          key={idx}
+                          src={item}
+                          alt='Drop Img'
+                          className='skeleton h-full object-cover rounded-xl object-center w-full'
+                        />
+                        <div
+                          className='absolute inset-0'
+                          style={{
+                            backgroundImage:
+                              'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 34.71%, rgba(0, 0, 0, 0.60) 77.95%)',
+                            borderRadius: 12,
+                          }}
+                        ></div>
+                      </div>
                     </>
                   ))}
                 </Carousel>
@@ -215,13 +213,13 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
             <div className='flex items-center justify-center text-white opacity-70 text-[14px]'>
               <span className='mr-2 w-[11px]'>●</span>{' '}
               {convertDistance(
-                  calculateDistance(
-                    data.lat || data?.drop.lat,
-                    data.lng || data?.drop.lng,
-                    data.user.lat || user.lat,
-                    data.user.lng || user.lng
-                  )
-                )}{' '}
+                calculateDistance(
+                  data.lat || data?.drop.lat,
+                  data.lng || data?.drop.lng,
+                  data.user.lat || user.lat,
+                  data.user.lng || user.lng
+                )
+              )}{' '}
               away
             </div>
           </div>
@@ -251,7 +249,7 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
                 ))}
               </div>
               <div className='bg-white text-black ml-2 p-2 text-[13px] font-medium rounded-full leading-[9px]'>
-                {userChecked.length} checked-in
+                {userChecked.length} check-ins
               </div>
             </div>
           }
