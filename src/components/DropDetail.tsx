@@ -227,7 +227,7 @@ export const DropDetail = ({
                   <div className='flex items-center justify-center' key={index}>
                     {item.icon}
                     <span className='text-[13px] font-medium ml-2'>
-                      {selectedLocation.reaction_counts[`${index}`]}
+                      {selectedLocation?.reaction_counts?.length > 0 && selectedLocation.reaction_counts[`${index}`]}
                     </span>
                   </div>
                 ))}
