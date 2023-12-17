@@ -23,6 +23,8 @@ import { PublicKey } from '@solana/web3.js';
 import moment from 'moment';
 import { getScore } from '../utils/account.util';
 import { formatLocation } from '../functions/text';
+import { isVideo } from '../utils/drop.util';
+import useAutoPlay from '../hooks/useAutoplay';
 
 const reactions = [
   {
@@ -53,6 +55,9 @@ export const DropDetailPage = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
   const [userChecked, setUserChecked] = useState<any>([]);
   const webcamRef = useRef(null);
+  const videoRef: any = useRef();
+
+  useAutoPlay(videoRef);
 
   useEffect(() => {
     if (dropId) {
@@ -152,12 +157,11 @@ export const DropDetailPage = () => {
                   <div className='font-medium flex items-center gap-1'>
                     <FaThumbsUp className='w-4 h-4 text-[#FFB800]' />
                     <div
-                      className={`text-[13px] ${
-                        selectedLocation &&
+                      className={`text-[13px] ${selectedLocation &&
                         Number(getScore(selectedLocation, false))
-                          ? 'text-[#000000b3]'
-                          : 'text-[#02030380]'
-                     } font-medium whitespace-nowrap leading-5`}
+                        ? 'text-[#000000b3]'
+                        : 'text-[#02030380]'
+                        } font-medium whitespace-nowrap leading-5`}
                     >
                       {selectedLocation && getScore(selectedLocation, true)}
                     </div>
@@ -183,12 +187,26 @@ export const DropDetailPage = () => {
                     >
                       {selectedLocation.imageArray.map(
                         (item: string, idx: number) => (
-                          <img
-                            key={idx}
-                            src={`${item}`}
-                            alt=''
-                            className='rounded-xl h-full w-full object-cover object-center'
-                          />
+                          <>
+                            {isVideo(item) ?
+                              <>
+                                <video
+                                  ref={videoRef}
+                                  key={idx}
+                                  src={item}
+                                  controls={false}
+                                  playsInline
+                                  className='skeleton h-full object-cover rounded-xl object-center w-full' />
+                              </>
+                              :
+                              <img
+                                key={idx}
+                                src={`${item}`}
+                                alt=''
+                                className='rounded-xl h-full w-full object-cover object-center'
+                              />
+                            }
+                          </>
                         )
                       )}
                     </Carousel>
@@ -229,7 +247,7 @@ export const DropDetailPage = () => {
                     longitude={selectedLocation.lng}
                     latitude={selectedLocation.lat}
                     anchor='bottom'
-                    onClick={() => {}}
+                    onClick={() => { }}
                   >
                     <FaMapPin size={24} className='text-[#278EFF]' />
                   </Marker>
@@ -263,7 +281,7 @@ export const DropDetailPage = () => {
                 ) : (
                   <div className='flex justify-center items-center flex-col gap-4 bg-[#F5F5F5] rounded-lg py-7 px-3'>
                     <img src='/traveler.svg' alt='' />
-                    <p className='text-center font-medium text-[13px] leading-5 text-[#828282] max-w-[205px]'>Go to this place and<br/>be the first one checked in here</p>
+                    <p className='text-center font-medium text-[13px] leading-5 text-[#828282] max-w-[205px]'>Go to this place and<br />be the first one checked in here</p>
                   </div>
                 )}
               </div>

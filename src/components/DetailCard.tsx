@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { checkTimeAgo, getLabelLocation } from '../utils/common.utils';
 import parse from 'html-react-parser';
@@ -16,6 +16,8 @@ import { getScore } from '../utils/account.util';
 import { Carousel } from 'antd';
 import './detailCard.css';
 import { useSelector } from 'react-redux';
+import { isVideo } from '../utils/drop.util';
+import useAutoPlay from '../hooks/useAutoplay';
 
 interface ImageProps {
   src: string;
@@ -31,6 +33,7 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
   const location = useLocation();
   const [lastChecked, setLastChecked] = useState<any>(null);
   const user = useSelector((state: any) => state.user)
+  const videoRef: any = useRef();
 
   const overlap = 13.75;
 
@@ -69,6 +72,8 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
     }
     return '28px';
   };
+
+  useAutoPlay(videoRef);
 
   return (
     <div className={`${isHome() ? 'pb-6' : 'pb-8'} detail-card`}>
@@ -120,7 +125,7 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
         }}
         onClick={() => {
           // setIsDrawerVisible(true);
-          navigate(`/drop/details/${data.id}`);
+            navigate(`/drop/details/${data.id}`);
         }}
       >
         <div className='relative'>
@@ -135,19 +140,31 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
           >
             {data?.drop?.imageArray || data?.imageArray ?
               <>
-                <Carousel swipeToSlide draggable style={{ height: '100%', width: '100%' }}>
+                <Carousel draggable effect="scrollx" style={{ height: '100%', width: '100%' }}>
                   {(data.imageArray
                     ? data.imageArray
                     : data?.drop?.imageArray
-                  )?.slice(0,3)?.map((item: string, idx: number) => (
+                  )?.slice(0, 3)?.map((item: string, idx: number) => (
                     <>
                       <div className='relative' >
-                        <LazyImageCustom
-                          key={idx}
-                          src={item}
-                          alt='Drop Img'
-                          className='skeleton h-full object-cover rounded-xl object-center w-full'
-                        />
+                        {isVideo(item) ?
+                          <>
+                            <video
+                              ref={videoRef}
+                              key={idx}
+                              src={item}
+                              controls={false}
+                              playsInline
+                              className='skeleton h-full object-cover rounded-xl object-center w-full' />
+                          </>
+                          :
+                          <img
+                            key={idx}
+                            src={item}
+                            alt='Drop Img'
+                            className='skeleton h-full object-cover rounded-xl object-center w-full'
+                          />
+                        }
                         <div
                           className='absolute inset-0'
                           style={{
