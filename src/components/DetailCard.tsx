@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { checkTimeAgo, getLabelLocation } from '../utils/common.utils';
 import parse from 'html-react-parser';
@@ -18,6 +18,7 @@ import './detailCard.css';
 import { useSelector } from 'react-redux';
 import { isVideo } from '../utils/drop.util';
 import useAutoPlay from '../hooks/useAutoplay';
+import VideoComponent from './VideoComponent';
 
 interface ImageProps {
   src: string;
@@ -32,6 +33,7 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
   const [userChecked, setUserChecked] = useState([]);
   const location = useLocation();
   const [lastChecked, setLastChecked] = useState<any>(null);
+  const [muted, setMuted] = useState(true);
   const user = useSelector((state: any) => state.user)
   const videoRef: any = useRef();
 
@@ -125,7 +127,11 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
         }}
         onClick={() => {
           // setIsDrawerVisible(true);
+          if (videoRef.current && muted) {
+            setMuted(false);
+          } else {
             navigate(`/drop/details/${data.id}`);
+          }
         }}
       >
         <div className='relative'>
@@ -148,15 +154,7 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
                     <>
                       <div className='relative' >
                         {isVideo(item) ?
-                          <>
-                            <video
-                              ref={videoRef}
-                              key={idx}
-                              src={item}
-                              controls={false}
-                              playsInline
-                              className='skeleton h-full object-cover rounded-xl object-center w-full' />
-                          </>
+                          <VideoComponent key={idx} videoRef={videoRef} src={item} muted={muted} className='skeleton h-full object-cover rounded-xl object-center w-full' />
                           :
                           <img
                             key={idx}

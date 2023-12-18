@@ -25,6 +25,7 @@ import { getScore } from '../utils/account.util';
 import { formatLocation } from '../functions/text';
 import { isVideo } from '../utils/drop.util';
 import useAutoPlay from '../hooks/useAutoplay';
+import VideoComponent from '../components/VideoComponent';
 
 const reactions = [
   {
@@ -54,6 +55,7 @@ export const DropDetailPage = () => {
   const navigate = useNavigate();
   const [openDrawer, setOpenDrawer] = useState(false);
   const [userChecked, setUserChecked] = useState<any>([]);
+  const [muted, setMuted] = useState(true);
   const webcamRef = useRef(null);
   const videoRef: any = useRef();
 
@@ -189,15 +191,14 @@ export const DropDetailPage = () => {
                         (item: string, idx: number) => (
                           <>
                             {isVideo(item) ?
-                              <>
-                                <video
-                                  ref={videoRef}
-                                  key={idx}
-                                  src={item}
-                                  controls={false}
-                                  playsInline
-                                  className='skeleton h-full object-cover rounded-xl object-center w-full' />
-                              </>
+                              <VideoComponent
+                                onClick={() => setMuted(prev => !prev)}
+                                key={idx}
+                                videoRef={videoRef}
+                                src={item}
+                                muted={muted}
+                                className='skeleton h-full object-cover rounded-xl object-center w-full'
+                              />
                               :
                               <img
                                 key={idx}
@@ -417,7 +418,7 @@ export const DropDetailPage = () => {
         )}
 
         {/* <CustomWebcam /> */}
-      </div>
+      </div >
     </>
   );
 };
