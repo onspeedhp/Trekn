@@ -68,17 +68,30 @@ export const DropSuccess = () => {
           className='flex items-center justify-center'
           style={{ marginBottom: 33 }}
         >
-          <img
-            src={URL.createObjectURL(metadata.image)}
-            alt='Uploaded'
-            className='rounded-xl mb-3'
-            style={{
-              width: 339,
-              height: 339,
-              objectFit: 'cover',
-              objectPosition: 'center',
-            }}
-          />
+          {metadata.image?.type.includes('video') ?
+            <video
+              src={URL.createObjectURL(metadata.image)}
+              className='rounded-xl mb-3'
+              autoPlay
+              style={{
+                width: 339,
+                height: 339,
+                objectFit: 'cover',
+                objectPosition: 'center',
+              }}
+            /> :
+            <img
+              src={URL.createObjectURL(metadata.image)}
+              alt='Uploaded'
+              className='rounded-xl mb-3'
+              style={{
+                width: 339,
+                height: 339,
+                objectFit: 'cover',
+                objectPosition: 'center',
+              }}
+            />
+          }
         </div>
 
         <Button
