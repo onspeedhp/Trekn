@@ -20,7 +20,7 @@ export const ImageUpload: React.FC = () => {
         alert('The number of photos cannot exceed 9!');
         return;
       }
-
+      console.log(selectedFiles);
       setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
     }
   };
@@ -37,16 +37,30 @@ export const ImageUpload: React.FC = () => {
             <div style={{ display: 'flex', flexWrap: 'wrap' }}>
               {files.length === 1 ? (
                 <div className='relative'>
-                  <img
-                    src={URL.createObjectURL(files[0])}
-                    className='m-1.5 rounded-xl'
-                    style={{
-                      width: windowSize.width - 72,
-                      height: 303,
-                      objectFit: 'cover',
-                      objectPosition: 'center',
-                    }}
-                  />
+                  {files[0].type.includes('video') ?
+                    <video src={URL.createObjectURL(files[0])}
+                      autoPlay
+                      controls
+                      className='m-1.5 rounded-xl'
+                      style={{
+                        width: windowSize.width - 72,
+                        height: 303,
+                        objectFit: 'cover',
+                        objectPosition: 'center',
+                      }} />
+                    :
+                    <img
+                      src={URL.createObjectURL(files[0])}
+                      alt=""
+                      className='m-1.5 rounded-xl'
+                      style={{
+                        width: windowSize.width - 72,
+                        height: 303,
+                        objectFit: 'cover',
+                        objectPosition: 'center',
+                      }}
+                    />
+                  }
                   {edit === true && (
                     <FaTimesCircle
                       size={18}
@@ -166,7 +180,7 @@ export const ImageUpload: React.FC = () => {
               >
                 <input
                   type='file'
-                  accept='image/*'
+                  accept='image/*,video/mp4'
                   className='absolute opacity-0 w-full h-full'
                   onChange={fileSelectedHandler}
                   multiple

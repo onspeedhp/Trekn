@@ -6,7 +6,7 @@ import { FaPlus } from 'react-icons/fa6';
 import { useLocation, useNavigate } from 'react-router';
 import request from '../axios';
 import { IDrop } from '../models/types';
-import { Button, Spin } from 'antd';
+import { Button, Drawer, Spin } from 'antd';
 import { getFollowerById, getFollowingById, getLeaderBoardPoint } from '../middleware/data/user';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -38,6 +38,7 @@ function Home() {
   const [loadingNearBy, setLoadingNearBy] = useState(false);
   const [loadingFollow, setLoadingFollow] = useState(false);
   const [loadingReadyToCollect, setLoadingReadyToCollet] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState(true);
   const [follow, setFollowData] = useState({});
   const [currentView, setCurrentView] = useState('exploring')
   const navigate = useNavigate();
@@ -336,6 +337,10 @@ function Home() {
           </div>
         </>
       }
+      {/* <Drawer onClose={() => setOpenDrawer(false)} open={openDrawer} placement='bottom'
+        height={windowSize.height * 0.9}>
+        aaa
+      </Drawer> */}
     </>
   );
 }
