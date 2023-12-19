@@ -241,7 +241,7 @@ export const DropDetail = ({
             <div className='flex ml-2 h-10 p-3 bg-[#F5F5F5] rounded-full items-center'>
               <FaFaceLaughBeam size={16} className='text-[#66C61B]' />
               <span className='text-[13px] font-semibold ml-2'>
-                {selectedLocation.reaction_counts['1']}
+                {selectedLocation.reaction_counts && selectedLocation.reaction_counts['1']}
               </span>
               <FaChevronDown className='ml-2' />
             </div>
