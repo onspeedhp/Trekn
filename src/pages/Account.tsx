@@ -187,7 +187,7 @@ export const Account = () => {
             </div>
 
             <div className='px-2'>
-              <div className={`name font-semibold text-2xl ${userId && !userAccountData?.name && 'animate-pulse bg-gray-200 w-20 h-4 rounded-xl'}`}>
+              <div className={`name font-semibold text-2xl truncate ... ${userId && !userAccountData?.name ? 'animate-pulse bg-gray-200 w-20 h-4 rounded-xl' : ''}`}>
                 {userId ? userAccountData?.name : user.name}
               </div>
               <div className='desc py-3 text-sm text-[#000000b3] font-normal'>
@@ -253,7 +253,7 @@ export const Account = () => {
                                 .select('*')
                                 .eq('drop_id', item?.drop_id || item?.id)
                                 .eq('user_id', user?.id);
-  
+
                               if (data && data.length === 0 && !userId) {
                                 navigate(
                                   `/reaction/${item?.drop_id || item?.id}`
