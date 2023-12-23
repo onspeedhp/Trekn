@@ -45,7 +45,7 @@ export const MapGL = () => {
         <div id='map' className='relative h-full w-full'>
           <Button
             onClick={() => {
-              navigate('/home');
+              navigate('/');
             }}
             style={{
               padding: 0,

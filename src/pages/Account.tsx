@@ -41,7 +41,7 @@ export const Account = () => {
   const [loading, setLoading] = useState(false);
   // useEffect(() => {
   //   if (!user.id) {
-  //     navigate('/home');
+  //     navigate('/');
   //   }
   // }, []);
 
@@ -92,7 +92,7 @@ export const Account = () => {
 
   const handleFollow = async () => {
     if (user.id === 0 || !user.id) {
-      return navigate('/home', { state: { login: true } });
+      return navigate('/', { state: { login: true } });
     }
     if (isFollowed()) {
       await unFollowUser({

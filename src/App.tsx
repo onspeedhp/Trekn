@@ -6,14 +6,17 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import './index.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { AuthProvider } from './context/AuthContext';
+import Navbar from './components/Navbar';
 
 function App({
   header,
   layout,
   hideHeader,
+  showNav = false,
 }: {
   header: any;
   layout: any;
+  showNav?: boolean;
   hideHeader?: boolean;
 }) {
   const Layout: any = layout;
@@ -29,7 +32,7 @@ function App({
 
     if (!isMobile) {
       // window.location.href('asd');
-    } 
+    }
 
     window.addEventListener('resize', handleResize);
 
@@ -47,6 +50,7 @@ function App({
             <Layout>
               <Outlet />
             </Layout>
+            {showNav && <Navbar />}
           </AuthProvider>
         </div>
       ) : (

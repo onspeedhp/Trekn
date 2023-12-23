@@ -20,12 +20,20 @@ import CheckinWPhoto from '../pages/CheckinWPhoto';
 import CheckinNearBy from '../pages/CheckinNearBy';
 import EditLocation from '../pages/EditLocation';
 import FollowPage from '../pages/FollowPage';
+import PrivateRoute from '../pages/PrivateRoute';
 
 const AppRoutes = () => (
   <BrowserRouter basename='/'>
     <Routes>
-      <Route path='/' element={<App layout={Home} header={Header} />}>
+      <Route path='/' element={<App showNav layout={Home} header={Header} />}>
         <Route path='home' element={<Home />} />
+      </Route>
+
+      <Route element={<App header={Header} showNav hideHeader={true} layout={PrivateRoute} />}>
+        <Route
+          path='/account'
+          element={<Account/>}
+        ></Route>
       </Route>
 
       <Route
@@ -50,11 +58,6 @@ const AppRoutes = () => (
       <Route
         path='/drop-onboarding/success'
         element={<App header={Header} hideHeader={true} layout={DropSuccess} />}
-      ></Route>
-
-      <Route
-        path='/account'
-        element={<App header={Header} hideHeader={true} layout={Account} />}
       ></Route>
 
       <Route
