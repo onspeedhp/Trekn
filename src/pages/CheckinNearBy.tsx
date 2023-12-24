@@ -6,6 +6,7 @@ import CustomiseInputWIco from '../components/CustomiseInputWIco';
 import { useSelector } from 'react-redux';
 import { FaSearch } from 'react-icons/fa';
 import { Button } from 'antd';
+import PointPlusItem from '../components/PointPlusItem';
 
 export default function CheckinNearBy() {
     const { windowSize } = useAuthContext();
@@ -29,6 +30,9 @@ export default function CheckinNearBy() {
                         <img src="/spyglass.svg" alt="spyglass" />
                     </div>
                     <p className='text-[#BDBDBD] text-[13px] font-medium text-center leading-[140%]'>Seems like this is a whole new place for you to explore and share, be the first one!</p>
+                    <div className="px-3 py-2 bg-[#2E2E2E] rounded-full mt-4">
+                        <p className="text-[13px] font-medium leading-[140%] text-[#BDBDBD]">To earn +200 points</p>
+                    </div>
                 </div>
                 <Button
                     className='bg-[#2C2C2C] text-white py-3 h-auto rounded-3xl font-semibold text-base border-0 w-full mb-5'
@@ -54,8 +58,11 @@ export default function CheckinNearBy() {
                             <div className="h-[1px] my-4 bg-[#626262]"></div>
                         </div>
                         {idx + 1 === locationList.length && (
-                            <div className="text-[#99FF48] text-[13px] leading-6 mb-4" onClick={() => navigate('/check-in/upload-image')}>
-                                Add a new place
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="text-[#99FF48] text-[13px] leading-6" onClick={() => navigate('/check-in/upload-image')}>
+                                    Add a new place
+                                </div>
+                                <PointPlusItem point='200' />
                             </div>
                         )}
                     </>
