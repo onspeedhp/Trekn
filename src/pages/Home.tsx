@@ -22,6 +22,7 @@ import { getDropByUserAddress } from '../middleware/data/drop';
 import { getMintedByUserAddress } from '../middleware/data/minted';
 import { sortDataByTimeline } from '../utils/account.util';
 import Feed from '../components/Feed';
+import Navbar from '../components/Navbar';
 
 function Home() {
   const { windowSize, leaderBoard, init } = useAuthContext();
@@ -176,6 +177,7 @@ function Home() {
 
   return (
     <>
+      <Navbar />
       <div className='w-full px-[20px] sm:px-0 relative'>
         {user.address &&
           <div className="p-1 bg-[#ECECEC] rounded-[10px] mt-10 flex items-center">
