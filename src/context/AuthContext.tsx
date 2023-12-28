@@ -46,12 +46,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     navigator.geolocation.getCurrentPosition(
       ({ coords: { longitude, latitude } }) => {
         (async () => {
-          const countryInfo: any = await get(`https://nominatim.openstreetmap.org/reverse.php?lat=${latitude}&lon=${longitude}&zoom=3&format=jsonv2`);
           dispatch(
             updateCoordinate({
               lat: latitude,
               lng: longitude,
-              country: countryInfo?.address?.country
             })
           );
         })()

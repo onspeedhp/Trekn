@@ -196,7 +196,7 @@ export default function EditLocation() {
             viewBox='0 0 20 20'
             fill='none'
           >
-            <circle cx='10' cy='10' r='10' fill='#99FF48' fill-opacity='0.4' />
+            <circle cx='10' cy='10' r='10' fill='#99FF48' fillOpacity='0.4' />
             <circle cx='10' cy='10' r='6' fill='#99FF48' />
           </svg>
           <div className='text-base text-white font-medium leading-[120%]'>
