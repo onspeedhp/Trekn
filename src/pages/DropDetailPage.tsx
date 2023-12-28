@@ -6,7 +6,7 @@ import { useAuthContext } from '../context/AuthContext';
 import { calculateDistance } from '../functions/calculateDistance';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import { FaMapPin, FaCamera, FaBolt, FaThumbsUp } from 'react-icons/fa';
+import { FaMapPin, FaCamera, FaBolt, FaThumbsUp, FaLocationArrow } from 'react-icons/fa';
 import { Button, Carousel, Drawer, Modal } from 'antd';
 import { CustomWebcam } from '../components/CustomWebcam';
 import {
@@ -110,7 +110,7 @@ export const DropDetailPage = () => {
 
   return (
     <>
-      <div className='flex-col m-5'>
+      <div className='flex-col m-5 drop-detail-page'>
         <svg
           xmlns='http://www.w3.org/2000/svg'
           width='16'
@@ -134,7 +134,7 @@ export const DropDetailPage = () => {
               <div className='flex flex-col gap-3'>
                 <div className='flex gap-2'>
                   <img
-                    className='rounded-full w-10 h-10'
+                    className='rounded-full w-10 h-10 object-cover object-center'
                     src={`${selectedLocation.user.profileImage}`}
                     alt=''
                   />
@@ -225,7 +225,7 @@ export const DropDetailPage = () => {
                 <div className='border-b mt-5'></div>
               </div>
               <div className='flex flex-col gap-4'>
-                <div className='leading-10 text-xl font-bold leading-[13px]'>
+                <div className='leading-[13px] text-xl font-bold leading-[13px]'>
                   Location
                 </div>
                 <div className='leading-4 text-[#02030380] font-medium leading-1 text-[13px]'>
@@ -241,6 +241,7 @@ export const DropDetailPage = () => {
                   style={{
                     height: 200,
                     borderRadius: 24,
+                    position: 'relative',
                   }}
                   mapStyle='mapbox://styles/mapbox/streets-v9'
                 >
@@ -252,10 +253,18 @@ export const DropDetailPage = () => {
                   >
                     <FaMapPin size={24} className='text-[#278EFF]' />
                   </Marker>
+                  <div
+                    className='absolute right-2 bottom-2 w-8 h-8 rounded-full bg-black flex items-center justify-center z-50'
+                    onClick={() => {
+                      window.open(`https://www.google.com/maps/dir/?api=1&destination=${selectedLocation.lat}%2C${selectedLocation.lng}`, '_blank');
+                    }}
+                  >
+                    <FaLocationArrow size={16} color='white' />
+                  </div>
                 </Map>
                 <div className='border-b'></div>
               </div>
-              <div className='leading-10 text-xl font-bold'>
+              <div className='leading-[13px] text-xl font-bold'>
                 Other check-ins
               </div>
               <div className='flex flex-col gap-4'>

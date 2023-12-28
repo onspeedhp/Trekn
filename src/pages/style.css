@@ -35,6 +35,10 @@
   display: none;
 }
 
+.drop-detail-page .mapboxgl-canvas {
+  border-radius: 24px;
+}
+
 @keyframes skeleton-loading {
   0% {
     background-color: hsl(200, 20%, 80%);
