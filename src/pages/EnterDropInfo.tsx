@@ -60,7 +60,7 @@ export const EnterDropInfo = () => {
             fill='none'
             className='mb-6'
             onClick={() => {
-              navigate('/check-in/drag-location');
+              navigate('/check-in/edit-location');
             }}
           >
             <path

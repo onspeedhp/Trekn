@@ -18,11 +18,12 @@ import moment from 'moment';
 import { updateInit } from '../redux/slides/userSlides';
 import useApi from '../hooks/useAPI';
 import { capitalizeFirstLetter } from '../functions/text';
-import { getDropByUserAddress } from '../middleware/data/drop';
+import { getDropByUserAddress, getDropType } from '../middleware/data/drop';
 import { getMintedByUserAddress } from '../middleware/data/minted';
 import { sortDataByTimeline } from '../utils/account.util';
 import Feed from '../components/Feed';
 import { useDraggable } from "react-use-draggable-scroll";
+import { setDropType } from '../redux/slides/configSlice';
 
 function Home() {
   const { windowSize, leaderBoard, init } = useAuthContext();
@@ -53,6 +54,7 @@ function Home() {
       init();
       window.history.replaceState({}, document.title)
     }
+    getDropType({ onSuccess: (data) => dispatch(setDropType(data)) })
     setLoadingPoint(true);
     getLeaderBoardPoint({
       onSuccess: (data) => {
@@ -127,6 +129,9 @@ function Home() {
         });
       })();
     }
+  }, [user.id])
+
+  useEffect(() => {
     if (!user.country || !user.city) {
       (async () => {
         const countryInfo: any = await get(`https://nominatim.openstreetmap.org/reverse.php?lat=${user.lat}&lon=${user.lng}&zoom=5&format=jsonv2&accept-language=en`);
@@ -136,7 +141,7 @@ function Home() {
         }));
       })();
     }
-  }, [user.id])
+  }, [user.id, user.lng, user.lat])
 
   useEffect(() => {
     if (user.following && user.following.length > 0) {
@@ -186,7 +191,7 @@ function Home() {
   return (
     <>
       <div
-        className="mt-6 flex items-center gap-3 pl-5 overflow-x-hidden"
+        className="mt-6 flex items-center gap-3 pl-5 overflow-x-scroll scrollbar-hide"
         {...events}
         ref={filterScrollRef}
       >
@@ -209,7 +214,7 @@ function Home() {
         {['Event', 'Coffee', 'Restaurant'].map((item) =>
           <div
             className={`${filter === item.toLowerCase() ? 'bg-[#99FF48]' : 'bg-[#F2F2F2]'} px-[10px] py-[6px] text-[#020303] rounded-full font-medium leading-[18px] tracking-[-0.08px] whitespace-nowrap`}
-            onClick={()=>setFilter(item.toLowerCase())}
+            onClick={() => setFilter(item.toLowerCase())}
           >
             {item}
           </div>

@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import userSlide from './slides/userSlides';
 import locationSlide from './slides/locationSlides';
 import accountSlide from './slides/accountSlides';
+import configSlice from './slides/configSlice';
 
 export const store = configureStore({
   reducer: {
     user: userSlide,
     location: locationSlide,
-    account: accountSlide
+    account: accountSlide,
+    config: configSlice
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

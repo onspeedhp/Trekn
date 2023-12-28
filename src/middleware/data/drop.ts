@@ -59,7 +59,7 @@ export const getDropByUserAddress = async ({
 }) => {
   const { data, error } = await supabase
     .from('drop')
-    .select('*,user(*)')
+    .select('*,user(*),drop_type(type_id)')
     .or(`author_id.in.(${userId})`);
 
   if (!error) {
@@ -122,5 +122,23 @@ export const updateDrop = async ({
 
   if (error) {
     onError(error);
+  }
+};
+
+export const getDropType = async ({
+  onSuccess = () => {},
+  onError = () => {},
+}: {
+  onSuccess?: (data: any) => void;
+  onError?: (error: any) => void;
+}) => {
+  const { data, error } = await supabase
+    .from('type_location')
+    .select('*')
+
+  if (!error) {
+    onSuccess(data);
+  } else {
+    onError('');
   }
 };
