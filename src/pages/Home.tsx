@@ -72,7 +72,7 @@ function Home() {
       return setViewList(result);
     }
     return setViewList([...readyToCollect,...nearBy]);
-  },[nearBy, filter])
+  },[readyToCollect, nearBy, filter])
 
   const getNearBy = async (lat: number, log: number) => {
     setLoadingNearBy(true);
