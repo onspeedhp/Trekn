@@ -43,7 +43,7 @@ export const ListDetail = ({ data, status }: { data: any; status: any }) => {
     <div className='w-full'>
       <div className='grid grid-cols-1 sm:grid-cols-3'>
         {data?.slice(0, amountShowItem).map((item: any, index: any) => (
-          <DetailCard key={index} data={item} status={status} last={(index + 1) === amountShowItem} />
+          <DetailCard key={index} data={item} status={status} last={data.length < amountShowItem ? (index + 1) === data.length : (index + 1) === amountShowItem} />
         ))}
       </div>
       {/* {isShowShowMore && (

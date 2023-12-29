@@ -34,6 +34,7 @@ function Home() {
   const [readyToCollect, setReadyToCollect] = useState<IDrop[]>([]);
   const user = useSelector((state: any) => state.user);
   const location = useSelector((state: any) => state.location);
+  const typeList = useSelector((state: any) => state.config?.dropType);
   const dispatch = useDispatch();
   const [nearBy, setNearBy] = useState<IDrop[]>([]);
   const [loading, setLoading] = useState(false);
@@ -46,6 +47,7 @@ function Home() {
   const [follow, setFollowData] = useState({});
   const [currentView, setCurrentView] = useState('exploring')
   const [filter, setFilter] = useState('all')
+  const [viewList, setViewList] = useState<any>([])
 
   const navigate = useNavigate();
 
@@ -63,6 +65,14 @@ function Home() {
     });
     setLoadingPoint(false);
   }, []);
+
+  useEffect(()=>{
+    if(filter !== 'all') {
+      const result = [...readyToCollect,...nearBy].filter((item: any) => item.type === filter);
+      return setViewList(result);
+    }
+    return setViewList([...readyToCollect,...nearBy]);
+  },[nearBy, filter])
 
   const getNearBy = async (lat: number, log: number) => {
     setLoadingNearBy(true);
@@ -211,12 +221,13 @@ function Home() {
         >
           All in {user.city}
         </div>
-        {['Event', 'Coffee', 'Restaurant'].map((item) =>
+        {typeList?.map((item:any,idx:number) =>
           <div
-            className={`${filter === item.toLowerCase() ? 'bg-[#99FF48]' : 'bg-[#F2F2F2]'} px-[10px] py-[6px] text-[#020303] rounded-full font-medium leading-[18px] tracking-[-0.08px] whitespace-nowrap`}
-            onClick={() => setFilter(item.toLowerCase())}
+            className={`${filter === item.id ? 'bg-[#99FF48]' : 'bg-[#F2F2F2]'} px-[10px] py-[6px] text-[#020303] rounded-full font-medium leading-[18px] tracking-[-0.08px] whitespace-nowrap`}
+            onClick={() => setFilter(item.id)}
+            key={idx}
           >
-            {item}
+            {capitalizeFirstLetter(item.type)}
           </div>
         )}
       </div>
@@ -240,29 +251,29 @@ function Home() {
                     Nearby experiences
                   </div>
 
-                  <div style={{ marginTop: 24 }}>
-                    {/* <Spin
+                  {/* <div style={{ marginTop: 24 }}>
+                    <Spin
                   tip='Loading...'
                   className='flex items-center mt-10'
-                > */}
+                >
                     {nearBy.length !== 0 && (
                       <ListDetail
                         status={'Nearby'}
                         data={readyToCollect}
                       />
                     )}
-                    {/* </Spin> */}
-                  </div>
+                    </Spin>
+                  </div> */}
 
-                  <div style={{ marginTop: 0 }}>
+                  <div style={{ marginTop: 24 }}>
                     <Spin
                       tip='Loading nearby'
                       spinning={loadingNearBy}
                       className={`flex items-center mt-10 text-black font-semibold`}
                       style={{ top: (loadingNearBy ? 208 : 0) }}
                     >
-                      {nearBy.length !== 0 ? (
-                        <ListDetail status={'Nearby'} data={nearBy} />
+                      {viewList.length !== 0 ? (
+                        <ListDetail status={'Nearby'} data={viewList} />
                       ) :
                         <>
                           {!loadingNearBy &&
