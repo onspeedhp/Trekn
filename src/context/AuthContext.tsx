@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       }
     );
-  }, []);
+  });
 
   const init = async () => {
     if (!torus.isInitialized) {
