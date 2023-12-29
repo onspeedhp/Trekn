@@ -10,12 +10,14 @@ import { useDebouncedCallback } from 'use-debounce';
 import { useAuthContext } from '../context/AuthContext';
 import { Button, Spin } from 'antd';
 import Map, { Layer, Marker, Source, ViewStateChangeEvent } from 'react-map-gl';
+import axios from 'axios';
 
 export default function EditLocation() {
   const navigate = useNavigate();
   const { setMetadata, metadata, windowSize } = useAuthContext();
   const apiService = useApi();
   const user = useSelector((state: any) => state.user);
+  const [address, setAddress] = useState<string>('');
   const [currentEdit, setCurrentEdit] = useState('');
   const [searchValue, setSearchValue] = useState('');
   const [addressForm, setAddressForm] = useState<{
@@ -41,8 +43,8 @@ export default function EditLocation() {
     } else {
       const result = value
         ? dataList.filter((location: any) =>
-            location.name.toLowerCase().includes(value)
-          )
+          location.name.toLowerCase().includes(value)
+        )
         : dataList;
       setFilteredDataList(result);
     }
@@ -56,12 +58,10 @@ export default function EditLocation() {
       .map(([_, value]) => {
         subValue += ` ${value},`;
       });
-      
+
     const { items }: any = await apiService.get(
-      `https://autosuggest.search.hereapi.com/v1/autosuggest?at=${user.lat},${
-        user.lng
-      }&limit=3&lang=en&q=${`${value} ${subValue}`}&apiKey=${
-        process.env.REACT_APP_HERE_API_KEY
+      `https://autosuggest.search.hereapi.com/v1/autosuggest?at=${user.lat},${user.lng
+      }&limit=3&lang=en&q=${`${value} ${subValue}`}&apiKey=${process.env.REACT_APP_HERE_API_KEY
       }`
     );
     setFilteredDataList(items);
@@ -117,25 +117,25 @@ export default function EditLocation() {
   };
 
   const handleChangeAddress = (key: string) => {
-    // switch (key) {
-    //     case 'city':
-    //         user.country === 'Vietnam' ? setAddressForm({}) : setAddressForm((prev) => {
-    //             const newForm = { ...prev };
-    //             delete newForm.city;
-    //             return newForm;
-    //         })
-    //         setCurrentEdit('cities');
-    //         break;
-    //     default:
-    //         setAddressForm((prev) => {
-    //             const newForm: any = { ...prev };
-    //             delete newForm[key];
-    //             return newForm;
-    //         })
-    //         setCurrentEdit(key);
-    // }
-    setAddressForm({});
-    setCurrentEdit('cities');
+    switch (key) {
+      case 'city':
+        user.country === 'Vietnam' ? setAddressForm({}) : setAddressForm((prev) => {
+          const newForm = { ...prev };
+          delete newForm.city;
+          return newForm;
+        })
+        setCurrentEdit('cities');
+        break;
+      default:
+        setAddressForm((prev) => {
+          const newForm: any = { ...prev };
+          delete newForm[key];
+          return newForm;
+        })
+        setCurrentEdit(key);
+    }
+    // setAddressForm({});
+    // setCurrentEdit('cities');
   };
 
   const handleConfirmAddress = async (item?: any) => {
@@ -147,10 +147,9 @@ export default function EditLocation() {
       });
     } else {
       const locationInfo: any = await apiService.get(
-        `https://nominatim.openstreetmap.org/search.php?q=${
-          addressForm.subDistrict
-            ? `${addressForm.subDistrict} ${addressForm.district}`
-            : `${addressForm.city} ${addressForm.state}`
+        `https://nominatim.openstreetmap.org/search.php?q=${addressForm.subDistrict
+          ? `${addressForm.subDistrict} ${addressForm.district}`
+          : `${addressForm.city} ${addressForm.state}`
         }&polygon_geojson=1&format=jsonv2`
       );
       setAddressLocation({
@@ -161,6 +160,19 @@ export default function EditLocation() {
     }
     setCurrentEdit('confirm');
   };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await axios.get(
+          `https://api.geoapify.com/v1/geocode/reverse?lat=${user.lat}&lon=${user.lng}&apiKey=${process.env.REACT_APP_GEOAPIFY}`
+        );
+        setAddress(response.data.features[0].properties.formatted);
+      } catch (error) {
+        console.error('Error fetching address: ', error);
+      }
+    })()
+  }, [])
 
   const onMapMove = useCallback(async (event: ViewStateChangeEvent) => {
     setAddressLocation((prev: any) => ({
@@ -196,7 +208,7 @@ export default function EditLocation() {
             viewBox='0 0 20 20'
             fill='none'
           >
-            <circle cx='10' cy='10' r='10' fill='#99FF48' fill-opacity='0.4' />
+            <circle cx='10' cy='10' r='10' fill='#99FF48' fillOpacity='0.4' />
             <circle cx='10' cy='10' r='6' fill='#99FF48' />
           </svg>
           <div className='text-base text-white font-medium leading-[120%]'>
@@ -217,7 +229,7 @@ export default function EditLocation() {
           viewBox='0 0 17 16'
           fill='none'
           className='absolute'
-          onClick={() => (currentEdit ? handleReturn() : navigate(-1))}
+          onClick={() => (currentEdit ? handleReturn() : navigate('/check-in/upload-image'))}
         >
           <path
             d='M9.21347 13.9093L8.51972 14.6031C8.22597 14.8968 7.75097 14.8968 7.46035 14.6031L1.38535 8.5312C1.0916 8.23745 1.0916 7.76245 1.38535 7.47183L7.46035 1.39683C7.7541 1.10308 8.2291 1.10308 8.51972 1.39683L9.21347 2.09058C9.51035 2.38745 9.5041 2.87183 9.20097 3.16245L5.43535 6.74995H14.4166C14.8322 6.74995 15.1666 7.08433 15.1666 7.49995V8.49995C15.1666 8.91558 14.8322 9.24996 14.4166 9.24996H5.43535L9.20097 12.8375C9.50722 13.1281 9.51347 13.6125 9.21347 13.9093Z'
@@ -241,11 +253,11 @@ export default function EditLocation() {
               onClick={() =>
                 Object.entries(addressForm)?.length > 0
                   ? handleChangeAddress(
-                      user.country === 'Vietnam' ? 'cities' : 'state'
-                    )
+                    user.country === 'Vietnam' ? 'cities' : 'state'
+                  )
                   : setCurrentEdit(
-                      user.country === 'Vietnam' ? 'cities' : 'state'
-                    )
+                    user.country === 'Vietnam' ? 'cities' : 'state'
+                  )
               }
             >
               {Object.entries(addressForm)?.length > 0
@@ -260,6 +272,21 @@ export default function EditLocation() {
               Tên đường, Toà nhà, Số nhà
             </div>
           </div>
+          <div
+            className="text-[#99FF48] font-medium text-[13px] leading-4 mt-6"
+            onClick={() => {
+              setMetadata({
+                ...metadata,
+                location: address,
+                location_name: address,
+                lat: user.lat,
+                lng: user.lng,
+              });
+              navigate('/check-in/enter-info');
+            }}
+          >
+            Use my current location
+          </div>
         </>
       )}
 
@@ -267,9 +294,8 @@ export default function EditLocation() {
         <>
           {currentEdit !== 'confirm' && (
             <div
-              className={`flex flex-col ${
-                Object.keys(addressForm)?.length ? 'gap-[19px]' : 'gap-6'
-              }`}
+              className={`flex flex-col ${Object.keys(addressForm)?.length ? 'gap-[19px]' : 'gap-6'
+                }`}
             >
               <CustomiseInputWIco
                 style={'dark'}
@@ -321,7 +347,7 @@ export default function EditLocation() {
           )}
           {currentEdit === 'address' && searchValue && (
             <Button
-              className={`${loading ? 'bg-[#ccc] pointer-events-none' : 'bg-[#2C2C2C]' } absolute bottom-0 left-1/2 -translate-x-1/2 text-white py-3 h-auto rounded-3xl font-semibold text-base border-0 w-full mb-5`}
+              className={`${loading ? 'bg-[#ccc] pointer-events-none' : 'bg-[#2C2C2C]'} absolute bottom-0 left-1/2 -translate-x-1/2 text-white py-3 h-auto rounded-3xl font-semibold text-base border-0 w-full mb-5`}
               style={{ width: 'calc(100% - 32px)' }}
               onClick={() => handleConfirmAddress()}
             >

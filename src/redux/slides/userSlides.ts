@@ -51,7 +51,7 @@ export const userSlide = createSlice({
       localStorage.removeItem("user");
     },
     updateInit: (state, action) => {
-      const { country, following, follower } = action.payload;
+      const { country, following, follower, city } = action.payload;
       if (following) {
         state.following = following;
       }
@@ -60,6 +60,9 @@ export const userSlide = createSlice({
       }
       if (country) {
         state.country = country;
+      }
+      if (city) {
+        state.city = city;
       }
     },
   },

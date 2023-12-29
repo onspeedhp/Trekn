@@ -1,17 +1,19 @@
 import { useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import { useAuthContext } from '../context/AuthContext';
-import { Button, Modal } from 'antd';
+import { Button, Modal, Select } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaCheckCircle, FaPen } from 'react-icons/fa';
 import { supabase } from '../utils/supabaseClients';
 import { createDrop } from '../middleware/data/drop';
 import { addNewReadyToCollect } from '../redux/slides/locationSlides';
+import CustomSelect from '../components/crud/CustomSelect';
 
 export const EnterDropInfo = () => {
   const navigate = useNavigate();
   const { metadata, setMetadata } = useAuthContext();
   const user = useSelector((state: any) => state.user);
+  const typeList = useSelector((state: any) => state.config?.dropType);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
@@ -60,7 +62,7 @@ export const EnterDropInfo = () => {
             fill='none'
             className='mb-6'
             onClick={() => {
-              navigate('/check-in/drag-location');
+              navigate('/check-in/edit-location');
             }}
           >
             <path
@@ -102,6 +104,18 @@ export const EnterDropInfo = () => {
                 }} value={metadata.description}
                   className="py-4 px-3 w-full h-32 rounded-xl focus-visible:outline-none text-base font-medium resize-none bg-[#212121de] text-white"
                 />
+              </div>
+            </div>
+            <div>
+              <label className='text-[13px] text-[#BDBDBA] font-medium leading-4'>Type</label>
+              <div className="border-none mt-1">
+                <CustomSelect
+                  placeholder='Select type of location'
+                  options={typeList}
+                  recommend
+                  onChange={(value: any) => {
+                    setMetadata({ ...metadata, type: value });
+                  }} />
               </div>
             </div>
             <div>

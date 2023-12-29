@@ -41,7 +41,7 @@ export const Account = () => {
   const [loading, setLoading] = useState(false);
   // useEffect(() => {
   //   if (!user.id) {
-  //     navigate('/home');
+  //     navigate('/');
   //   }
   // }, []);
 
@@ -92,7 +92,7 @@ export const Account = () => {
 
   const handleFollow = async () => {
     if (user.id === 0 || !user.id) {
-      return navigate('/home', { state: { login: true } });
+      return navigate('/', { state: { login: true } });
     }
     if (isFollowed()) {
       await unFollowUser({
@@ -199,11 +199,11 @@ export const Account = () => {
                   <FaCookie className='text-[#FFAD08] w-3 h-3' />
                 </div>
                 <div className='balance flex items-center gap-1' onClick={() => navigate(userId ? `/account/${userId}/follow?type=follower` : '/account/follow?type=follower')}>
-                  <p className='font-semibold text-base leading-4 tracking-[-0.08px]'>{userId ? userAccountData?.follower?.length : user.follower.length}</p>
+                  <p className='font-semibold text-base leading-4 tracking-[-0.08px]'>{userId ? userAccountData?.follower?.length : user.follower?.length}</p>
                   <p className='text-[13px] leading-4 tracking-[-0.08px]'>Followers</p>
                 </div>
                 <div className='balance flex items-center gap-1' onClick={() => navigate(userId ? `/account/${userId}/follow?type=following` : '/account/follow?type=following')}>
-                  <p className='font-semibold text-base leading-4 tracking-[-0.08px]'>{userId ? userAccountData?.following?.length : user.following.length}</p>
+                  <p className='font-semibold text-base leading-4 tracking-[-0.08px]'>{userId ? userAccountData?.following?.length : user.following?.length}</p>
                   <p className='text-[13px] leading-4 tracking-[-0.08px]'>Following</p>
                 </div>
               </div>

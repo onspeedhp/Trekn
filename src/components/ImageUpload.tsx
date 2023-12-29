@@ -152,7 +152,7 @@ export const ImageUpload: React.FC = () => {
               });
               setLoading(false);
 
-              navigate(`/check-in/drag-location`);
+              navigate(`/check-in/edit-location`);
             }}
           >
             Continue

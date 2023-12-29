@@ -229,7 +229,7 @@ export const MapView = () => {
   //       >
   //         <Button
   //           onClick={() => {
-  //             navigate('/home');
+  //             navigate('/');
   //           }}
   //           style={{
   //             padding: 0,

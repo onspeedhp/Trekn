@@ -124,3 +124,21 @@ export const updateDrop = async ({
     onError(error);
   }
 };
+
+export const getDropType = async ({
+  onSuccess = () => {},
+  onError = () => {},
+}: {
+  onSuccess?: (data: any) => void;
+  onError?: (error: any) => void;
+}) => {
+  const { data, error } = await supabase
+    .from('type_location')
+    .select('*')
+
+  if (!error) {
+    onSuccess(data);
+  } else {
+    onError('');
+  }
+};

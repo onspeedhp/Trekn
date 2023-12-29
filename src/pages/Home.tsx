@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { ListDetail } from '../components/ListDetail';
 import { useAuthContext } from '../context/AuthContext';
-import { FaPlus } from 'react-icons/fa6';
+import { FaMap, FaPlus } from 'react-icons/fa6';
 import { useLocation, useNavigate } from 'react-router';
 import request from '../axios';
 import { IDrop } from '../models/types';
@@ -18,18 +18,23 @@ import moment from 'moment';
 import { updateInit } from '../redux/slides/userSlides';
 import useApi from '../hooks/useAPI';
 import { capitalizeFirstLetter } from '../functions/text';
-import { getDropByUserAddress } from '../middleware/data/drop';
+import { getDropByUserAddress, getDropType } from '../middleware/data/drop';
 import { getMintedByUserAddress } from '../middleware/data/minted';
 import { sortDataByTimeline } from '../utils/account.util';
 import Feed from '../components/Feed';
+import { useDraggable } from "react-use-draggable-scroll";
+import { setDropType } from '../redux/slides/configSlice';
 
 function Home() {
   const { windowSize, leaderBoard, init } = useAuthContext();
   const { state: locationState } = useLocation();
   const { get } = useApi();
+  const filterScrollRef: any = useRef();
+  const { events } = useDraggable(filterScrollRef);
   const [readyToCollect, setReadyToCollect] = useState<IDrop[]>([]);
   const user = useSelector((state: any) => state.user);
   const location = useSelector((state: any) => state.location);
+  const typeList = useSelector((state: any) => state.config?.dropType);
   const dispatch = useDispatch();
   const [nearBy, setNearBy] = useState<IDrop[]>([]);
   const [loading, setLoading] = useState(false);
@@ -41,6 +46,9 @@ function Home() {
   const [openDrawer, setOpenDrawer] = useState(true);
   const [follow, setFollowData] = useState({});
   const [currentView, setCurrentView] = useState('exploring')
+  const [filter, setFilter] = useState('all')
+  const [viewList, setViewList] = useState<any>([])
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -48,6 +56,7 @@ function Home() {
       init();
       window.history.replaceState({}, document.title)
     }
+    getDropType({ onSuccess: (data) => dispatch(setDropType(data)) })
     setLoadingPoint(true);
     getLeaderBoardPoint({
       onSuccess: (data) => {
@@ -56,6 +65,14 @@ function Home() {
     });
     setLoadingPoint(false);
   }, []);
+
+  useEffect(()=>{
+    if(filter !== 'all') {
+      const result = [...readyToCollect,...nearBy].filter((item: any) => item.type === filter);
+      return setViewList(result);
+    }
+    return setViewList([...readyToCollect,...nearBy]);
+  },[readyToCollect, nearBy, filter])
 
   const getNearBy = async (lat: number, log: number) => {
     setLoadingNearBy(true);
@@ -122,13 +139,19 @@ function Home() {
         });
       })();
     }
-    if (!user.country) {
+  }, [user.id])
+
+  useEffect(() => {
+    if (!user.country || !user.city) {
       (async () => {
-        const countryInfo: any = await get(`https://nominatim.openstreetmap.org/reverse.php?lat=${user.lat}&lon=${user.lng}&zoom=3&format=jsonv2&accept-language=en`);
-        dispatch(updateInit({ country: countryInfo?.address?.country }));
+        const countryInfo: any = await get(`https://nominatim.openstreetmap.org/reverse.php?lat=${user.lat}&lon=${user.lng}&zoom=5&format=jsonv2&accept-language=en`);
+        dispatch(updateInit({
+          country: countryInfo?.address?.country,
+          city: countryInfo?.address?.city,
+        }));
       })();
     }
-  }, [user.id])
+  }, [user.id, user.lng, user.lat])
 
   useEffect(() => {
     if (user.following && user.following.length > 0) {
@@ -174,51 +197,83 @@ function Home() {
     </div>
   )
 
+
   return (
     <>
+      <div
+        className="mt-6 flex items-center gap-3 pl-5 overflow-x-scroll scrollbar-hide"
+        {...events}
+        ref={filterScrollRef}
+      >
+        <div
+          className="w-9 h-9 rounded-full flex items-center justify-center border border-black flex-shrink-0"
+          onClick={() => {
+            navigate('/map-view');
+          }}
+        >
+          <FaMap
+            size={16}
+          />
+        </div>
+        <div
+          className={`${filter === 'all' ? 'bg-[#99FF48]' : 'bg-[#F2F2F2]'} px-[10px] py-[6px] text-[#020303] rounded-full font-medium leading-[18px] tracking-[-0.08px] whitespace-nowrap`}
+          onClick={() => setFilter('all')}
+        >
+          All in {user.city}
+        </div>
+        {typeList?.map((item:any,idx:number) =>
+          <div
+            className={`${filter === item.id ? 'bg-[#99FF48]' : 'bg-[#F2F2F2]'} px-[10px] py-[6px] text-[#020303] rounded-full font-medium leading-[18px] tracking-[-0.08px] whitespace-nowrap`}
+            onClick={() => setFilter(item.id)}
+            key={idx}
+          >
+            {capitalizeFirstLetter(item.type)}
+          </div>
+        )}
+      </div>
       <div className='w-full px-[20px] sm:px-0 relative'>
-        {user.address &&
+        {/* {user.address &&
           <div className="p-1 bg-[#ECECEC] rounded-[10px] mt-10 flex items-center">
             <ChangeViewButton label={'exploring'} />
             <ChangeViewButton label={'following'} />
           </div>
-        }
+        } */}
         {!leaderBoard ? (
           <>
             {currentView === 'exploring' &&
               <>
-                <div className={`${user ? 'mt-9' : 'mt-10'}`}>
-                  <div className='text-[14px] text-black opacity-70 font-medium mb-2 leading-[18px]'>
+                <div className={`mt-6`}>
+                  {/* <div className='text-[14px] text-black opacity-70 font-medium mb-2 leading-[18px]'>
                     {moment().format('dddd, Do MMM')}
-                  </div>
+                  </div> */}
 
                   <div className='font-semibold text-[28px] leading-9'>
                     Nearby experiences
                   </div>
 
-                  <div style={{ marginTop: 24 }}>
-                    {/* <Spin
+                  {/* <div style={{ marginTop: 24 }}>
+                    <Spin
                   tip='Loading...'
                   className='flex items-center mt-10'
-                > */}
+                >
                     {nearBy.length !== 0 && (
                       <ListDetail
                         status={'Nearby'}
                         data={readyToCollect}
                       />
                     )}
-                    {/* </Spin> */}
-                  </div>
+                    </Spin>
+                  </div> */}
 
-                  <div style={{ marginTop: 0 }}>
+                  <div style={{ marginTop: 24 }}>
                     <Spin
                       tip='Loading nearby'
                       spinning={loadingNearBy}
                       className={`flex items-center mt-10 text-black font-semibold`}
                       style={{ top: (loadingNearBy ? 208 : 0) }}
                     >
-                      {nearBy.length !== 0 ? (
-                        <ListDetail status={'Nearby'} data={nearBy} />
+                      {viewList.length !== 0 ? (
+                        <ListDetail status={'Nearby'} data={viewList} />
                       ) :
                         <>
                           {!loadingNearBy &&
@@ -245,7 +300,7 @@ function Home() {
                     </Spin>
                   </div>
                 </div>
-                {nearBy.length !== 0 && !loadingNearBy &&
+                {/* {nearBy.length !== 0 && !loadingNearBy &&
                   <Button
                     className='fixed top-[90%] right-4 w-[56px] h-[56px] rounded-full border-0'
                     style={{ backgroundColor: 'rgba(148, 255, 65, 0.80)' }}
@@ -261,7 +316,7 @@ function Home() {
                   >
                     <FaPlus size={24} className='text-black' />
                   </Button>
-                }
+                } */}
               </>
             }
           </>

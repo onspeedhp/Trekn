@@ -1,5 +1,6 @@
 import React from 'react'
 import { FaVolumeMute } from 'react-icons/fa'
+import { FaVolumeHigh } from 'react-icons/fa6';
 
 interface videoComponentProps {
     muted: boolean;
@@ -22,11 +23,9 @@ export default function VideoComponent({ muted, videoRef, src, onClick, classNam
                 autoPlay
                 className={className}
             />
-            {muted &&
-                <p className="absolute top-3 left-3 rounded-xl font-medium bg-gray-200 px-2 py-1 flex items-center gap-1">
-                    <FaVolumeMute /> Unmute
-                </p>
-            }
+            <p className="absolute top-3 right-3">
+                {muted ? <FaVolumeMute size={24} color='white' /> : <FaVolumeHigh size={24} color='#FFFFFFB2' />}
+            </p>
         </>
     )
 }
