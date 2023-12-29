@@ -59,7 +59,7 @@ export const getDropByUserAddress = async ({
 }) => {
   const { data, error } = await supabase
     .from('drop')
-    .select('*,user(*),drop_type(type_id)')
+    .select('*,user(*)')
     .or(`author_id.in.(${userId})`);
 
   if (!error) {
