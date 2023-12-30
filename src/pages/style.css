@@ -39,6 +39,11 @@
   border-radius: 24px;
 }
 
+/* search Input custom */
+.search-input input {
+  background-color: transparent;
+}
+
 @keyframes skeleton-loading {
   0% {
     background-color: hsl(200, 20%, 80%);

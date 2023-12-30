@@ -53,7 +53,7 @@ export const Search = () => {
           onChange={(e) => {
             setValue(e.target.value);
           }}
-          className='rounded-xl h-[51px] w-full px-3 py-4 mb-6 bg-[#F5F5F5] border-0 text-black'
+          className='search-input rounded-xl h-[51px] w-full px-3 py-4 mb-6 bg-[#F5F5F5] border-0 text-black'
           placeholder='Search for an IRL experience...'
           type='Input'
           onPressEnter={async () => {
