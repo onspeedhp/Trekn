@@ -62,19 +62,15 @@ export const Search = () => {
               setStatus('HaveResult');
               setListSearch([]);
               const searchTerms = value.split(' ');
-              console.log('Debug 2');
-
               const searchInput =
                 searchTerms.length === 1
                   ? searchTerms[0]
                   : `'${searchTerms.join("' & '")}'`;
-              console.log('Debug 1');
 
               const { data, error } = await supabase
                 .from('drop')
                 .select('*, user(*)')
                 .textSearch('name', searchInput);
-              console.log(data);
 
               if (!error) {
                 if (data.length > 0) {
