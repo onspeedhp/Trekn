@@ -66,13 +66,13 @@ function Home() {
     setLoadingPoint(false);
   }, []);
 
-  useEffect(()=>{
-    if(filter !== 'all') {
-      const result = [...readyToCollect,...nearBy].filter((item: any) => item.type === filter);
+  useEffect(() => {
+    if (filter !== 'all') {
+      const result = [...readyToCollect, ...nearBy].filter((item: any) => item.type === filter);
       return setViewList(result);
     }
-    return setViewList([...readyToCollect,...nearBy]);
-  },[readyToCollect, nearBy, filter])
+    return setViewList([...readyToCollect, ...nearBy]);
+  }, [readyToCollect, nearBy, filter])
 
   const getNearBy = async (lat: number, log: number) => {
     setLoadingNearBy(true);
@@ -221,7 +221,7 @@ function Home() {
         >
           All in {user.city}
         </div>
-        {typeList?.map((item:any,idx:number) =>
+        {typeList?.map((item: any, idx: number) =>
           <div
             className={`${filter === item.id ? 'bg-[#99FF48]' : 'bg-[#F2F2F2]'} px-[10px] py-[6px] text-[#020303] rounded-full font-medium leading-[18px] tracking-[-0.08px] whitespace-nowrap`}
             onClick={() => setFilter(item.id)}
@@ -247,10 +247,6 @@ function Home() {
                     {moment().format('dddd, Do MMM')}
                   </div> */}
 
-                  <div className='font-semibold text-[28px] leading-9'>
-                    Nearby experiences
-                  </div>
-
                   {/* <div style={{ marginTop: 24 }}>
                     <Spin
                   tip='Loading...'
@@ -265,7 +261,7 @@ function Home() {
                     </Spin>
                   </div> */}
 
-                  <div style={{ marginTop: 24 }}>
+                  <>
                     <Spin
                       tip='Loading nearby'
                       spinning={loadingNearBy}
@@ -273,14 +269,21 @@ function Home() {
                       style={{ top: (loadingNearBy ? 208 : 0) }}
                     >
                       {viewList.length !== 0 ? (
-                        <ListDetail status={'Nearby'} data={viewList} />
+                        <>
+                          <p className='font-semibold text-[28px] leading-9 mb-6'>
+                            Nearby experiences
+                          </p>
+                          <ListDetail status={'Nearby'} data={viewList} />
+                        </>
                       ) :
                         <>
                           {!loadingNearBy &&
                             <div className="flex flex-col items-center">
-                              <img src="/Route_search.svg" alt="" />
-                              <p className='text-center text-[15px] text-black opacity-50'>Seems like this is a whole new place for you to explore and share, be the first one!</p>
-                              <Button className='flex gap-2 items-center justify-center border-none rounded-3xl bg-black text-white text-base font-semibold w-full h-auto mt-6 py-3'
+                              <img className='w-[223px] h-[223px] object-cover object-center' src="/Route_search.svg" alt="" />
+                              <p className='text-center text-[15px] font-normal leading-6 text-black opacity-50 px-3'>
+                                No discoveries shared yet, you're the pioneer here—share your first discovery and start shaping the map!
+                              </p>
+                              <Button className='flex gap-2 items-center justify-center border-none rounded-3xl bg-black text-white text-base font-semibold w-full h-auto mt-4 py-3'
                                 onClick={async () => {
                                   if (user.id) {
                                     navigate('/check-in/upload-image');
@@ -298,7 +301,7 @@ function Home() {
                         </>
                       }
                     </Spin>
-                  </div>
+                  </>
                 </div>
                 {/* {nearBy.length !== 0 && !loadingNearBy &&
                   <Button
