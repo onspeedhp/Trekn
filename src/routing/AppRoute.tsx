@@ -21,6 +21,7 @@ import CheckinNearBy from '../pages/CheckinNearBy';
 import EditLocation from '../pages/EditLocation';
 import FollowPage from '../pages/FollowPage';
 import PrivateRoute from '../pages/PrivateRoute';
+import { Search } from '../pages/Search';
 
 const AppRoutes = () => (
   <BrowserRouter basename='/'>
@@ -29,11 +30,17 @@ const AppRoutes = () => (
         <Route path='home' element={<Home />} />
       </Route>
 
-      <Route element={<App header={Header} showNav hideHeader={true} layout={PrivateRoute} />}>
-        <Route
-          path='/account'
-          element={<Account/>}
-        ></Route>
+      <Route
+        element={
+          <App
+            header={Header}
+            showNav
+            hideHeader={true}
+            layout={PrivateRoute}
+          />
+        }
+      >
+        <Route path='/account' element={<Account />}></Route>
       </Route>
 
       <Route
@@ -139,6 +146,13 @@ const AppRoutes = () => (
         path='/drop/details/:dropId'
         element={
           <App header={Header} hideHeader={true} layout={DropDetailPage} />
+        }
+      ></Route>
+
+      <Route
+        path='/search'
+        element={
+          <App header={Header} hideHeader={true} layout={Search} showNav />
         }
       ></Route>
     </Routes>
