@@ -24,7 +24,7 @@ export const mintCompressedNFT = async ({
   userId: any;
   image?: string;
   description?: string;
-  onSuccess: (data: any) => void;
+  onSuccess: (data: any, sig: any) => void;
   onError: (error: any) => void;
 }) => {
   // check if user is already mint
@@ -101,7 +101,7 @@ export const mintCompressedNFT = async ({
 
           // web 2 side
           if (sig) {
-            onSuccess(sig);
+            onSuccess(data,sig);
           } else {
             onError('Cannot mint this NFT');
           }

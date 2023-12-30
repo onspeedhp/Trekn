@@ -49,33 +49,58 @@ export const Account = () => {
     (async () => {
       setLoading(true);
       const userData: any = [];
-      if (userId && userId !== userAccountData?.id) {
-        const _userAccountData = await getUserAccountData({ userId: Number(userId) });
-        dispatch(setAccountData(_userAccountData));
-      }
-      await getDropByUserAddress({
-        userId: [(Number(userId) || user.id)],
-        onSuccess: (res: any) => {
-          userData.push(
-            ...res.map((item: any) => {
+      if ((userId && userId !== userAccountData?.id) || user.id !== userAccountData?.id) {
+      const _userAccountData = await getUserAccountData({ userId: Number(userId) || user.id });
+      userData.push(
+        ...[
+          ..._userAccountData?.drop.map((item: any) => {
+            item.type = 'drop';
+            return { ...item };
+          }),
+          ..._userAccountData?.minted.map((item: any) => {
+            item.type = 'minted';
+            return item;
+          }),
+        ]
+      );
+      dispatch(setAccountData(_userAccountData));
+      } else {
+        userData.push(
+          ...[
+            ...JSON.parse(JSON.stringify(userAccountData))?.drop.map((item: any) => {
               item.type = 'drop';
-              return item;
-            })
-          );
-        },
-      });
-
-      await getMintedByUserAddress({
-        userId: [(Number(userId) || user.id)],
-        onSuccess: (res: any) => {
-          userData.push(
-            ...res.map((item: any) => {
+              return { ...item };
+            }),
+            ...JSON.parse(JSON.stringify(userAccountData))?.minted.map((item: any) => {
               item.type = 'minted';
               return item;
-            })
-          );
-        },
-      });
+            }),
+          ]
+        );
+      }
+      // await getDropByUserAddress({
+      //   userId: [(Number(userId) || user.id)],
+      //   onSuccess: (res: any) => {
+      //     userData.push(
+      //       ...res.map((item: any) => {
+      //         item.type = 'drop';
+      //         return item;
+      //       })
+      //     );
+      //   },
+      // });
+
+      // await getMintedByUserAddress({
+      //   userId: [(Number(userId) || user.id)],
+      //   onSuccess: (res: any) => {
+      //     userData.push(
+      //       ...res.map((item: any) => {
+      //         item.type = 'minted';
+      //         return item;
+      //       })
+      //     );
+      //   },
+      // });
 
       setUserData(sortDataByTimeline(userData));
       setLoading(false);
@@ -121,7 +146,7 @@ export const Account = () => {
             fill='none'
             className='mb-6'
             onClick={() => {
-              dispatch(clearAccountData());
+              // dispatch(clearAccountData());
               navigate('/');
             }}
           >
@@ -150,12 +175,12 @@ export const Account = () => {
 
           <div className='flex items-center justify-between mb-4'>
             <div className="relative rounded-full w-[100px] h-[100px] overflow-hidden">
-              <img
-                className={`w-full h-fullobject-cover object-center`}
-                src={`${userId ? userAccountData?.profileImage : user.profileImage}`}
-                alt=''
-              />
-              {!userAccountData?.profileImage && userId &&
+              {!loading ?
+                <img
+                  className={`w-full h-fullobject-cover object-center`}
+                  src={`${userId ? userAccountData?.profileImage : user.profileImage}`}
+                  alt=''
+                /> :
                 <div className="absolute animate-pulse bg-gray-200 z-10 left-0 right-0 top-0 bottom-0"></div>
               }
             </div>
@@ -180,26 +205,28 @@ export const Account = () => {
           </div>
 
           <div className='px-2'>
-            <div className={`name font-semibold text-2xl truncate ... ${userId && !userAccountData?.name ? 'animate-pulse bg-gray-200 w-20 h-4 rounded-xl' : ''}`}>
-              {userId ? userAccountData?.name : user.name}
+            <div className={`name font-semibold text-2xl truncate ... ${(userId && !userAccountData?.name) || loading ? 'animate-pulse bg-gray-200 w-20 h-4 rounded-xl' : ''}`}>
+              {!loading && (userId ? userAccountData?.name : user.name)}
             </div>
             <div className='desc py-3 text-sm text-[#000000b3] font-normal'>
-              {userId ? userAccountData.description : user.description}
+              {!loading && (userId ? userAccountData.description : user.description)}
             </div>
-            <div className="flex items-center gap-4">
-              <div className='balance flex items-center gap-1'>
-                <p className='font-semibold text-base leading-4 tracking-[-0.08px]'>{userId ? userAccountData?.point : user.point}</p>
-                <FaCookie className='text-[#FFAD08] w-3 h-3' />
+            {!loading &&
+              <div className="flex items-center gap-4">
+                <div className='balance flex items-center gap-1'>
+                  <p className='font-semibold text-base leading-4 tracking-[-0.08px]'>{userId ? userAccountData?.point : user.point}</p>
+                  <FaCookie className='text-[#FFAD08] w-3 h-3' />
+                </div>
+                <div className='balance flex items-center gap-1' onClick={() => navigate(userId ? `/account/${userId}/follow?type=follower` : '/account/follow?type=follower')}>
+                  <p className='font-semibold text-base leading-4 tracking-[-0.08px]'>{userId ? userAccountData?.follower?.length : user.follower?.length}</p>
+                  <p className='text-[13px] leading-4 tracking-[-0.08px]'>Followers</p>
+                </div>
+                <div className='balance flex items-center gap-1' onClick={() => navigate(userId ? `/account/${userId}/follow?type=following` : '/account/follow?type=following')}>
+                  <p className='font-semibold text-base leading-4 tracking-[-0.08px]'>{userId ? userAccountData?.following?.length : user.following?.length}</p>
+                  <p className='text-[13px] leading-4 tracking-[-0.08px]'>Following</p>
+                </div>
               </div>
-              <div className='balance flex items-center gap-1' onClick={() => navigate(userId ? `/account/${userId}/follow?type=follower` : '/account/follow?type=follower')}>
-                <p className='font-semibold text-base leading-4 tracking-[-0.08px]'>{userId ? userAccountData?.follower?.length : user.follower?.length}</p>
-                <p className='text-[13px] leading-4 tracking-[-0.08px]'>Followers</p>
-              </div>
-              <div className='balance flex items-center gap-1' onClick={() => navigate(userId ? `/account/${userId}/follow?type=following` : '/account/follow?type=following')}>
-                <p className='font-semibold text-base leading-4 tracking-[-0.08px]'>{userId ? userAccountData?.following?.length : user.following?.length}</p>
-                <p className='text-[13px] leading-4 tracking-[-0.08px]'>Following</p>
-              </div>
-            </div>
+            }
           </div>
         </div>
         <Spin
@@ -227,7 +254,7 @@ export const Account = () => {
               </div>
             </div>
             {activeTab === 'timeline' ? (
-              <div className='collection__timeline'>
+              <div className='collection__timeline pb-20'>
                 {Object.entries(userData).map(([key, data], dataIdx) => (
                   <>
                     <div

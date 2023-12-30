@@ -4,8 +4,6 @@ import CheckedinItem from './CheckedinItem';
 import { DetailCard } from './DetailCard';
 
 export default function Feed({ wrapperData ,data, dataIdx,item, itemIdx }: any) {
-  const navigate = useNavigate();
-
   return (
     <>
       {item.type === 'minted' && item.image ?

@@ -8,11 +8,13 @@ import { supabase } from '../utils/supabaseClients';
 import { createDrop } from '../middleware/data/drop';
 import { addNewReadyToCollect } from '../redux/slides/locationSlides';
 import CustomSelect from '../components/crud/CustomSelect';
+import { setAccountData } from '../redux/slides/accountSlice';
 
 export const EnterDropInfo = () => {
   const navigate = useNavigate();
   const { metadata, setMetadata } = useAuthContext();
   const user = useSelector((state: any) => state.user);
+  const userAccountData = useSelector((state: any) => state.account);
   const typeList = useSelector((state: any) => state.config?.dropType);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
@@ -174,6 +176,15 @@ export const EnterDropInfo = () => {
                       },
                     })
                   );
+                  if (user.id === userAccountData.id) {
+                    dispatch(setAccountData({
+                      ...userAccountData, drop: [...userAccountData.drop,
+                      {
+                        ...data[0],
+                        user,
+                      }]
+                    }))
+                  }
                 },
               });
               setIsLoading(false);

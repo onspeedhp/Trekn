@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import userSlide from './slides/userSlides';
 import locationSlide from './slides/locationSlides';
-import accountSlide from './slides/accountSlides';
+import accountSlide from './slides/accountSlice';
 import configSlice from './slides/configSlice';
 
 export const store = configureStore({
