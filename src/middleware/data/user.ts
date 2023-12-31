@@ -133,7 +133,7 @@ export const getFollowerById = async ({
 export const getUserAccountData = async ({ userId }: { userId: number }) => {
   const { data, error }: any = await supabase
     .from("user")
-    .select("*")
+    .select("*,drop(*,user(*)), minted(*,drop(*,user(*)),user(*))")
     .eq("id", userId);
 
   const { data: followerData, followerError }: any = await supabase
@@ -159,7 +159,7 @@ export const getListUser = async (userId: Array<number>) => {
     .select("*")
     .or(`id.in.(${userId})`);
 
-    if(!error) {
-      return data;
-    }
+  if (!error) {
+    return data;
+  }
 };

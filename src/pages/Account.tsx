@@ -27,7 +27,7 @@ import Feed from '../components/Feed';
 import { getUserAccountData } from '../middleware/data/user';
 import { followUser, unFollowUser } from '../middleware/data/follow';
 import { updateInit } from '../redux/slides/userSlides';
-import { clearAccountData, setAccountData } from '../redux/slides/accountSlides';
+import { clearAccountData, setAccountData } from '../redux/slides/accountSlice';
 import { supabase } from '../utils/supabaseClients';
 
 export const Account = () => {
@@ -46,42 +46,65 @@ export const Account = () => {
   // }, []);
 
   useEffect(() => {
-    // if (user.address) {
     (async () => {
       setLoading(true);
       const userData: any = [];
-      if (userId && userId !== userAccountData?.id) {
-        const _userAccountData = await getUserAccountData({ userId: Number(userId) });
-        dispatch(setAccountData(_userAccountData));
-      }
-      await getDropByUserAddress({
-        userId: [(Number(userId) || user.id)],
-        onSuccess: (res: any) => {
-          userData.push(
-            ...res.map((item: any) => {
+      if ((userId && userId !== userAccountData?.id) || user.id !== userAccountData?.id) {
+      const _userAccountData = await getUserAccountData({ userId: Number(userId) || user.id });
+      userData.push(
+        ...[
+          ..._userAccountData?.drop.map((item: any) => {
+            item.type = 'drop';
+            return { ...item };
+          }),
+          ..._userAccountData?.minted.map((item: any) => {
+            item.type = 'minted';
+            return item;
+          }),
+        ]
+      );
+      dispatch(setAccountData(_userAccountData));
+      } else {
+        userData.push(
+          ...[
+            ...JSON.parse(JSON.stringify(userAccountData))?.drop.map((item: any) => {
               item.type = 'drop';
-              return item;
-            })
-          );
-        },
-      });
-
-      await getMintedByUserAddress({
-        userId: [(Number(userId) || user.id)],
-        onSuccess: (res: any) => {
-          userData.push(
-            ...res.map((item: any) => {
+              return { ...item };
+            }),
+            ...JSON.parse(JSON.stringify(userAccountData))?.minted.map((item: any) => {
               item.type = 'minted';
               return item;
-            })
-          );
-        },
-      });
+            }),
+          ]
+        );
+      }
+      // await getDropByUserAddress({
+      //   userId: [(Number(userId) || user.id)],
+      //   onSuccess: (res: any) => {
+      //     userData.push(
+      //       ...res.map((item: any) => {
+      //         item.type = 'drop';
+      //         return item;
+      //       })
+      //     );
+      //   },
+      // });
+
+      // await getMintedByUserAddress({
+      //   userId: [(Number(userId) || user.id)],
+      //   onSuccess: (res: any) => {
+      //     userData.push(
+      //       ...res.map((item: any) => {
+      //         item.type = 'minted';
+      //         return item;
+      //       })
+      //     );
+      //   },
+      // });
 
       setUserData(sortDataByTimeline(userData));
       setLoading(false);
     })();
-    // }
   }, [user.address, user.id, userId]);
 
   const isFollowed = () => {
@@ -123,7 +146,7 @@ export const Account = () => {
             fill='none'
             className='mb-6'
             onClick={() => {
-              dispatch(clearAccountData());
+              // dispatch(clearAccountData());
               navigate('/');
             }}
           >
@@ -134,65 +157,61 @@ export const Account = () => {
             />
           </svg>
         </div>
-        <Spin
-          tip='Loading'
-          spinning={loading}
-          className='flex items-center mt-10 text-black font-semibold'
-        >
-          <div className='user-info mx-4 mb-6 text-black'>
-            {!userId &&
-              <div className='flex items-center justify-between mb-5 font-normal px-1 py-2'>
-                <div className='flex items-center gap-2 font-semibold text-xl leading-4'>
-                  {user.address.slice(0, 2)}...
-                  {user.address.slice(-6, -1)}
-                  <FaClone className='w-3 h-3' />
-                </div>
-                <Button className='bg-[#F4F4F4] rounded-full flex items-center justify-center border-0 py-2 px-3'>
-                  <span className='font-medium text-black'>
-                    Copy seed phrase{' '}
-                  </span>
-                </Button>
+        <div className='user-info mx-4 mb-6 text-black'>
+          {!userId &&
+            <div className='flex items-center justify-between mb-5 font-normal px-1 py-2'>
+              <div className='flex items-center gap-2 font-semibold text-xl leading-4'>
+                {user.address.slice(0, 2)}...
+                {user.address.slice(-6, -1)}
+                <FaClone className='w-3 h-3' />
               </div>
-            }
+              <Button className='bg-[#F4F4F4] rounded-full flex items-center justify-center border-0 py-2 px-3'>
+                <span className='font-medium text-black'>
+                  Copy seed phrase{' '}
+                </span>
+              </Button>
+            </div>
+          }
 
-            <div className='flex items-center justify-between mb-4'>
-              <div className="relative rounded-full w-[100px] h-[100px] overflow-hidden">
+          <div className='flex items-center justify-between mb-4'>
+            <div className="relative rounded-full w-[100px] h-[100px] overflow-hidden">
+              {!loading ?
                 <img
                   className={`w-full h-fullobject-cover object-center`}
                   src={`${userId ? userAccountData?.profileImage : user.profileImage}`}
                   alt=''
-                />
-                {!userAccountData?.profileImage && userId &&
-                  <div className="absolute animate-pulse bg-gray-200 z-10 left-0 right-0 top-0 bottom-0"></div>
-                }
+                /> :
+                <div className="absolute animate-pulse bg-gray-200 z-10 left-0 right-0 top-0 bottom-0"></div>
+              }
+            </div>
+            <div className='flex items-center gap-2'>
+              <div className='rounded-full border border-black flex justify-center items-center p-[9px]'>
+                <FaShare className='w-3 h-3' />
               </div>
-              <div className='flex items-center gap-2'>
-                <div className='rounded-full border border-black flex justify-center items-center p-[9px]'>
-                  <FaShare className='w-3 h-3' />
-                </div>
-                <div
-                  className='rounded-full border border-black py-[6px] px-4'
-                  onClick={() => {
-                    userId ?
-                      handleFollow()
-                      :
-                      navigate('/account/edit');
-                  }}
-                >
-                  <p className='text-base font-medium leading-4 tracking-[-0.08px]'>
-                    {userId ? (isFollowed() ? 'Unfollow' : 'Follow') : 'Edit profile'}
-                  </p>
-                </div>
+              <div
+                className='rounded-full border border-black py-[6px] px-4'
+                onClick={() => {
+                  userId ?
+                    handleFollow()
+                    :
+                    navigate('/account/edit');
+                }}
+              >
+                <p className='text-base font-medium leading-4 tracking-[-0.08px]'>
+                  {userId ? (isFollowed() ? 'Unfollow' : 'Follow') : 'Edit profile'}
+                </p>
               </div>
             </div>
+          </div>
 
-            <div className='px-2'>
-              <div className={`name font-semibold text-2xl truncate ... ${userId && !userAccountData?.name ? 'animate-pulse bg-gray-200 w-20 h-4 rounded-xl' : ''}`}>
-                {userId ? userAccountData?.name : user.name}
-              </div>
-              <div className='desc py-3 text-sm text-[#000000b3] font-normal'>
-                {userId ? userAccountData.description : user.description}
-              </div>
+          <div className='px-2'>
+            <div className={`name font-semibold text-2xl truncate ... ${(userId && !userAccountData?.name) || loading ? 'animate-pulse bg-gray-200 w-20 h-4 rounded-xl' : ''}`}>
+              {!loading && (userId ? userAccountData?.name : user.name)}
+            </div>
+            <div className='desc py-3 text-sm text-[#000000b3] font-normal'>
+              {!loading && (userId ? userAccountData.description : user.description)}
+            </div>
+            {!loading &&
               <div className="flex items-center gap-4">
                 <div className='balance flex items-center gap-1'>
                   <p className='font-semibold text-base leading-4 tracking-[-0.08px]'>{userId ? userAccountData?.point : user.point}</p>
@@ -207,8 +226,14 @@ export const Account = () => {
                   <p className='text-[13px] leading-4 tracking-[-0.08px]'>Following</p>
                 </div>
               </div>
-            </div>
+            }
           </div>
+        </div>
+        <Spin
+          tip='Loading'
+          spinning={loading}
+          className={`flex items-center text-black font-semibold ${loading ? 'mt-[30%]' : 'mt-10'}`}
+        >
           <div className='collection'>
             <div className='collection__tab relative w-full mb-6 h-8 flex items-center justify-center border-b border-[#D9D9D9] text-base font-semibold'>
               <div
@@ -229,7 +254,7 @@ export const Account = () => {
               </div>
             </div>
             {activeTab === 'timeline' ? (
-              <div className='collection__timeline'>
+              <div className='collection__timeline pb-20'>
                 {Object.entries(userData).map(([key, data], dataIdx) => (
                   <>
                     <div

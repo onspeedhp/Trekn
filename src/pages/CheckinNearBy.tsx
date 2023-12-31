@@ -14,8 +14,10 @@ export default function CheckinNearBy() {
     const [locationList, setLocationList] = useState([]);
     const [locationFilter, setLocationFilter] = useState('')
     const readyToCollectData = useSelector((state: any) => state?.location?.readyToCollect)
+    const user = useSelector((state: any) => state?.user)
     useEffect(() => {
-        setLocationList(readyToCollectData);
+        const data = readyToCollectData.filter((item: any) => item?.author_id !== user.id)
+        setLocationList(data);
     }, [])
     const handleFilterLocation = (value: string) => {
         setLocationFilter(value);
@@ -34,12 +36,14 @@ export default function CheckinNearBy() {
                         <p className="text-[13px] font-medium leading-[140%] text-[#BDBDBD]">To earn +200 points</p>
                     </div>
                 </div>
-                <Button
+                <div
                     className='bg-[#2C2C2C] text-white py-3 h-auto rounded-3xl font-semibold text-base border-0 w-full mb-5'
                     onClick={() => navigate('/check-in/upload-image')}
                 >
-                    Create a new place
-                </Button>
+                    <p className='text-center'>
+                        Create a new place
+                    </p>
+                </div>
             </div>
         </>
     )

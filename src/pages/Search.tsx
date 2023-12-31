@@ -14,16 +14,8 @@ export const Search = () => {
   const [value, setValue] = useState('');
   const user = useSelector((state: any) => state.user);
   const { windowSize, init } = useAuthContext();
-  const histories: any[] = [
-    'Xmas pub',
-    'Acoustic coffee',
-    'Blablabla',
-    'Nanami',
-    'BeMind',
-    'Rang Rang Coffe',
-    'Circle K',
-    'GS25',
-  ];
+  const histories: any = JSON.parse(localStorage.getItem('search-history') || '[]');
+  const type = useSelector((state: any) => state.config?.dropType)
   const [visibleItems, setVisibleItems] = useState(4);
   const popular = [
     'Street food',
@@ -45,6 +37,61 @@ export const Search = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const handleSearch = async (type?: any) => {
+    setLoadingSearching(true);
+    setStatus('HaveResult');
+    setListSearch([]);
+    const searchTerms = value.split(' ');
+    console.log('Debug 2');
+
+    const searchInput =
+      searchTerms.length === 1
+        ? searchTerms[0]
+        : `'${searchTerms.join("' & '")}'`;
+    console.log('Debug 1');
+    let _data: any;
+    let _error: any;
+    if (type) {
+      setValue(type.type)
+      const { data, error } = await supabase
+        .from('drop')
+        .select('*, user(*)')
+        .eq('type', type.id)
+      _data = data;
+      _error = error;
+    } else {
+      localStorage.setItem('search-history', JSON.stringify([value, ...histories]))
+      const { data, error } = await supabase
+        .from('drop')
+        .select('*, user(*)')
+        .textSearch('name', searchInput)
+      _data = data;
+      _error = error;
+    }
+
+    console.log(_data);
+
+    if (!_error) {
+      if (_data.length > 0) {
+        let nearBy = [];
+        nearBy.push(..._data.map((item: any) => ({
+          ...item,
+          distance: calculateDistance(
+            user.lat,
+            user.lng,
+            item.lat,
+            item.lng
+          ),
+        })));
+        nearBy.sort((a, b) => a.distance - b.distance);
+        setListSearch(nearBy);
+      } else {
+        setStatus('DontHave');
+      }
+    }
+    setLoadingSearching(false);
+  }
+
   return (
     <>
       <div className='mx-5 mt-6'>
@@ -53,56 +100,25 @@ export const Search = () => {
           onChange={(e) => {
             setValue(e.target.value);
           }}
-          className='rounded-xl h-[51px] w-full px-3 py-4 mb-6 bg-[#F5F5F5] border-0 text-black'
+
+          className='search-input rounded-xl h-[51px] w-full px-3 py-4 mb-6 bg-[#F5F5F5] border-0 text-black'
           placeholder='Search for an IRL experience...'
           type='Input'
           onPressEnter={async () => {
             if (value !== '') {
-              setLoadingSearching(true);
-              setStatus('HaveResult');
-              setListSearch([]);
-              const searchTerms = value.split(' ');
-              const searchInput =
-                searchTerms.length === 1
-                  ? searchTerms[0]
-                  : `'${searchTerms.join("' & '")}'`;
-
-              const { data, error } = await supabase
-                .from('drop')
-                .select('*, user(*)')
-                .textSearch('name', searchInput);
-
-              if (!error) {
-                if (data.length > 0) {
-                  let nearBy = [];
-                  for (let i = 0; i < data.length; i++) {
-                    nearBy.push({
-                      ...data[0],
-                      distance: calculateDistance(
-                        user.lat,
-                        user.lng,
-                        data[0].lat,
-                        data[0].lng
-                      ),
-                    });
-                  }
-                  nearBy.sort((a, b) => a.distance - b.distance);
-                  setListSearch(nearBy);
-                  console.log('data');
-                } else {
-                  setStatus('DontHave');
-                }
-              } else {
-                setStatus('Beginning');
-              }
-              setLoadingSearching(false);
+              handleSearch()
+            } else {
+              setStatus('Beginning');
             }
-          }}
+            setLoadingSearching(false);
+          }
+          }
           suffix={
             value ? (
               <FaTimesCircle
                 onClick={() => {
                   setValue('');
+                  setStatus('Beginning');
                 }}
               />
             ) : (
@@ -112,12 +128,12 @@ export const Search = () => {
         />
         {status === 'Beginning' && histories && histories.length > 0 && (
           <div className='w-full text-black opacity-80 px-3'>
-            {histories.length <= 3 ? (
+            {histories.length > 0 && histories.length <= 3 ? (
               <>
-                {histories.map((item, index) => (
+                {histories.map((item: any, index: number) => (
                   <>
-                    <div>
-                      <div>{item}</div>
+                    <div key={index}>
+                      <p className='text-[#0B080880] font-medium text-base leading-5'>{item}</p>
                       <Divider className='my-3' />
                     </div>
                   </>
@@ -126,15 +142,16 @@ export const Search = () => {
             ) : (
               <>
                 <div className='overflow-y-auto h-[196px]'>
-                  {histories.slice(0, visibleItems).map((item, index) => (
+                  {histories.slice(0, visibleItems).map((item: any, index: number) => (
                     <>
                       <div
                         onClick={() => {
                           setValue(item);
                           setSelectedPopolar(-1);
                         }}
+                        key={index}
                       >
-                        <div>{item}</div>
+                        <p className='text-[#0B080880] font-medium text-base leading-5'>{item}</p>
                         <Divider className='my-3' />
                       </div>
                     </>
@@ -158,25 +175,24 @@ export const Search = () => {
         <>
           <div className='w-full h-2 bg-[#F5F5F5]'></div>
           <div className='mx-5 my-6' style={{ width: windowSize.width - 40 }}>
-            <div className='mb-4  text-[#0B0808]'>Popular</div>
+            <div className='mb-4  text-[#0B0808] font-medium text-base leading-5'>Popular</div>
             <div className='flex flex-wrap gap-x-3 gap-y-[10px] text-black opacity-80'>
-              {popular.map((item, index) => (
-                <>
-                  <Button
-                    className='h-[51px] w-fit rounded-full'
-                    onClick={() => {
-                      if (selectedPopular !== -1 && selectedPopular === index) {
-                        setSelectedPopolar(-1);
-                        setValue('');
-                      } else {
-                        setSelectedPopolar(index);
-                        setValue(item);
-                      }
-                    }}
-                  >
-                    {item}
-                  </Button>
-                </>
+              {type.slice(0, 3).map((item: any, index: number) => (
+                <div
+                  key={index}
+                  className='p-4 border border-[#000000B2] font-medium text-base leading-[17px] rounded-full'
+                  onClick={() => {
+                    if (selectedPopular !== -1 && selectedPopular === index) {
+                      setSelectedPopolar(-1);
+                      setValue('');
+                    } else {
+                      setSelectedPopolar(index);
+                      handleSearch(item);
+                    }
+                  }}
+                >
+                  {item.type}
+                </div>
               ))}
             </div>
           </div>

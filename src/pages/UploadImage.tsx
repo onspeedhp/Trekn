@@ -48,7 +48,7 @@ export const UploadImage = () => {
             fill='none'
             className='mb-6'
             onClick={() => {
-              navigate('/check-in/nearby');
+              navigate('/');
             }}
           >
             <path

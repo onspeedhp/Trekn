@@ -5,16 +5,19 @@ import { FaPlusCircle, FaTimesCircle, FaUpload } from 'react-icons/fa';
 import { FaCirclePlus } from 'react-icons/fa6';
 import { Button, Modal, Spin } from 'antd';
 import { useNavigate, useParams } from 'react-router';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { mintCompressedNFT } from '../functions/mintCompressedNFT';
 import { getDropByID } from '../middleware/data/drop';
 import { PublicKey } from '@solana/web3.js';
 import { supabase } from '../utils/supabaseClients';
+import { setAccountData } from '../redux/slides/accountSlice';
 
 export default function CheckinWPhoto() {
   const { id: dropId } = useParams();
   const { windowSize, setMetadata, metadata } = useAuthContext();
-  const user = useSelector((state: any) => state.user)
+  const user = useSelector((state: any) => state.user);
+  const userAccountData = useSelector((state: any) => state.account);
+  const dispatch = useDispatch();
   const [files, setFiles] = useState<File | null>(null);
   const [desc, setDesc] = useState<string>('');
   const [selectedLocation, setSelectedLocation] = useState<any>(null);
@@ -60,13 +63,25 @@ export default function CheckinWPhoto() {
         userId: user.id,
         ...(imageUrl && { image: imageUrl }),
         ...(desc && { description: desc }),
-        onSuccess: (data: any) => {
+        onSuccess: (data: any, sig: any) => {
           setMetadata({
-            sig: data,
+            sig,
             ...selectedLocation,
             ...(imageUrl && { image: imageUrl }),
             ...(desc && { description: desc }),
           });
+          if (user.id === userAccountData.id) {
+            dispatch(setAccountData({
+              ...userAccountData, minted: [...userAccountData.minted,
+              {
+                drop: selectedLocation,
+                ...data,
+                user,
+                ...(imageUrl && { image: imageUrl }),
+                ...(desc && { description: desc }),
+              }]
+            }))
+          }
           navigate('/collect-success');
         },
         onError: (error) => {

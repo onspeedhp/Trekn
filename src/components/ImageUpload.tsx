@@ -136,9 +136,8 @@ export const ImageUpload: React.FC = () => {
             /> */}
           </div>
 
-          <Button
-            loading={loading}
-            className='bg-[#2C2C2C] text-white w-full h-12 rounded-3xl font-semibold text-base border-0'
+          <div
+            className='bg-[#2C2C2C] flex items-center justify-center text-white w-full h-12 rounded-3xl font-semibold text-base border-0'
             onClick={() => {
               setLoading(true);
               let imageArray: File[] = [];
@@ -156,7 +155,7 @@ export const ImageUpload: React.FC = () => {
             }}
           >
             Continue
-          </Button>
+          </div>
         </>
       ) : (
         <>

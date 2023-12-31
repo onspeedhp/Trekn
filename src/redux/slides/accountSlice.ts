@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export const accountSlide = createSlice({
+export const accountSlice = createSlice({
     name: "account",
     initialState: {},
     reducers: {
@@ -13,6 +13,6 @@ export const accountSlide = createSlice({
     },
 });
 
-export const { setAccountData, clearAccountData } = accountSlide.actions;
+export const { setAccountData, clearAccountData } = accountSlice.actions;
 
-export default accountSlide.reducer;
+export default accountSlice.reducer;

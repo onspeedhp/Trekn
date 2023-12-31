@@ -271,7 +271,7 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
         </div>
       </div>
       {!last && <div className='border-b mt-6'></div>}
-      {last && isHome() && <div className='mt-20'/>}
+      {last && <div className='mt-20'/>}
     </div >
   );
 };
