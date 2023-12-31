@@ -44,6 +44,12 @@
   background-color: transparent;
 }
 
+.search-input:focus-within {
+  z-index: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
 @keyframes skeleton-loading {
   0% {
     background-color: hsl(200, 20%, 80%);
