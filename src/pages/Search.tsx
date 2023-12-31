@@ -177,7 +177,7 @@ export const Search = () => {
           <div className='mx-5 my-6' style={{ width: windowSize.width - 40 }}>
             <div className='mb-4  text-[#0B0808] font-medium text-base leading-5'>Popular</div>
             <div className='flex flex-wrap gap-x-3 gap-y-[10px] text-black opacity-80'>
-              {type.slice(0,3).map((item: any, index: number) => (
+              {type.slice(0, 3).map((item: any, index: number) => (
                 <div
                   key={index}
                   className='p-4 border border-[#000000B2] font-medium text-base leading-[17px] rounded-full'
