@@ -31,7 +31,7 @@
   pointer-events: unset;
 }
 
-.ant-spin-blur::after{
+.ant-spin-blur::after {
   display: none;
 }
 
@@ -48,6 +48,19 @@
   z-index: 0 !important;
   border: none !important;
   box-shadow: none !important;
+}
+
+/* button */
+.ant-btn:active,
+.ant-btn:focus-visible {
+  border-color: unset;
+  color: unset;
+  outline: none !important;
+  outline-offset: unset;
+}
+
+.ant-btn div {
+  display: none;
 }
 
 @keyframes skeleton-loading {
