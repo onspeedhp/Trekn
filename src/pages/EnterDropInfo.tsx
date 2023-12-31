@@ -133,7 +133,7 @@ export const EnterDropInfo = () => {
 
           <Button
             className='bg-[#2E2E2E] flex items-center justify-center w-full h-12 mt-7 rounded-3xl font-semibold text-base border-0'
-            disabled={metadata.name ? false : true}
+            disabled={metadata.name && metadata.description ? false : true}
             style={{
               backgroundColor: metadata.name && metadata.description ? '#2E2E2E' : '#2E2E2E',
               color: metadata.name && metadata.description ? 'white' : '#FFFFFF80',
