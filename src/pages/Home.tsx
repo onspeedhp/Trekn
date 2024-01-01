@@ -216,14 +216,14 @@ function Home() {
           />
         </div>
         <div
-          className={`${filter === 'all' ? 'bg-[#99FF48]' : 'bg-[#F2F2F2]'} px-[10px] py-[6px] text-[#020303] rounded-full font-medium leading-[18px] tracking-[-0.08px] whitespace-nowrap`}
+          className={`${filter === 'all' ? 'bg-[#99FF48]' : 'bg-[#F2F2F2]'} px-[10px] py-[6px] text-[13px] text-[#020303] rounded-full font-medium leading-[18px] tracking-[-0.08px] whitespace-nowrap`}
           onClick={() => setFilter('all')}
         >
           All in {user.city}
         </div>
         {typeList?.map((item: any, idx: number) =>
           <div
-            className={`${filter === item.id ? 'bg-[#99FF48]' : 'bg-[#F2F2F2]'} px-[10px] py-[6px] text-[#020303] rounded-full font-medium leading-[18px] tracking-[-0.08px] whitespace-nowrap`}
+            className={`${filter === item.id ? 'bg-[#99FF48]' : 'bg-[#F2F2F2]'} px-[10px] py-[6px] text-[13px] text-[#020303] rounded-full font-medium leading-[18px] tracking-[-0.08px] whitespace-nowrap`}
             onClick={() => setFilter(item.id)}
             key={idx}
           >
