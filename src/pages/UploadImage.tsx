@@ -38,7 +38,7 @@ export const UploadImage = () => {
 
   return (
     <>
-        <div className='p-5 text-white font-semibold bg-black h-screen'>
+        <div className='p-5 text-white font-semibold bg-black h-screen flex flex-col'>
           <svg
             xmlns='http://www.w3.org/2000/svg'
             width='17'

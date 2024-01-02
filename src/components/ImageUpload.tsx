@@ -3,12 +3,17 @@ import { useAuthContext } from '../context/AuthContext';
 import { FaUpload } from 'react-icons/fa6';
 import { Button } from 'antd';
 import { useNavigate } from 'react-router';
-import { FaTimesCircle } from 'react-icons/fa';
+import { FaPlus, FaTimesCircle } from 'react-icons/fa';
 import './image-upload.css';
 
 export const ImageUpload: React.FC = () => {
   const { metadata, setMetadata, windowSize } = useAuthContext();
-  const [files, setFiles] = useState<File[]>(metadata.imageArray || []);
+  const navigate = useNavigate();
+  const [files, setFiles] = useState<any>(()=>{
+    const remainingEmptySlots = 9 - metadata?.imageArray?.length || 0;
+    const emptyFiles = Array.from({ length: remainingEmptySlots }, () => null);
+    return [...[...metadata?.imageArray || []], ...emptyFiles];
+  });
   const [edit, setEdit] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -16,26 +21,35 @@ export const ImageUpload: React.FC = () => {
     if (event.target.files) {
       const selectedFiles = Array.from(event.target.files);
 
-      if (files.length + selectedFiles.length > 9) {
+      const newFiles = [...files.filter((file: any)=>file?.name && file), ...selectedFiles].slice(0, 9);
+
+      if (newFiles.length > 9) {
         alert('The number of photos cannot exceed 9!');
         return;
       }
-      console.log(selectedFiles);
-      setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
+      handleEmpty(newFiles);
     }
   };
-  const navigate = useNavigate();
+
+  const handleEmpty = (newFiles: any) => {
+    const remainingEmptySlots = 9 - newFiles.length;
+    const emptyFiles = Array.from({ length: remainingEmptySlots }, () => null);
+    if(emptyFiles.length === 0) {
+      setEdit(false);
+    }
+    setFiles([...newFiles, ...emptyFiles]);
+  }
 
   return (
-    <>
+    <div className='flex-1 flex flex-col'>
       {files.length > 0 ? (
         <>
           <div
             style={{ height: 371, width: windowSize.width - 40 }}
-            className='bg-[#2C2C2C] rounded-xl p-2.5 flex-col relative mb-6'
+            className='bg-[#1E1E1E] rounded-xl p-2.5 flex-col relative mb-6'
           >
             <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-              {files.length === 1 ? (
+              {/* {files.length === 1 ? (
                 <div className='relative'>
                   {files[0].type.includes('video') ?
                     <video src={URL.createObjectURL(files[0])}
@@ -108,7 +122,58 @@ export const ImageUpload: React.FC = () => {
                     </div>
                   ))}
                 </>
-              )}
+              )} */}
+              <>
+                {files.map((file: any, index: number) => (
+                  <>
+                    {file?.name ?
+                      <div
+                        className={`relative ${edit && 'shaking'}`}
+                        key={index}
+                      >
+                        <img
+                          key={index}
+                          src={URL.createObjectURL(file)}
+                          alt={`Uploaded`}
+                          className='m-1.5 rounded-xl'
+                          id='image'
+                          style={{
+                            width: (windowSize.width - 96) / 3,
+                            height: '93px',
+                            objectFit: 'cover',
+                            objectPosition: 'center',
+                          }}
+                        />
+                        {edit === true && (
+                          <FaTimesCircle
+                            size={18}
+                            className='text-[#FFFFFF] absolute top-[-4px] right-[-4px]'
+                            onClick={() => {
+                              const newItems = [...files];
+                              newItems.splice(index, 1);
+                              handleEmpty(newItems);
+                            }}
+                          />
+                        )}
+                      </div>
+                      :
+                      <div
+                        className='m-1.5 rounded-xl flex items-center justify-center bg-[#252525] relative'
+                        style={{ width: (windowSize.width - 96) / 3, height: '93px' }}
+                      >
+                        <input
+                          type='file'
+                          accept='image/*,video/mp4'
+                          className='absolute opacity-0 w-full h-full'
+                          onChange={fileSelectedHandler}
+                          multiple
+                        />
+                        <FaPlus size={16} color='#FFFFFFB2'/>
+                      </div>
+                    }
+                  </>
+                ))}
+              </>
             </div>
             <div
               className='absolute bottom-0 flex justify-center mb-4 text-[#99FF48] font-semibold'
@@ -137,12 +202,14 @@ export const ImageUpload: React.FC = () => {
           </div>
 
           <div
-            className='bg-[#2C2C2C] flex items-center justify-center text-white w-full h-12 rounded-3xl font-semibold text-base border-0'
+            className='bg-[#2C2C2C] flex items-center justify-center text-white w-full h-12 rounded-3xl font-semibold text-base border-0 mt-auto'
             onClick={() => {
               setLoading(true);
               let imageArray: File[] = [];
-              files.forEach(async (file) => {
-                imageArray.push(file);
+              files.forEach(async (file: any) => {
+                if (file?.name) {
+                  imageArray.push(file);
+                }
               });
               setMetadata({
                 ...metadata,
@@ -162,19 +229,19 @@ export const ImageUpload: React.FC = () => {
           <div
             className='relative p-6'
             style={{
-              background: '#2C2C2C',
+              background: '#1E1E1E',
               width: windowSize.width - 40,
               marginBottom: 62,
               borderRadius: 12,
             }}
           >
             <img src="/upload-card.png" alt="" className='mx-auto object-center w-[177px] h-[197px]' />
-            <p className='mt-4'>
+            <p className='mt-4 text-[13px] text-[#FFFFFFB2] leading-[18px] text-center font-normal tracking-[-0.08px]'>
               Upload images or video to give others a vivid and detailed view of this place.
             </p>
           </div>
           <div
-            className='relative bg-[#2C2C2C] flex items-center justify-center text-white w-full h-12 rounded-3xl font-semibold text-base border-0'
+            className='relative mt-auto bg-[#2E2E2E] flex items-center justify-center text-white w-full h-12 rounded-3xl font-semibold text-base border-0'
           >
             <input
               type='file'
@@ -183,13 +250,12 @@ export const ImageUpload: React.FC = () => {
               onChange={fileSelectedHandler}
               multiple
             />
-            <FaUpload size={16} />
-            <span className='ml-2 text-base font-bold'>
+            <span className='ml-2 text-base font-bold leading-6'>
               Upload image or video
             </span>
           </div>
         </>
       )}
-    </>
+    </div>
   );
 };

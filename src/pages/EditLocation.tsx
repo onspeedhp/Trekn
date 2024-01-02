@@ -17,7 +17,6 @@ export default function EditLocation() {
   const { setMetadata, metadata, windowSize } = useAuthContext();
   const apiService = useApi();
   const user = useSelector((state: any) => state.user);
-  const [address, setAddress] = useState<string>('');
   const [currentEdit, setCurrentEdit] = useState('');
   const [searchValue, setSearchValue] = useState('');
   const [addressForm, setAddressForm] = useState<{
@@ -161,18 +160,18 @@ export default function EditLocation() {
     setCurrentEdit('confirm');
   };
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const response = await axios.get(
-          `https://api.geoapify.com/v1/geocode/reverse?lat=${user.lat}&lon=${user.lng}&apiKey=${process.env.REACT_APP_GEOAPIFY}`
-        );
-        setAddress(response.data.features[0].properties.formatted);
-      } catch (error) {
-        console.error('Error fetching address: ', error);
-      }
-    })()
-  }, [])
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `https://api.geoapify.com/v1/geocode/reverse?lat=${user.lat}&lon=${user.lng}&apiKey=${process.env.REACT_APP_GEOAPIFY}`
+  //       );
+  //       setAddress(response.data.features[0].properties.formatted);
+  //     } catch (error) {
+  //       console.error('Error fetching address: ', error);
+  //     }
+  //   })()
+  // }, [])
 
   const onMapMove = useCallback(async (event: ViewStateChangeEvent) => {
     setAddressLocation((prev: any) => ({
@@ -274,7 +273,11 @@ export default function EditLocation() {
           </div>
           <div
             className="text-[#99FF48] font-medium text-[13px] leading-4 mt-6"
-            onClick={() => {
+            onClick={async () => {
+              const response = await axios.get(
+                `https://api.geoapify.com/v1/geocode/reverse?lat=${user.lat}&lon=${user.lng}&apiKey=${process.env.REACT_APP_GEOAPIFY}`
+              );
+              const address = response.data.features[0].properties.formatted;
               setMetadata({
                 ...metadata,
                 location: address,
