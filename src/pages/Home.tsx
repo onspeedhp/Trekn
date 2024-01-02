@@ -191,10 +191,10 @@ function Home() {
   useEffect(() => {
     const handleScrollDown = () => {
       if (window.scrollY > 80 && !showAdd) {
-        setShowAdd(true);
+        return setShowAdd(true);
       }
       if (window.scrollY < 80) {
-        setShowAdd(false);
+        return setShowAdd(false);
       }
     }
     window.addEventListener('scroll', handleScrollDown)
@@ -319,23 +319,23 @@ function Home() {
                     </Spin>
                   </>
                 </div>
-                {nearBy.length !== 0 && !loadingNearBy && showAdd &&
-                  <Button
-                    className='fixed top-[20%] right-4 w-[56px] h-[56px] rounded-full border-0'
-                    style={{ backgroundColor: 'rgba(148, 255, 65, 0.80)' }}
-                    onClick={async () => {
-                      if (user.id) {
-                        navigate('/check-in/nearby');
-                      } else {
-                        setLoading(true);
-                        await init();
-                        setLoading(false);
-                      }
-                    }}
-                  >
-                    <FaPlus size={24} className='text-black' />
-                  </Button>
-                }
+                <Button
+                  className={
+                    `fixed bottom-0 right-2 w-[56px] h-[56px] rounded-full border-0 opacity-0 duration-500 transition-all ${nearBy.length !== 0 && !loadingNearBy && showAdd && 'opacity-100 bottom-[12%]'}`
+                  }
+                  style={{ backgroundColor: 'rgba(148, 255, 65, 0.80)' }}
+                  onClick={async () => {
+                    if (user.id) {
+                      navigate('/check-in/nearby');
+                    } else {
+                      setLoading(true);
+                      await init();
+                      setLoading(false);
+                    }
+                  }}
+                >
+                  <FaPlus size={24} className='text-black' />
+                </Button>
               </>
             }
           </>
