@@ -53,18 +53,22 @@ function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (locationState?.login && !user.address) {
-      init();
-      window.history.replaceState({}, document.title)
-    }
-    getDropType({ onSuccess: (data) => dispatch(setDropType(data)) })
-    setLoadingPoint(true);
-    getLeaderBoardPoint({
-      onSuccess: (data) => {
-        setLeaderBoardPoint(data);
-      },
-    });
-    setLoadingPoint(false);
+    (async () => {
+      if (locationState?.login && !user.address) {
+        setLoading(true);
+        await init();
+        setLoading(false);
+        window.history.replaceState({}, document.title)
+      }
+      getDropType({ onSuccess: (data) => dispatch(setDropType(data)) })
+      setLoadingPoint(true);
+      getLeaderBoardPoint({
+        onSuccess: (data) => {
+          setLeaderBoardPoint(data);
+        },
+      });
+      setLoadingPoint(false);
+    })()
   }, []);
 
   useEffect(() => {
@@ -247,23 +251,28 @@ function Home() {
           </div>
         )}
       </div>
-      <div className='w-full px-[20px] sm:px-0 relative'>
-        {/* {user.address &&
+      <Spin
+        spinning={loading}
+        tip='Loading login'
+        className='text-black'
+      >
+        <div className='w-full px-[20px] sm:px-0 relative'>
+          {/* {user.address &&
           <div className="p-1 bg-[#ECECEC] rounded-[10px] mt-10 flex items-center">
             <ChangeViewButton label={'exploring'} />
             <ChangeViewButton label={'following'} />
           </div>
         } */}
-        {!leaderBoard ? (
-          <>
-            {currentView === 'exploring' &&
-              <>
-                <div className={`mt-6`}>
-                  {/* <div className='text-[14px] text-black opacity-70 font-medium mb-2 leading-[18px]'>
+          {!leaderBoard ? (
+            <>
+              {currentView === 'exploring' &&
+                <>
+                  <div className={`mt-6`}>
+                    {/* <div className='text-[14px] text-black opacity-70 font-medium mb-2 leading-[18px]'>
                     {moment().format('dddd, Do MMM')}
                   </div> */}
 
-                  {/* <div style={{ marginTop: 24 }}>
+                    {/* <div style={{ marginTop: 24 }}>
                     <Spin
                   tip='Loading...'
                   className='flex items-center mt-10'
@@ -277,144 +286,145 @@ function Home() {
                     </Spin>
                   </div> */}
 
-                  <>
-                    <Spin
-                      tip='Loading nearby'
-                      spinning={loadingNearBy}
-                      className={`flex items-center mt-10 text-black font-semibold`}
-                      style={{ top: (loadingNearBy ? 208 : 0) }}
-                    >
-                      {viewList.length !== 0 ? (
-                        <>
-                          <p className='font-semibold text-[28px] leading-9 mb-6'>
-                            Nearby experiences
-                          </p>
-                          <ListDetail status={'Nearby'} data={viewList} />
-                        </>
-                      ) :
-                        <>
-                          {!loadingNearBy &&
-                            <div className="flex flex-col items-center">
-                              <img className='w-[223px] h-[223px] object-cover object-center' src="/Route_search.svg" alt="" />
-                              <p className='text-center text-[15px] font-normal leading-6 text-black opacity-50 px-3'>
-                                No discoveries shared yet, you're the pioneer here—share your first discovery and start shaping the map!
-                              </p>
-                              <Button className='flex gap-2 items-center justify-center border-none rounded-3xl bg-black text-white text-base font-semibold w-full h-auto mt-4 py-3'
-                                onClick={async () => {
-                                  if (user.id) {
-                                    navigate('/check-in/upload-image');
-                                  } else {
-                                    setLoading(true);
-                                    await init();
-                                    setLoading(false);
-                                  }
-                                }}>
-                                <FaPlus size={24} />
-                                <span>Drop a new experience</span>
-                              </Button>
-                            </div>
-                          }
-                        </>
-                      }
-                    </Spin>
-                  </>
-                </div>
-                <Button
-                  className={
-                    `fixed bottom-0 right-2 w-[56px] h-[56px] rounded-full border-0 opacity-0 duration-500 transition-all ${nearBy.length !== 0 && !loadingNearBy && showAdd && 'opacity-100 bottom-[12%]'}`
-                  }
-                  style={{ backgroundColor: 'rgba(148, 255, 65, 0.80)' }}
-                  onClick={async () => {
-                    if (user.id) {
-                      navigate('/check-in/nearby');
-                    } else {
-                      setLoading(true);
-                      await init();
-                      setLoading(false);
-                    }
-                  }}
-                >
-                  <FaPlus size={24} className='text-black' />
-                </Button>
-              </>
-            }
-          </>
-        ) : (
-          <>
-            <div className='collection-detail'>
-              <div className='text-[34px] font-bold leading-10 mb-6 mt-10'>
-                Leader board
-              </div>
-
-              <>
-                <Spin
-                  tip='Loading...'
-                  spinning={loadingPoint}
-                  className='flex items-center mt-16 mx-3'
-                >
-                  {leaderBoardPoint.length !== 0 && (
                     <>
-                      <div className='flex-col mt-6 mx-3'>
-                        {leaderBoardPoint.map((user: any, index) => (
-                          <div
-                            className='flex items-center relative w-full mb-4'
-                            key={index}
-                          >
-                            <img
-                              src={`${user?.profileImage}`}
-                              alt=''
-                              className='w-9 h-9 mr-2 rounded-full'
-                            />
-                            <div className='font-medium'>{user?.name}</div>
-                            <div className='absolute inset-y-0 right-0'>
-                              {user.point}
-                              <span className='text-black opacity-50'>
-                                {user.point === 1 ? ' point' : ' points'}
-                              </span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+                      <Spin
+                        tip='Loading nearby'
+                        spinning={loadingNearBy}
+                        className={`flex items-center mt-10 text-black font-semibold`}
+                        style={{ top: (loadingNearBy ? 208 : 0) }}
+                      >
+                        {viewList.length !== 0 ? (
+                          <>
+                            <p className='font-semibold text-[28px] leading-9 mb-6'>
+                              Nearby experiences
+                            </p>
+                            <ListDetail status={'Nearby'} data={viewList} />
+                          </>
+                        ) :
+                          <>
+                            {!loadingNearBy &&
+                              <div className="flex flex-col items-center">
+                                <img className='w-[223px] h-[223px] object-cover object-center' src="/Route_search.svg" alt="" />
+                                <p className='text-center text-[15px] font-normal leading-6 text-black opacity-50 px-3'>
+                                  No discoveries shared yet, you're the pioneer here—share your first discovery and start shaping the map!
+                                </p>
+                                <Button className='flex gap-2 items-center justify-center border-none rounded-3xl bg-black text-white text-base font-semibold w-full h-auto mt-4 py-3'
+                                  onClick={async () => {
+                                    if (user.id) {
+                                      navigate('/check-in/upload-image');
+                                    } else {
+                                      setLoading(true);
+                                      await init();
+                                      setLoading(false);
+                                    }
+                                  }}>
+                                  <FaPlus size={24} />
+                                  <span>Drop a new experience</span>
+                                </Button>
+                              </div>
+                            }
+                          </>
+                        }
+                      </Spin>
                     </>
-                  )}
-                </Spin>
-              </>
+                  </div>
+                  <Button
+                    className={
+                      `fixed bottom-0 right-2 w-[56px] h-[56px] rounded-full border-0 opacity-0 duration-500 transition-all ${nearBy.length !== 0 && !loadingNearBy && showAdd && 'opacity-100 bottom-[12%]'}`
+                    }
+                    style={{ backgroundColor: 'rgba(148, 255, 65, 0.80)' }}
+                    onClick={async () => {
+                      if (user.id) {
+                        navigate('/check-in/nearby');
+                      } else {
+                        setLoading(true);
+                        await init();
+                        setLoading(false);
+                      }
+                    }}
+                  >
+                    <FaPlus size={24} className='text-black' />
+                  </Button>
+                </>
+              }
+            </>
+          ) : (
+            <>
+              <div className='collection-detail'>
+                <div className='text-[34px] font-bold leading-10 mb-6 mt-10'>
+                  Leader board
+                </div>
+
+                <>
+                  <Spin
+                    tip='Loading...'
+                    spinning={loadingPoint}
+                    className='flex items-center mt-16 mx-3'
+                  >
+                    {leaderBoardPoint.length !== 0 && (
+                      <>
+                        <div className='flex-col mt-6 mx-3'>
+                          {leaderBoardPoint.map((user: any, index) => (
+                            <div
+                              className='flex items-center relative w-full mb-4'
+                              key={index}
+                            >
+                              <img
+                                src={`${user?.profileImage}`}
+                                alt=''
+                                className='w-9 h-9 mr-2 rounded-full'
+                              />
+                              <div className='font-medium'>{user?.name}</div>
+                              <div className='absolute inset-y-0 right-0'>
+                                {user.point}
+                                <span className='text-black opacity-50'>
+                                  {user.point === 1 ? ' point' : ' points'}
+                                </span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </Spin>
+                </>
+              </div>
+            </>
+          )}
+        </div>
+        {currentView === 'following' &&
+          <>
+            <div className='mt-9 home'>
+              <Spin
+                tip='Loading Follow'
+                spinning={loadingFollow}
+                className='flex items-center mt-10 text-black font-semibold'
+                style={{ top: (loadingFollow ? 208 : 0) }}
+              >
+                {Object.entries(follow).length > 0 && Object.entries(follow).map(([key, data]: any, dataIdx) => (
+                  <Fragment key={dataIdx}>
+                    {data.map((item: any, itemIdx: number) => (
+                      <Fragment key={itemIdx}>
+                        <Feed wrapperData={follow} data={data} dataIdx={dataIdx} item={item} itemIdx={itemIdx} />
+                      </Fragment>
+                    ))}
+                  </Fragment>
+                ))
+                }
+              </Spin>
+              {!loadingFollow && Object.entries(follow).length === 0 &&
+                <div className='absolute top-[106px] bottom-0 left-0 right-0 flex flex-col justify-center items-center z-[-1] px-[11.736%]'>
+                  <img src="/bubble-with-a-cross.svg" alt="" className='w-[152px] h-[158px] object-cover object-center mb-4' />
+                  <p className='text-[13px] font-medium leading-[18.2px] text-[#707070CC] text-center'>Your Following list is empty. Start connecting! Follow people or add friends to see their updates here.</p>
+                </div>}
             </div>
           </>
-        )}
-      </div>
-      {currentView === 'following' &&
-        <>
-          <div className='mt-9'>
-            <Spin
-              tip='Loading Follow'
-              spinning={loadingFollow}
-              className='flex items-center mt-10 text-black font-semibold'
-              style={{ top: (loadingFollow ? 208 : 0) }}
-            >
-              {Object.entries(follow).length > 0 && Object.entries(follow).map(([key, data]: any, dataIdx) => (
-                <Fragment key={dataIdx}>
-                  {data.map((item: any, itemIdx: number) => (
-                    <Fragment key={itemIdx}>
-                      <Feed wrapperData={follow} data={data} dataIdx={dataIdx} item={item} itemIdx={itemIdx} />
-                    </Fragment>
-                  ))}
-                </Fragment>
-              ))
-              }
-            </Spin>
-            {!loadingFollow && Object.entries(follow).length === 0 &&
-              <div className='absolute top-[106px] bottom-0 left-0 right-0 flex flex-col justify-center items-center z-[-1] px-[11.736%]'>
-                <img src="/bubble-with-a-cross.svg" alt="" className='w-[152px] h-[158px] object-cover object-center mb-4' />
-                <p className='text-[13px] font-medium leading-[18.2px] text-[#707070CC] text-center'>Your Following list is empty. Start connecting! Follow people or add friends to see their updates here.</p>
-              </div>}
-          </div>
-        </>
-      }
-      {/* <Drawer onClose={() => setOpenDrawer(false)} open={openDrawer} placement='bottom'
+        }
+        {/* <Drawer onClose={() => setOpenDrawer(false)} open={openDrawer} placement='bottom'
         height={windowSize.height * 0.9}>
         aaa
       </Drawer> */}
+      </Spin>
     </>
   );
 }
