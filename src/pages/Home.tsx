@@ -48,6 +48,7 @@ function Home() {
   const [currentView, setCurrentView] = useState('exploring')
   const [filter, setFilter] = useState('all')
   const [viewList, setViewList] = useState<any>([])
+  const [showAdd, setShowAdd] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -187,6 +188,21 @@ function Home() {
     }
   }, [user.following])
 
+  useEffect(() => {
+    const handleScrollDown = () => {
+      if (window.scrollY > 80 && !showAdd) {
+        setShowAdd(true);
+      }
+      if (window.scrollY < 80) {
+        setShowAdd(false);
+      }
+    }
+    window.addEventListener('scroll', handleScrollDown)
+    return () => {
+      window.removeEventListener('scroll', handleScrollDown);
+    };
+  }, [])
+
   const ChangeViewButton = ({ label }: { label: string }) => (
     <div
       className={`w-1/2 font-bold text-[14.65px] leading-[18px] text-center py-2 rounded-[10px] transition duration-300 ${currentView !== label ? 'bg-transparent text-[#00000070]' : 'bg-white'
@@ -303,9 +319,9 @@ function Home() {
                     </Spin>
                   </>
                 </div>
-                {/* {nearBy.length !== 0 && !loadingNearBy &&
+                {nearBy.length !== 0 && !loadingNearBy && showAdd &&
                   <Button
-                    className='fixed top-[90%] right-4 w-[56px] h-[56px] rounded-full border-0'
+                    className='fixed top-[20%] right-4 w-[56px] h-[56px] rounded-full border-0'
                     style={{ backgroundColor: 'rgba(148, 255, 65, 0.80)' }}
                     onClick={async () => {
                       if (user.id) {
@@ -319,7 +335,7 @@ function Home() {
                   >
                     <FaPlus size={24} className='text-black' />
                   </Button>
-                } */}
+                }
               </>
             }
           </>
