@@ -38,8 +38,7 @@ export const UploadImage = () => {
 
   return (
     <>
-      <div className='bg-black absolute' style={{ height: windowSize.height }}>
-        <div className='m-5 text-white font-semibold'>
+        <div className='p-5 text-white font-semibold bg-black h-screen'>
           <svg
             xmlns='http://www.w3.org/2000/svg'
             width='17'
@@ -69,7 +68,6 @@ export const UploadImage = () => {
 
           <ImageUpload />
         </div>
-      </div>
     </>
   );
 };

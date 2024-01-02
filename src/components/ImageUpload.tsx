@@ -160,44 +160,33 @@ export const ImageUpload: React.FC = () => {
       ) : (
         <>
           <div
-            className='relative'
+            className='relative p-6'
             style={{
               background: '#2C2C2C',
               width: windowSize.width - 40,
-              height: 389,
               marginBottom: 62,
               borderRadius: 12,
             }}
           >
-            <div
-              style={{ width: windowSize.width - 72, height: 357 }}
-              className='absolute m-4 flex-col'
-            >
-              <div
-                className='bg-black rounded-xl flex items-center justify-center mb-3'
-                style={{ height: 303, width: windowSize.width - 72 }}
-              >
-                <input
-                  type='file'
-                  accept='image/*,video/mp4'
-                  className='absolute opacity-0 w-full h-full'
-                  onChange={fileSelectedHandler}
-                  multiple
-                />
-                <FaUpload size={16} />
-                <span className='ml-2 text-base font-bold'>
-                  Upload your image *.*
-                </span>
-              </div>
-              <div style={{ fontSize: 13 }}>
-                <div style={{ opacity: 0.7 }} className='flex justify-center'>
-                  For optimal performance
-                </div>
-                <div className='flex justify-center'>
-                  Media file max 10MB
-                </div>
-              </div>
-            </div>
+            <img src="/upload-card.png" alt="" className='mx-auto object-center w-[177px] h-[197px]' />
+            <p className='mt-4'>
+              Upload images or video to give others a vivid and detailed view of this place.
+            </p>
+          </div>
+          <div
+            className='relative bg-[#2C2C2C] flex items-center justify-center text-white w-full h-12 rounded-3xl font-semibold text-base border-0'
+          >
+            <input
+              type='file'
+              accept='image/*,video/mp4'
+              className='absolute opacity-0 w-full h-full'
+              onChange={fileSelectedHandler}
+              multiple
+            />
+            <FaUpload size={16} />
+            <span className='ml-2 text-base font-bold'>
+              Upload image or video
+            </span>
           </div>
         </>
       )}
