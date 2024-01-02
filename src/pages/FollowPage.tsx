@@ -5,6 +5,7 @@ import { getListUser } from '../middleware/data/user';
 import { useSelector } from 'react-redux';
 import { capitalizeFirstLetter } from '../functions/text';
 import FollowAccountItem from '../components/follow/FollowAccountItem';
+import { Spin } from 'antd';
 
 export default function FollowPage() {
     const navigate = useNavigate();
@@ -14,8 +15,10 @@ export default function FollowPage() {
     const user = useSelector((state: any) => state.user);
     const userAccountData = useSelector((state: any) => state.account);
     const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             let data;
 
             if (userId) {
@@ -25,6 +28,7 @@ export default function FollowPage() {
             }
 
             setData(data);
+            setLoading(false);
         };
 
         fetchData();
@@ -49,14 +53,18 @@ export default function FollowPage() {
                     />
                 </svg>
             </div>
-            <div className="text-2xl leading-4 font-semibold tracking-[-0.08px] mb-8">
-                {data.length} {capitalizeFirstLetter(type)}
-            </div>
-            <div className="flex flex-col gap-4">
-                {data?.map((item: any, idx: number) =>
-                    <FollowAccountItem item={item} userId={userId} key={idx} type={type}/>
-                )}
-            </div>
+            <Spin
+                spinning={loading}
+            >
+                <div className="text-2xl leading-4 font-semibold tracking-[-0.08px] mb-8">
+                    {data.length} {capitalizeFirstLetter(type)}
+                </div>
+                <div className="flex flex-col gap-4">
+                    {data?.map((item: any, idx: number) =>
+                        <FollowAccountItem item={item} userId={userId} key={idx} type={type} />
+                    )}
+                </div>
+            </Spin>
         </div>
     )
 }

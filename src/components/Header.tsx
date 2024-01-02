@@ -60,7 +60,7 @@ const Header = ({ hidden }: { hidden: boolean }) => {
         //     )}
         //   </div>
         // </div>
-        <div className="flex justify-between items-center p-4 pt-6 border-b border-[#0000000D]">
+        <div className="flex justify-between items-center p-4 pt-6 pb-[15px] border-b border-[#0000000D]">
           <p className='text-[13px] font-medium leading-[18px] tracking-[-0.08px]'>
             Checking in to earn 100 points
           </p>
