@@ -75,7 +75,7 @@ export default function CheckinNearBy() {
         </>
     )
     return (
-        <DefaultBlackBg className={'p-4'}>
+        <DefaultBlackBg className={'p-5'}>
             <div className="flex flex-col h-full">
 
                 <div className='font-semibold flex items-center relative text-white mb-4'>

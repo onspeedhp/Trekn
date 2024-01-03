@@ -167,7 +167,7 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
                           className='absolute inset-0'
                           style={{
                             backgroundImage:
-                              'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 34.71%, rgba(0, 0, 0, 0.60) 77.95%)',
+                              'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 34.71%, rgba(0, 0, 0, 0.40) 77.95%)',
                             borderRadius: 12,
                           }}
                         ></div>
@@ -194,7 +194,7 @@ export const DetailCard = ({ data, status, last }: { data: any; status?: any; la
                   className='absolute inset-0'
                   style={{
                     backgroundImage:
-                      'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 34.71%, rgba(0, 0, 0, 0.60) 77.95%)',
+                      'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 34.71%, rgba(0, 0, 0, 0.40) 77.95%)',
                     borderRadius: 12,
                   }}
                 ></div>
