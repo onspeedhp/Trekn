@@ -88,7 +88,7 @@ export const DropSuccess = () => {
           className='bg-[#2E2E2E] text-white border-0  w-full h-12 rounded-3xl font-semibold text-base'
           onClick={() => {
             setMetadata({});
-            navigate('/');
+            navigate('/',{state: {reload: true}});
           }}
         >
           Done

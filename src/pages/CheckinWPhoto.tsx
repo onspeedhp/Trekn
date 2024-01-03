@@ -167,7 +167,7 @@ export default function CheckinWPhoto() {
               Cancel
             </Button>
             <Button
-              className='bg-[#2C2C2C] text-white py-3 h-auto rounded-3xl font-semibold text-base border-0'
+              className='bg-[#2C2C2C] text-white py-3 h-auto rounded-3xl font-semibold text-base border-0 min-h-[48px]'
               style={{
                 backgroundColor: files && desc && !loading ? '#99FF48' : '#2E2E2E',
                 color: files && desc ? 'black' : '#FFFFFF80',

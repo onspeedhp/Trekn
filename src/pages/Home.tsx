@@ -60,6 +60,12 @@ function Home() {
         setLoading(false);
         window.history.replaceState({}, document.title)
       }
+      if(locationState?.reload) {
+        setViewList([]);
+        getNearBy(user.lat, user.lng);
+        getReadyToCollect(user.lat, user.lng);
+        window.history.replaceState({}, document.title)
+      }
       getDropType({ onSuccess: (data) => dispatch(setDropType(data)) })
       setLoadingPoint(true);
       getLeaderBoardPoint({
@@ -267,7 +273,7 @@ function Home() {
             <>
               {currentView === 'exploring' &&
                 <>
-                  <div className={`mt-6`}>
+                  <div className={`mt-6 home`}>
                     {/* <div className='text-[14px] text-black opacity-70 font-medium mb-2 leading-[18px]'>
                     {moment().format('dddd, Do MMM')}
                   </div> */}
@@ -394,7 +400,7 @@ function Home() {
         </div>
         {currentView === 'following' &&
           <>
-            <div className='mt-9 home'>
+            <div className='mt-9'>
               <Spin
                 tip='Loading Follow'
                 spinning={loadingFollow}
