@@ -186,7 +186,7 @@ export const MapGL = () => {
             />
           )}
 
-          <Button
+          <div
             onClick={() => {
               navigate('/check-in/nearby');
             }}
@@ -197,7 +197,7 @@ export const MapGL = () => {
             className='fixed bg-black bottom-0 rounded-full w-16 h-16 text-white flex items-center justify-center mb-4'
           >
             <FaPlus size={24} />
-          </Button>
+          </div>
         </div>
       </ConfigProvider>
     </>
