@@ -240,7 +240,7 @@ export const DropDetailPage = () => {
                   }}
                   style={{
                     height: 200,
-                    borderRadius: 24,
+                    borderRadius: 12,
                     position: 'relative',
                   }}
                   mapStyle='mapbox://styles/mapbox/streets-v9'
@@ -289,7 +289,7 @@ export const DropDetailPage = () => {
                     </div>
                   ))
                 ) : (
-                  <div className='flex justify-center items-center flex-col gap-4 bg-[#F5F5F5] rounded-lg py-7 px-3'>
+                  <div className='flex justify-center items-center flex-col gap-4 bg-[#F5F5F5] rounded-xl py-7 px-3'>
                     <img src='/traveler.svg' alt='' />
                     <p className='text-center font-medium text-[13px] leading-5 text-[#828282] max-w-[205px]'>Go to this place and<br />be the first one checked in here</p>
                   </div>

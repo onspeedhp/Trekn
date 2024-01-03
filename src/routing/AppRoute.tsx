@@ -22,6 +22,7 @@ import EditLocation from '../pages/EditLocation';
 import FollowPage from '../pages/FollowPage';
 import PrivateRoute from '../pages/PrivateRoute';
 import { Search } from '../pages/Search';
+import Reward from '../pages/Reward';
 
 const AppRoutes = () => (
   <BrowserRouter basename='/'>
@@ -41,6 +42,7 @@ const AppRoutes = () => (
         }
       >
         <Route path='/account' element={<Account />}></Route>
+        <Route path='/reward' element={<Reward />}></Route>
       </Route>
 
       <Route
