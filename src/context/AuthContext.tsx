@@ -43,6 +43,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   useEffect(() => {
+    navigator.geolocation.getCurrentPosition(({ coords: { longitude, latitude } }) => {
+      dispatch(
+        updateCoordinate({
+          lat: latitude,
+          lng: longitude,
+        })
+      );
+    })
     navigator.geolocation.getCurrentPosition(
       ({ coords: { longitude, latitude } }) => {
         (async () => {
@@ -53,46 +61,45 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             })
           );
         })()
-
       }
     );
   });
 
   const init = async () => {
     if (!torus.isInitialized) {
-        await torus.init({
-          buildEnv: 'production', // "production", or "developement" are also the option
-          enableLogging: true, // default: false
-          network: {
-            blockExplorerUrl: 'https://explorer.solana.com/?cluster=mainnet', // devnet and mainnet
-            chainId: '0x1',
-            displayName: 'Solana Mainnet',
-            logo: 'solana.svg',
-            rpcTarget: process.env.REACT_APP_HELIUS_RPC_URL!, // from "@solana/web3.js" package
-            ticker: 'SOL',
-            tickerName: 'Solana Token',
+      await torus.init({
+        buildEnv: 'production', // "production", or "developement" are also the option
+        enableLogging: true, // default: false
+        network: {
+          blockExplorerUrl: 'https://explorer.solana.com/?cluster=mainnet', // devnet and mainnet
+          chainId: '0x1',
+          displayName: 'Solana Mainnet',
+          logo: 'solana.svg',
+          rpcTarget: process.env.REACT_APP_HELIUS_RPC_URL!, // from "@solana/web3.js" package
+          ticker: 'SOL',
+          tickerName: 'Solana Token',
+        },
+        showTorusButton: false, // default: true
+        useLocalStorage: false, // default: false to use sessionStorage
+        buttonPosition: 'top-left', // default: bottom-left
+        apiKey: process.env.REACT_APP_CLIENT_ID_WEB3_AUTH!, // https://developer.web3auth.io
+        whiteLabel: {
+          name: 'Trekn',
+          theme: {
+            isDark: true,
+            colors: { torusBrand1: '#00a8ff' },
           },
-          showTorusButton: false, // default: true
-          useLocalStorage: false, // default: false to use sessionStorage
-          buttonPosition: 'top-left', // default: bottom-left
-          apiKey: process.env.REACT_APP_CLIENT_ID_WEB3_AUTH!, // https://developer.web3auth.io
-          whiteLabel: {
-            name: 'Trekn',
-            theme: {
-              isDark: true,
-              colors: { torusBrand1: '#00a8ff' },
-            },
-            logoDark:
-              'https://solana-testing.tor.us/img/solana-logo-light.46db0c8f.svg',
-            logoLight:
-              'https://solana-testing.tor.us/img/solana-logo-light.46db0c8f.svg',
-            topupHide: true,
-          },
-        });
+          logoDark:
+            'https://solana-testing.tor.us/img/solana-logo-light.46db0c8f.svg',
+          logoLight:
+            'https://solana-testing.tor.us/img/solana-logo-light.46db0c8f.svg',
+          topupHide: true,
+        },
+      });
     }
     try {
       await torus.login();
-    } catch(e) {
+    } catch (e) {
       await torus.cleanUp();
       return;
     }
