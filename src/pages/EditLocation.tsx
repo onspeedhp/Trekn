@@ -19,6 +19,8 @@ export default function EditLocation() {
   const user = useSelector((state: any) => state.user);
   const [currentEdit, setCurrentEdit] = useState('');
   const [searchValue, setSearchValue] = useState('');
+  const [address, setAddress] = useState<string>('');
+  const [addressProperties, setAddressProperties] = useState<any>(null)
   const [addressForm, setAddressForm] = useState<{
     state?: string;
     city?: string;
@@ -160,18 +162,20 @@ export default function EditLocation() {
     setCurrentEdit('confirm');
   };
 
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `https://api.geoapify.com/v1/geocode/reverse?lat=${user.lat}&lon=${user.lng}&apiKey=${process.env.REACT_APP_GEOAPIFY}`
-  //       );
-  //       setAddress(response.data.features[0].properties.formatted);
-  //     } catch (error) {
-  //       console.error('Error fetching address: ', error);
-  //     }
-  //   })()
-  // }, [])
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await axios.get(
+          `https://api.geoapify.com/v1/geocode/reverse?lat=${user.lat}&lon=${user.lng}&apiKey=${process.env.REACT_APP_GEOAPIFY}`
+        );
+        console.log(response.data.features[0].properties)
+        setAddressProperties(response.data.features[0].properties)
+        setAddress(response.data.features[0].properties.formatted);
+      } catch (error) {
+        console.error('Error fetching address: ', error);
+      }
+    })()
+  }, [])
 
   const onMapMove = useCallback(async (event: ViewStateChangeEvent) => {
     setAddressLocation((prev: any) => ({
@@ -220,6 +224,7 @@ export default function EditLocation() {
 
   return (
     <DefaultBlackBg className={'p-4 relative'}>
+      {address}
       <div className='font-semibold flex items-center relative text-white mb-6'>
         <svg
           xmlns='http://www.w3.org/2000/svg'
@@ -261,23 +266,21 @@ export default function EditLocation() {
             >
               {Object.entries(addressForm)?.length > 0
                 ? selectedState()
-                : 'Quận/Huyện, Phường/Xã'}
+                : (addressProperties?.suburb && addressProperties?.city ? `${addressProperties.suburb}, ${addressProperties.city}` :'Quận/Huyện, Phường/Xã')}
               <FaChevronRight size={16} className='text-[#ffffff70]' />
             </div>
             <div
               className='text-base font-semibold leading-[120%] text-[#ffffff50] rounded-xl bg-[#33333387] py-4 px-3'
               onClick={() => setCurrentEdit('address')}
             >
-              Tên đường, Toà nhà, Số nhà
+              {addressProperties?.housenumber && addressProperties?.street ?
+               `${addressProperties.name && `${addressProperties.name}, `}${addressProperties.housenumber} ${addressProperties.street}`
+               :'Tên đường, Toà nhà, Số nhà'}
             </div>
           </div>
           <div
             className="text-[#99FF48] font-medium text-[13px] leading-4 mt-6"
-            onClick={async () => {
-              const response = await axios.get(
-                `https://api.geoapify.com/v1/geocode/reverse?lat=${user.lat}&lon=${user.lng}&apiKey=${process.env.REACT_APP_GEOAPIFY}`
-              );
-              const address = response.data.features[0].properties.formatted;
+            onClick={() => {
               setMetadata({
                 ...metadata,
                 location: address,

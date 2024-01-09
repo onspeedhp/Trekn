@@ -18,7 +18,7 @@ import {
   SPL_ACCOUNT_COMPRESSION_PROGRAM_ID,
   SPL_NOOP_PROGRAM_ID,
 } from '@solana/spl-account-compression';
-import { PROGRAM_ID as TOKEN_METADATA_PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata';
+// import { PROGRAM_ID as TOKEN_METADATA_PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata';
 import { AnchorWallet } from '@solana/wallet-adapter-react';
 import * as buffer from 'buffer';
 window.Buffer = buffer.Buffer;
@@ -56,7 +56,7 @@ export const mintCompressedNft = async (
       collectionMetadata: collectionMetadata,
       editionAccount: collectionMasterEditionAccount,
       bubblegumSigner: bgumSigner,
-      tokenMetadataProgram: TOKEN_METADATA_PROGRAM_ID,
+      tokenMetadataProgram: new PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'),
     },
     {
       metadataArgs: Object.assign(nftArgs, {
@@ -143,7 +143,7 @@ export const createCompressNftTnx = async (
       collectionMetadata: collectionMetadata,
       editionAccount: collectionMasterEditionAccount,
       bubblegumSigner: bgumSigner,
-      tokenMetadataProgram: TOKEN_METADATA_PROGRAM_ID,
+      tokenMetadataProgram: new PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'),
     },
     {
       metadataArgs: Object.assign(nftArgs, {

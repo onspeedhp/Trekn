@@ -159,24 +159,24 @@ export default function CheckinWPhoto() {
             </div>
           </div>
           <div className='flex items-center justify-between'>
-            <Button
-              className='bg-[#2C2C2C] text-white py-3 h-auto rounded-3xl font-semibold text-base border-0'
+            <div
+              className='bg-[#2C2C2C] text-white py-3 h-auto rounded-3xl font-semibold text-base border-0 flex items-center justify-center'
               style={{ width: (windowSize.width - 40 - 12) / 2 }}
               onClick={() => navigate(-1)}
             >
               Cancel
-            </Button>
-            <Button
-              className='bg-[#2C2C2C] text-white py-3 h-auto rounded-3xl font-semibold text-base border-0 min-h-[48px]'
+            </div>
+            <div
+              className='bg-[#2C2C2C] text-white py-3 h-auto rounded-3xl font-semibold text-base border-0 min-h-[48px] flex items-center justify-center'
               style={{
-                backgroundColor: files && desc && !loading ? '#99FF48' : '#2E2E2E',
+                backgroundColor: loading ? '#898989' : files && desc ? '#99FF48' : '#2E2E2E',
                 color: files && desc ? 'black' : '#FFFFFF80',
                 width: (windowSize.width - 40 - 12) / 2,
               }}
               onClick={handleSubmit}
             >
               {loading ? <Spin /> : 'Confirm'}
-            </Button>
+            </div>
           </div>
         </div>
       </div>
