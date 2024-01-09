@@ -224,7 +224,6 @@ export default function EditLocation() {
 
   return (
     <DefaultBlackBg className={'p-4 relative'}>
-      {address}
       <div className='font-semibold flex items-center relative text-white mb-6'>
         <svg
           xmlns='http://www.w3.org/2000/svg'
