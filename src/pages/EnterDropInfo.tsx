@@ -123,7 +123,7 @@ export const EnterDropInfo = () => {
             <div>
               <label className='text-[13px] text-[#BDBDBA] font-medium leading-4'>Location address</label>
               <div className="border-none rounded-xl overflow-hidden mt-1 relative">
-                <input defaultValue={metadata.location} disabled={true} className='text-ellipsis py-4 px-3 pr-12 w-full focus-visible:outline-none text-base font-medium bg-[#212121de] text-white' />
+                <input defaultValue={metadata.location} readOnly={true} className='text-ellipsis py-4 px-3 pr-12 w-full focus-visible:outline-none text-base font-medium bg-[#212121de] text-white' />
                 <div className="rounded-full bg-[#373737] p-2 absolute top-3 right-3">
                   <FaPen onClick={() => navigate('/check-in/edit-location')} />
                 </div>

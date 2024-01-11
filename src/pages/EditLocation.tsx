@@ -32,6 +32,7 @@ export default function EditLocation() {
   const [currentCode, setCurrentCode] = useState(null);
   const [addressLocation, setAddressLocation] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [locationLoading, setLocationLoading] = useState(false);
   const stepList =
     user.country === 'Vietnam'
       ? ['cities', 'district', 'subDistrict']
@@ -166,12 +167,14 @@ export default function EditLocation() {
   useEffect(() => {
     (async () => {
       try {
+        setLocationLoading(true);
         const response = await axios.get(
           `https://api.geoapify.com/v1/geocode/reverse?lat=${user.lat}&lon=${user.lng}&apiKey=${process.env.REACT_APP_GEOAPIFY}`
         );
         console.log(response.data.features[0].properties)
         setAddressProperties(response.data.features[0].properties)
         setAddress(response.data.features[0].properties.formatted);
+        setLocationLoading(false)
       } catch (error) {
         console.error('Error fetching address: ', error);
       }
@@ -245,187 +248,191 @@ export default function EditLocation() {
           Edit location address
         </div>
       </div>
-
-      {!currentEdit && (
+      {locationLoading ?
+        <Spin spinning={locationLoading} className='edit-location w-full h-80 flex flex-col justify-center items-center' />
+        :
         <>
-          <div className='flex flex-col gap-2'>
-            <div className='font-medium text-[13px] text-[#FFFFFF70] leading-[120%]'>
-              Location address
-            </div>
-            <div
-              className='text-base font-semibold leading-[120%] text-[#ffffff50] rounded-xl bg-[#33333387] py-4 px-3 flex items-center justify-between gap-4'
-              onClick={() =>
-                Object.entries(addressForm)?.length > 0
-                  ? handleChangeAddress(
-                    user.country === 'Vietnam' ? 'cities' : 'state'
-                  )
-                  : setCurrentEdit(
-                    user.country === 'Vietnam' ? 'cities' : 'state'
-                  )
-              }
-            >
-              {Object.entries(addressForm)?.length > 0
-                ? selectedState()
-                :
-                (addressProperties?.suburb && addressProperties?.city ?
-                  <p className='text-base font-semibold leading-[120%] text-[#ffffff]'>
-                    {addressProperties.suburb}, {addressProperties.city}
-                  </p>
-                  :
-                  'Quận/Huyện, Phường/Xã'
-                )}
-              <FaChevronRight size={16} className='text-[#ffffff70]' />
-            </div>
-            <div
-              className='text-base font-semibold leading-[120%] text-[#ffffff50] rounded-xl bg-[#33333387] py-4 px-3'
-              onClick={() => setCurrentEdit('address')}
-            >
-              {addressProperties?.housenumber && addressProperties?.street ?
-                <p className='text-base font-semibold leading-[120%] text-[#ffffff]'>
-                  {addressProperties.name && `${addressProperties.name}, `}{addressProperties.housenumber} {addressProperties.street}
-                </p>
-                : 'Tên đường, Toà nhà, Số nhà'}
-            </div>
-          </div>
-          <div
-            className="text-[#99FF48] font-medium text-[13px] leading-4 mt-6"
-            onClick={() => {
-              setMetadata({
-                ...metadata,
-                location: address,
-                location_name: address,
-                lat: user.lat,
-                lng: user.lng,
-              });
-              navigate('/check-in/enter-info');
-            }}
-          >
-            Use my current location
-          </div>
-        </>
-      )}
-
-      {currentEdit && (
-        <>
-          {currentEdit !== 'confirm' && (
-            <div
-              className={`flex flex-col ${Object.keys(addressForm)?.length ? 'gap-[19px]' : 'gap-6'
-                }`}
-            >
-              <CustomiseInputWIco
-                style={'dark'}
-                value={searchValue}
-                onChange={handleFilterLocation}
-                label={null}
-                placeholder={
-                  currentEdit === 'address'
-                    ? 'Tên đường, Tòa nhà, Số nhà'
-                    : 'Quận/Huyện, Phường/Xã'
-                }
-                leftIco={
-                  currentEdit !== 'address' && (
-                    <FaSearch size={16} className='text-[#ffffff70]' />
-                  )
-                }
-              />
-              <>
-                {currentEdit !== 'address' &&
-                  Object.entries(addressForm)?.length > 0 &&
-                  selectedState()}
-                <div className='px-2'>
-                  <div
-                    className={`font-medium text-[13px] text-[#FFFFFF70] leading-[120%] mb-6`}
-                  >
-                    {capitalizeFirstLetter(currentEdit)}
-                  </div>
-                  {loading
-                    ?
-                    <Spin spinning={loading} className='edit-location w-full h-80 flex flex-col justify-center items-center' />
-                    :
-                    <>
-                      {filteredDataList?.length > 0 &&
-                        filteredDataList.map((item, idx) => (
-                          <div key={idx}>
-                            <div
-                              className='text-base text-white font-medium leading-[120%]'
-                              onClick={() =>
-                                currentEdit !== 'address'
-                                  ? handleChoose(item)
-                                  : handleConfirmAddress(item)
-                              }
-                            >
-                              {item.name || item.title}
-                            </div>
-                            {idx + 1 !== filteredDataList.length && (
-                              <div className='my-4 h-[1px] bg-[#626262]'></div>
-                            )}
-                          </div>
-                        ))}
-                    </>
-                  }
-                </div>
-              </>
-            </div>
-          )}
-          {currentEdit === 'address' && searchValue && (
-            <Button
-              className={`${loading ? 'bg-[#ccc] pointer-events-none' : 'bg-[#2C2C2C]'} absolute bottom-0 left-1/2 -translate-x-1/2 text-white py-3 h-auto rounded-3xl font-semibold text-base border-0 w-full mb-5`}
-              style={{ width: 'calc(100% - 32px)' }}
-              onClick={() => handleConfirmAddress()}
-            >
-              {loading ? <Spin /> : 'Confirm'}
-            </Button>
-          )}
-          {currentEdit === 'confirm' && (
-            <div
-              className='absolute left-0 right-0'
-              style={{ height: windowSize.height - 80 }}
-            >
-              <div className='absolute top-[11px] left-5 right-5 bg-white px-3 py-4 z-50'>
-                <div className='text-[13px] text-[#00000050] leading-[120%] font-medium'>
+          {!currentEdit && (
+            <>
+              <div className='flex flex-col gap-2'>
+                <div className='font-medium text-[13px] text-[#FFFFFF70] leading-[120%]'>
                   Location address
                 </div>
-                <div className='text-base text-[#353535] leading-[120%] font-semibold px-1'>
-                  {addressLocation.label}
+                <div
+                  className='text-base font-semibold leading-[120%] text-[#ffffff50] rounded-xl bg-[#33333387] py-4 px-3 flex items-center justify-between gap-4'
+                  onClick={() =>
+                    Object.entries(addressForm)?.length > 0
+                      ? handleChangeAddress(
+                        user.country === 'Vietnam' ? 'cities' : 'state'
+                      )
+                      : setCurrentEdit(
+                        user.country === 'Vietnam' ? 'cities' : 'state'
+                      )
+                  }
+                >
+                  {Object.entries(addressForm)?.length > 0
+                    ? selectedState()
+                    :
+                    (addressProperties?.suburb && addressProperties?.city ?
+                      <p className='text-base font-semibold leading-[120%] text-[#ffffff]'>
+                        {addressProperties.suburb}, {addressProperties.city}
+                      </p>
+                      :
+                      'Quận/Huyện, Phường/Xã'
+                    )}
+                  <FaChevronRight size={16} className='text-[#ffffff70]' />
+                </div>
+                <div
+                  className='text-base font-semibold leading-[120%] text-[#ffffff50] rounded-xl bg-[#33333387] py-4 px-3'
+                  onClick={() => setCurrentEdit('address')}
+                >
+                  {addressProperties?.housenumber && addressProperties?.street ?
+                    <p className='text-base font-semibold leading-[120%] text-[#ffffff]'>
+                      {addressProperties.name && `${addressProperties.name}, `}{addressProperties.housenumber} {addressProperties.street}
+                    </p>
+                    : 'Tên đường, Toà nhà, Số nhà'}
                 </div>
               </div>
-              <Button
-                className='bg-[#2C2C2C] absolute bottom-0 left-1/2 -translate-x-1/2 text-white py-3 h-auto rounded-3xl font-semibold text-base border-0 w-full mb-5 z-50'
-                style={{ width: 'calc(100% - 32px)' }}
-                onClick={() => handleSubmit()}
-              >
-                Confirm
-              </Button>
-              <Map
-                mapboxAccessToken={`${process.env.REACT_APP_MAP_BOX_ACCESS_TOKEN}`}
-                initialViewState={{
-                  longitude: !addressLocation.lng
-                    ? 105.8342
-                    : addressLocation.lng,
-                  latitude: !addressLocation.lat
-                    ? 21.0278
-                    : addressLocation.lat,
-                  zoom: 16,
+              <div
+                className="text-[#99FF48] font-medium text-[13px] leading-4 mt-6"
+                onClick={() => {
+                  setMetadata({
+                    ...metadata,
+                    location: address,
+                    location_name: address,
+                    lat: user.lat,
+                    lng: user.lng,
+                  });
+                  navigate('/check-in/enter-info');
                 }}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                }}
-                mapStyle='mapbox://styles/mapbox/streets-v9'
-                onDrag={onMapMove}
               >
-                <Marker
-                  longitude={addressLocation.lng}
-                  latitude={addressLocation.lat}
-                  anchor='center'
-                >
-                  <FaMapPin size={24} className='text-[#278EFF]' />
-                </Marker>
-              </Map>
-            </div>
+                Use my current location
+              </div>
+            </>
           )}
-        </>
-      )}
+
+          {currentEdit && (
+            <>
+              {currentEdit !== 'confirm' && (
+                <div
+                  className={`flex flex-col ${Object.keys(addressForm)?.length ? 'gap-[19px]' : 'gap-6'
+                    }`}
+                >
+                  <CustomiseInputWIco
+                    style={'dark'}
+                    value={searchValue}
+                    onChange={handleFilterLocation}
+                    label={null}
+                    placeholder={
+                      currentEdit === 'address'
+                        ? 'Tên đường, Tòa nhà, Số nhà'
+                        : 'Quận/Huyện, Phường/Xã'
+                    }
+                    leftIco={
+                      currentEdit !== 'address' && (
+                        <FaSearch size={16} className='text-[#ffffff70]' />
+                      )
+                    }
+                  />
+                  <>
+                    {currentEdit !== 'address' &&
+                      Object.entries(addressForm)?.length > 0 &&
+                      selectedState()}
+                    <div className='px-2'>
+                      <div
+                        className={`font-medium text-[13px] text-[#FFFFFF70] leading-[120%] mb-6`}
+                      >
+                        {capitalizeFirstLetter(currentEdit)}
+                      </div>
+                      {loading
+                        ?
+                        <Spin spinning={loading} className='edit-location w-full h-80 flex flex-col justify-center items-center' />
+                        :
+                        <>
+                          {filteredDataList?.length > 0 &&
+                            filteredDataList.map((item, idx) => (
+                              <div key={idx}>
+                                <div
+                                  className='text-base text-white font-medium leading-[120%]'
+                                  onClick={() =>
+                                    currentEdit !== 'address'
+                                      ? handleChoose(item)
+                                      : handleConfirmAddress(item)
+                                  }
+                                >
+                                  {item.name || item.title}
+                                </div>
+                                {idx + 1 !== filteredDataList.length && (
+                                  <div className='my-4 h-[1px] bg-[#626262]'></div>
+                                )}
+                              </div>
+                            ))}
+                        </>
+                      }
+                    </div>
+                  </>
+                </div>
+              )}
+              {currentEdit === 'address' && searchValue && (
+                <Button
+                  className={`${loading ? 'bg-[#ccc] pointer-events-none' : 'bg-[#2C2C2C]'} absolute bottom-0 left-1/2 -translate-x-1/2 text-white py-3 h-auto rounded-3xl font-semibold text-base border-0 w-full mb-5`}
+                  style={{ width: 'calc(100% - 32px)' }}
+                  onClick={() => handleConfirmAddress()}
+                >
+                  {loading ? <Spin /> : 'Confirm'}
+                </Button>
+              )}
+              {currentEdit === 'confirm' && (
+                <div
+                  className='absolute left-0 right-0'
+                  style={{ height: windowSize.height - 80 }}
+                >
+                  <div className='absolute top-[11px] left-5 right-5 bg-white px-3 py-4 z-50'>
+                    <div className='text-[13px] text-[#00000050] leading-[120%] font-medium'>
+                      Location address
+                    </div>
+                    <div className='text-base text-[#353535] leading-[120%] font-semibold px-1'>
+                      {addressLocation.label}
+                    </div>
+                  </div>
+                  <Button
+                    className='bg-[#2C2C2C] absolute bottom-0 left-1/2 -translate-x-1/2 text-white py-3 h-auto rounded-3xl font-semibold text-base border-0 w-full mb-5 z-50'
+                    style={{ width: 'calc(100% - 32px)' }}
+                    onClick={() => handleSubmit()}
+                  >
+                    Confirm
+                  </Button>
+                  <Map
+                    mapboxAccessToken={`${process.env.REACT_APP_MAP_BOX_ACCESS_TOKEN}`}
+                    initialViewState={{
+                      longitude: !addressLocation.lng
+                        ? 105.8342
+                        : addressLocation.lng,
+                      latitude: !addressLocation.lat
+                        ? 21.0278
+                        : addressLocation.lat,
+                      zoom: 16,
+                    }}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                    }}
+                    mapStyle='mapbox://styles/mapbox/streets-v9'
+                    onDrag={onMapMove}
+                  >
+                    <Marker
+                      longitude={addressLocation.lng}
+                      latitude={addressLocation.lat}
+                      anchor='center'
+                    >
+                      <FaMapPin size={24} className='text-[#278EFF]' />
+                    </Marker>
+                  </Map>
+                </div>
+              )}
+            </>
+          )}
+        </>}
     </DefaultBlackBg>
   );
 }
