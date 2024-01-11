@@ -41,6 +41,7 @@ export default function EditLocation() {
     setSearchValue(value);
     if (currentEdit === 'address') {
       fetchSuggestAddress(value);
+      setLoading(true);
     } else {
       const result = value
         ? dataList.filter((location: any) =>
@@ -265,7 +266,14 @@ export default function EditLocation() {
             >
               {Object.entries(addressForm)?.length > 0
                 ? selectedState()
-                : (addressProperties?.suburb && addressProperties?.city ? `${addressProperties.suburb}, ${addressProperties.city}` :'Quận/Huyện, Phường/Xã')}
+                :
+                (addressProperties?.suburb && addressProperties?.city ?
+                  <p className='text-base font-semibold leading-[120%] text-[#ffffff]'>
+                    {addressProperties.suburb}, {addressProperties.city}
+                  </p>
+                  :
+                  'Quận/Huyện, Phường/Xã'
+                )}
               <FaChevronRight size={16} className='text-[#ffffff70]' />
             </div>
             <div
@@ -273,8 +281,10 @@ export default function EditLocation() {
               onClick={() => setCurrentEdit('address')}
             >
               {addressProperties?.housenumber && addressProperties?.street ?
-               `${addressProperties.name && `${addressProperties.name}, `}${addressProperties.housenumber} ${addressProperties.street}`
-               :'Tên đường, Toà nhà, Số nhà'}
+                <p className='text-base font-semibold leading-[120%] text-[#ffffff]'>
+                  {addressProperties.name && `${addressProperties.name}, `}{addressProperties.housenumber} {addressProperties.street}
+                </p>
+                : 'Tên đường, Toà nhà, Số nhà'}
             </div>
           </div>
           <div
@@ -328,24 +338,31 @@ export default function EditLocation() {
                   >
                     {capitalizeFirstLetter(currentEdit)}
                   </div>
-                  {filteredDataList?.length > 0 &&
-                    filteredDataList.map((item, idx) => (
-                      <div key={idx}>
-                        <div
-                          className='text-base text-white font-medium leading-[120%]'
-                          onClick={() =>
-                            currentEdit !== 'address'
-                              ? handleChoose(item)
-                              : handleConfirmAddress(item)
-                          }
-                        >
-                          {item.name || item.title}
-                        </div>
-                        {idx + 1 !== filteredDataList.length && (
-                          <div className='my-4 h-[1px] bg-[#626262]'></div>
-                        )}
-                      </div>
-                    ))}
+                  {loading
+                    ?
+                    <Spin spinning={loading} className='edit-location w-full h-80 flex flex-col justify-center items-center' />
+                    :
+                    <>
+                      {filteredDataList?.length > 0 &&
+                        filteredDataList.map((item, idx) => (
+                          <div key={idx}>
+                            <div
+                              className='text-base text-white font-medium leading-[120%]'
+                              onClick={() =>
+                                currentEdit !== 'address'
+                                  ? handleChoose(item)
+                                  : handleConfirmAddress(item)
+                              }
+                            >
+                              {item.name || item.title}
+                            </div>
+                            {idx + 1 !== filteredDataList.length && (
+                              <div className='my-4 h-[1px] bg-[#626262]'></div>
+                            )}
+                          </div>
+                        ))}
+                    </>
+                  }
                 </div>
               </>
             </div>

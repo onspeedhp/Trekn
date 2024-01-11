@@ -24,6 +24,10 @@
   background-color: black;
 }
 
+.edit-location.ant-spin .ant-spin-dot-item {
+  background-color: #ccc;
+}
+
 .home .ant-spin-nested-loading .ant-spin-blur {
   clear: unset;
   opacity: 1;
