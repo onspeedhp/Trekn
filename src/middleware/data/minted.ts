@@ -31,7 +31,7 @@ export const createMinted = async ({
       // increase the owner of drop
       await supabase
         .from('user')
-        .update({ point: drop.user.point + 2 })
+        .update({ point: drop.user.point + 100 })
         .eq('id', drop.user.id);
     }
     // increase the collected of drop

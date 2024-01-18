@@ -18,7 +18,7 @@ export const createDrop = async ({
   };
   await supabase
     .from('user')
-    .update({ point: user.point + 1 })
+    .update({ point: user.point + 200 })
     .eq('id', user.id);
 
   const { data, error } = await supabase

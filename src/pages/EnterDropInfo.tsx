@@ -176,6 +176,7 @@ export const EnterDropInfo = () => {
                       },
                     })
                   );
+                  
                   if (user.id === userAccountData.id) {
                     dispatch(setAccountData({
                       ...userAccountData, drop: [...userAccountData.drop,
