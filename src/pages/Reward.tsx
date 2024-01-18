@@ -26,8 +26,15 @@ export default function Reward() {
   }
 
   const handleClose = () => {
-    setIsOpen(false)
-    setCurrentView('award')
+    setIsOpen(false);
+    setWallet('');
+    setTimeout(() => {
+      setCurrentView('award');
+    }, 200)
+  }
+
+  const handleConfirm = () => {
+    setCurrentView('success');
     setWallet('');
   }
   return (
@@ -172,42 +179,62 @@ export default function Reward() {
               </svg>
             </div>
           </div>
-          <div className="mb-5">
-            <p className='font-bold text-2xl leading-[40px] italic text-white'>{body[smokeType].header}</p>
-            <p className='text-[#FFFFFFB2] leading-[140%] italic'>{body[smokeType].desc}</p>
-          </div>
-          {currentView === 'award' &&
+          {currentView === 'success' ?
             <>
-              <img src='' alt='' className='bg-white h-[339px] rounded-xl' />
+              <div>
+                <p className='font-bold text-2xl leading-[40px] italic text-white'>Collect successful</p>
+                <p className='text-[#FFFFFFB2] leading-[140%] italic'>Congrats! You've secured a coveted whitelist slot. Your journey with us is just beginning</p>
+              </div>
               <div
                 className="w-full h-10 bg-black rounded-3xl mt-auto flex flex-row items-center justify-center"
-                onClick={() => setCurrentView('claim')}
+                onClick={handleClose}
               >
-                <p className='text-white leading-6 font-semibold italic'>Collect this</p>
+                <p className='text-white leading-6 font-semibold italic'>Done</p>
               </div>
             </>
-          }
-          {currentView === 'claim' &&
+            :
             <>
-              <div className="mt-5">
-                <div className="py-2 px-3 bg-[#3A3A3A] flex flex-row items-center gap-x-2 w-fit rounded-xl">
-                  <img src='./solana.png' alt='' className='w-6 h-6' />
-                  <p className='text-[13px] leading-[120%] text-white italic'>Network: Solana</p>
-                </div>
-                <div className="mt-6">
-                  <p className='text-[13px] text-[#BDBDBA] leading-[120%] italic'>Enter the recipent wallet address</p>
-                </div>
-                <input
-                  onChange={(e) => { setWallet(e.currentTarget.value) }}
-                  type="text"
-                  value={wallet}
-                  placeholder='Wallet address'
-                  className='py-4 px-3 w-full focus-visible:outline-none text-white placeholder:text-[#FFFFFF80] text-base font-medium leading-[120%] bg-[#212121DE] mt-6 rounded-xl'
-                />
+              <div className="mb-5">
+                <p className='font-bold text-2xl leading-[40px] italic text-white'>{body[smokeType].header}</p>
+                <p className='text-[#FFFFFFB2] leading-[140%] italic'>{body[smokeType].desc}</p>
               </div>
-              <div className="w-full h-10 bg-black rounded-3xl mt-auto flex flex-row items-center justify-center">
-                <p className='text-white leading-6 font-semibold italic'>Confirm</p>
-              </div>
+              {currentView === 'award' &&
+                <>
+                  <img src='' alt='' className='bg-white h-[339px] rounded-xl' />
+                  <div
+                    className="w-full h-10 bg-black rounded-3xl mt-auto flex flex-row items-center justify-center"
+                    onClick={() => setCurrentView('claim')}
+                  >
+                    <p className='text-white leading-6 font-semibold italic'>Collect this</p>
+                  </div>
+                </>
+              }
+              {currentView === 'claim' &&
+                <>
+                  <div className="mt-5">
+                    <div className="py-2 px-3 bg-[#3A3A3A] flex flex-row items-center gap-x-2 w-fit rounded-xl">
+                      <img src='./solana.png' alt='' className='w-6 h-6' />
+                      <p className='text-[13px] leading-[120%] text-white italic'>Network: Solana</p>
+                    </div>
+                    <div className="mt-6">
+                      <p className='text-[13px] text-[#BDBDBA] leading-[120%] italic'>Enter the recipent wallet address</p>
+                    </div>
+                    <input
+                      onChange={(e) => { setWallet(e.currentTarget.value) }}
+                      type="text"
+                      value={wallet}
+                      placeholder='Wallet address'
+                      className='py-4 px-3 w-full focus-visible:outline-none text-white placeholder:text-[#FFFFFF80] text-base font-medium leading-[120%] bg-[#212121DE] mt-6 rounded-xl'
+                    />
+                  </div>
+                  <div
+                    className="w-full h-10 bg-black rounded-3xl mt-auto flex flex-row items-center justify-center"
+                    onClick={handleConfirm}
+                  >
+                    <p className='text-white leading-6 font-semibold italic'>Confirm</p>
+                  </div>
+                </>
+              }
             </>
           }
         </div>
