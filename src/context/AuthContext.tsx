@@ -9,7 +9,6 @@ import { IDrop } from '../models/types';
 import { insertUser, isUserIsExisted } from '../middleware/data/user';
 import { updateCoordinate, updateUser } from '../redux/slides/userSlides';
 import { useDispatch } from 'react-redux';
-import useApi from '../hooks/useAPI';
 import { Web3Auth } from '@web3auth/modal';
 import { SolanaWallet } from '@web3auth/solana-provider';
 
