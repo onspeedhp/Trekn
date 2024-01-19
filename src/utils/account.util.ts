@@ -47,25 +47,27 @@ export const getScore = (data: any,count: boolean) => {
 const calculateScore = (data: any, count: boolean) => {
   let total = 0;
   let totalScore = 0;
-  Object.entries(data).map(([key, item]: any) => {
-    total += Number(item);
-    switch (key) {
-      case "0":
-        totalScore += 5 * Number(item);
-        break;
-      case "1":
-        totalScore += 4 * Number(item);
-        break;
-      case "2":
-        totalScore += 3 * Number(item);
-        break;
-      case "3":
-        totalScore += 2 * Number(item);
-        break;
-      default:
-        totalScore += 1 * Number(item);
-    }
-  });
+  if(data) {
+    Object.entries(data).map(([key, item]: any) => {
+      total += Number(item);
+      switch (key) {
+        case "0":
+          totalScore += 5 * Number(item);
+          break;
+        case "1":
+          totalScore += 4 * Number(item);
+          break;
+        case "2":
+          totalScore += 3 * Number(item);
+          break;
+        case "3":
+          totalScore += 2 * Number(item);
+          break;
+        default:
+          totalScore += 1 * Number(item);
+      }
+    });
+  }
   if(count) {
     return `${total === 0 ? 'no rating' : `${totalScore / total} (${total})`}`;
   } else{
