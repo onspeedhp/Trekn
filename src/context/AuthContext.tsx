@@ -79,17 +79,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     },
   });
 
-  useEffect(() => {
-    console.log('Init modal');
-    web3auth.initModal();
-  }, []);
-
   const init = async () => {
-    console.log('Here');
-    console.log(web3auth);
-
+    console.log('Login');
+    await web3auth.initModal();
     await web3auth.connect();
-    console.log('Hi');
+    console.log('Done login');
 
     const torusInfo = await web3auth.getUserInfo();
     const _web3authProvider = await web3auth.connect();
