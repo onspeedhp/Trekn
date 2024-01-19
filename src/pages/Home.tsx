@@ -153,7 +153,7 @@ function Home() {
   }, [user.id])
 
   useEffect(() => {
-    if (!user.country || !user.city) {
+    // if (!user.country || !user.city) {
       (async () => {
         const countryInfo: any = await get(`https://nominatim.openstreetmap.org/reverse.php?lat=${user.lat}&lon=${user.lng}&zoom=5&format=jsonv2&accept-language=en`);
         dispatch(updateInit({
@@ -161,7 +161,7 @@ function Home() {
           city: countryInfo?.address?.city,
         }));
       })();
-    }
+    // }
   }, [user.id, user.lng, user.lat])
 
   useEffect(() => {

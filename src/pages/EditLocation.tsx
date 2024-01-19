@@ -72,6 +72,7 @@ export default function EditLocation() {
   }, 1000);
 
   useEffect(() => {
+    setLoading(true);
     (async () => {
       let data: any;
       if (user.country === 'Vietnam') {
@@ -94,10 +95,22 @@ export default function EditLocation() {
           default:
         }
       } else {
-        // another country
+        switch (currentEdit) {
+          case 'state':
+            const { data: _data } = await apiService.post('https://countriesnow.space/api/v0.1/countries/states', { country: user.country });
+            data = _data.states;
+            break;
+          case 'cities':
+            const { data: citiesList } = await apiService.post('https://countriesnow.space/api/v0.1/countries/state/cities', { country: user.country, state: addressForm?.state });
+            data = citiesList;
+            break;
+          default:
+        }
+
       }
       setDataList(data);
       setFilteredDataList(data);
+      setLoading(false);
     })();
   }, [currentEdit]);
 
@@ -110,7 +123,7 @@ export default function EditLocation() {
     const currentStepIdx = stepList.indexOf(currentEdit);
     setAddressForm((prev) => ({
       ...prev,
-      [currentEdit === 'cities' ? 'city' : currentEdit]: item.name,
+      [currentEdit === 'cities' ? 'city' : currentEdit]: item.name || item,
     }));
     setCurrentCode(item.code);
     setDataList([]);
@@ -128,6 +141,10 @@ export default function EditLocation() {
           return newForm;
         })
         setCurrentEdit('cities');
+        break;
+      case 'state':
+        setAddressForm({});
+        setCurrentEdit(key);
         break;
       default:
         setAddressForm((prev) => {
@@ -278,7 +295,7 @@ export default function EditLocation() {
                         {addressProperties.suburb}, {addressProperties.city}
                       </p>
                       :
-                      'Quận/Huyện, Phường/Xã'
+                      user.country === 'Vietnam' ? 'Quận/Huyện, Phường/Xã' : 'State'
                     )}
                   <FaChevronRight size={16} className='text-[#ffffff70]' />
                 </div>
@@ -290,7 +307,7 @@ export default function EditLocation() {
                     <p className='text-base font-semibold leading-[120%] text-[#ffffff]'>
                       {addressProperties.name && `${addressProperties.name}, `}{addressProperties.housenumber} {addressProperties.street}
                     </p>
-                    : 'Tên đường, Toà nhà, Số nhà'}
+                    : user.country === 'Vietnam' ? 'Tên đường, Tòa nhà, Số nhà' : 'Address'}
                 </div>
               </div>
               <div
@@ -325,8 +342,8 @@ export default function EditLocation() {
                     label={null}
                     placeholder={
                       currentEdit === 'address'
-                        ? 'Tên đường, Tòa nhà, Số nhà'
-                        : 'Quận/Huyện, Phường/Xã'
+                        ? user.country === 'Vietnam' ? 'Tên đường, Tòa nhà, Số nhà' : 'Address'
+                        : user.country === 'Vietnam' ? 'Quận/Huyện, Phường/Xã' : 'State'
                     }
                     leftIco={
                       currentEdit !== 'address' && (
@@ -360,7 +377,7 @@ export default function EditLocation() {
                                       : handleConfirmAddress(item)
                                   }
                                 >
-                                  {item.name || item.title}
+                                  {item.name || item.title || item}
                                 </div>
                                 {idx + 1 !== filteredDataList.length && (
                                   <div className='my-4 h-[1px] bg-[#626262]'></div>
