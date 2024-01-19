@@ -41,10 +41,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   useEffect(() => {
-    web3auth.initModal();
-  }, []);
-
-  useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       ({ coords: { longitude, latitude } }) => {
         dispatch(
@@ -83,8 +79,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     },
   });
 
+  useEffect(() => {
+    console.log('Init modal');
+    web3auth.initModal();
+  }, []);
+
   const init = async () => {
+    console.log('Here');
+    console.log(web3auth);
+
     await web3auth.connect();
+    console.log('Hi');
+
     const torusInfo = await web3auth.getUserInfo();
     const _web3authProvider = await web3auth.connect();
     if (_web3authProvider) {

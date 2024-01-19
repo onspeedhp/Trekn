@@ -7,7 +7,11 @@ import { useLocation, useNavigate } from 'react-router';
 import request from '../axios';
 import { IDrop } from '../models/types';
 import { Button, Drawer, Spin } from 'antd';
-import { getFollowerById, getFollowingById, getLeaderBoardPoint } from '../middleware/data/user';
+import {
+  getFollowerById,
+  getFollowingById,
+  getLeaderBoardPoint,
+} from '../middleware/data/user';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   setLastFetch,
@@ -22,7 +26,7 @@ import { getDropByUserAddress, getDropType } from '../middleware/data/drop';
 import { getMintedByUserAddress } from '../middleware/data/minted';
 import { sortDataByTimeline } from '../utils/account.util';
 import Feed from '../components/Feed';
-import { useDraggable } from "react-use-draggable-scroll";
+import { useDraggable } from 'react-use-draggable-scroll';
 import { setDropType } from '../redux/slides/configSlice';
 
 function Home() {
@@ -45,9 +49,9 @@ function Home() {
   const [loadingReadyToCollect, setLoadingReadyToCollet] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(true);
   const [follow, setFollowData] = useState({});
-  const [currentView, setCurrentView] = useState('exploring')
-  const [filter, setFilter] = useState('all')
-  const [viewList, setViewList] = useState<any>([])
+  const [currentView, setCurrentView] = useState('exploring');
+  const [filter, setFilter] = useState('all');
+  const [viewList, setViewList] = useState<any>([]);
   const [showAdd, setShowAdd] = useState<boolean>(false);
 
   const navigate = useNavigate();
@@ -58,15 +62,15 @@ function Home() {
         setLoading(true);
         await init();
         setLoading(false);
-        window.history.replaceState({}, document.title)
+        window.history.replaceState({}, document.title);
       }
-      if(locationState?.reload) {
+      if (locationState?.reload) {
         setViewList([]);
         getNearBy(user.lat, user.lng);
         getReadyToCollect(user.lat, user.lng);
-        window.history.replaceState({}, document.title)
+        window.history.replaceState({}, document.title);
       }
-      getDropType({ onSuccess: (data) => dispatch(setDropType(data)) })
+      getDropType({ onSuccess: (data) => dispatch(setDropType(data)) });
       setLoadingPoint(true);
       getLeaderBoardPoint({
         onSuccess: (data) => {
@@ -74,16 +78,18 @@ function Home() {
         },
       });
       setLoadingPoint(false);
-    })()
+    })();
   }, []);
 
   useEffect(() => {
     if (filter !== 'all') {
-      const result = [...readyToCollect, ...nearBy].filter((item: any) => item.type === filter);
+      const result = [...readyToCollect, ...nearBy].filter(
+        (item: any) => item.type === filter
+      );
       return setViewList(result);
     }
     return setViewList([...readyToCollect, ...nearBy]);
-  }, [readyToCollect, nearBy, filter])
+  }, [readyToCollect, nearBy, filter]);
 
   const getNearBy = async (lat: number, log: number) => {
     setLoadingNearBy(true);
@@ -139,30 +145,36 @@ function Home() {
     if (user.id) {
       (async () => {
         await getFollowingById({
-          userId: user.id, onSuccess: (followingList: any) => {
+          userId: user.id,
+          onSuccess: (followingList: any) => {
             dispatch(updateInit({ following: followingList }));
-          }
+          },
         });
         await getFollowerById({
-          userId: user.id, onSuccess: (followerList: any) => {
+          userId: user.id,
+          onSuccess: (followerList: any) => {
             dispatch(updateInit({ follower: followerList }));
-          }
+          },
         });
       })();
     }
-  }, [user.id])
+  }, [user.id]);
 
   useEffect(() => {
     // if (!user.country || !user.city) {
-      (async () => {
-        const countryInfo: any = await get(`https://nominatim.openstreetmap.org/reverse.php?lat=${user.lat}&lon=${user.lng}&zoom=5&format=jsonv2&accept-language=en`);
-        dispatch(updateInit({
+    (async () => {
+      const countryInfo: any = await get(
+        `https://nominatim.openstreetmap.org/reverse.php?lat=${user.lat}&lon=${user.lng}&zoom=5&format=jsonv2&accept-language=en`
+      );
+      dispatch(
+        updateInit({
           country: countryInfo?.address?.country,
           city: countryInfo?.address?.city,
-        }));
-      })();
+        })
+      );
+    })();
     // }
-  }, [user.id, user.lng, user.lat])
+  }, [user.id, user.lng, user.lat]);
 
   useEffect(() => {
     if (user.following && user.following.length > 0) {
@@ -194,9 +206,9 @@ function Home() {
         });
         setLoadingFollow(false);
         setFollowData(sortDataByTimeline(userData));
-      })()
+      })();
     }
-  }, [user.following])
+  }, [user.following]);
 
   useEffect(() => {
     const handleScrollDown = () => {
@@ -206,62 +218,60 @@ function Home() {
       if (window.scrollY < 80) {
         return setShowAdd(false);
       }
-    }
-    window.addEventListener('scroll', handleScrollDown)
+    };
+    window.addEventListener('scroll', handleScrollDown);
     return () => {
       window.removeEventListener('scroll', handleScrollDown);
     };
-  }, [])
+  }, []);
 
   const ChangeViewButton = ({ label }: { label: string }) => (
     <div
-      className={`w-1/2 font-bold text-[14.65px] leading-[18px] text-center py-2 rounded-[10px] transition duration-300 ${currentView !== label ? 'bg-transparent text-[#00000070]' : 'bg-white'
-        }`}
+      className={`w-1/2 font-bold text-[14.65px] leading-[18px] text-center py-2 rounded-[10px] transition duration-300 ${
+        currentView !== label ? 'bg-transparent text-[#00000070]' : 'bg-white'
+      }`}
       onClick={() => setCurrentView(label)}
     >
       {capitalizeFirstLetter(label)}
     </div>
-  )
-
+  );
 
   return (
     <>
       <div
-        className="mt-6 flex items-center gap-3 pl-5 overflow-x-scroll scrollbar-hide"
+        className='mt-6 flex items-center gap-3 pl-5 overflow-x-scroll scrollbar-hide'
         {...events}
         ref={filterScrollRef}
       >
         <div
-          className="w-9 h-9 rounded-full flex items-center justify-center border border-black flex-shrink-0"
+          className='w-9 h-9 rounded-full flex items-center justify-center border border-black flex-shrink-0'
           onClick={() => {
             navigate('/map-view');
           }}
         >
-          <FaMap
-            size={16}
-          />
+          <FaMap size={16} />
         </div>
         <div
-          className={`${filter === 'all' ? 'bg-[#99FF48]' : 'bg-[#F2F2F2]'} px-[10px] py-[6px] text-[13px] text-[#020303] rounded-full font-medium leading-[18px] tracking-[-0.08px] whitespace-nowrap`}
+          className={`${
+            filter === 'all' ? 'bg-[#99FF48]' : 'bg-[#F2F2F2]'
+          } px-[10px] py-[6px] text-[13px] text-[#020303] rounded-full font-medium leading-[18px] tracking-[-0.08px] whitespace-nowrap`}
           onClick={() => setFilter('all')}
         >
           All in {user.city}
         </div>
-        {typeList?.map((item: any, idx: number) =>
+        {typeList?.map((item: any, idx: number) => (
           <div
-            className={`${filter === item.id ? 'bg-[#99FF48]' : 'bg-[#F2F2F2]'} px-[10px] py-[6px] text-[13px] text-[#020303] rounded-full font-medium leading-[18px] tracking-[-0.08px] whitespace-nowrap`}
+            className={`${
+              filter === item.id ? 'bg-[#99FF48]' : 'bg-[#F2F2F2]'
+            } px-[10px] py-[6px] text-[13px] text-[#020303] rounded-full font-medium leading-[18px] tracking-[-0.08px] whitespace-nowrap`}
             onClick={() => setFilter(item.id)}
             key={idx}
           >
             {capitalizeFirstLetter(item.type)}
           </div>
-        )}
+        ))}
       </div>
-      <Spin
-        spinning={loading}
-        tip='Loading login'
-        className='text-black'
-      >
+      <Spin spinning={loading} tip='Loading login' className='text-black'>
         <div className='w-full px-[20px] sm:px-0 relative'>
           {/* {user.address &&
           <div className="p-1 bg-[#ECECEC] rounded-[10px] mt-10 flex items-center">
@@ -271,7 +281,7 @@ function Home() {
         } */}
           {!leaderBoard ? (
             <>
-              {currentView === 'exploring' &&
+              {currentView === 'exploring' && (
                 <>
                   <div className={`mt-6 home`}>
                     {/* <div className='text-[14px] text-black opacity-70 font-medium mb-2 leading-[18px]'>
@@ -297,7 +307,7 @@ function Home() {
                         tip='Loading nearby'
                         spinning={loadingNearBy}
                         className={`flex items-center mt-10 text-black font-semibold`}
-                        style={{ top: (loadingNearBy ? 208 : 0) }}
+                        style={{ top: loadingNearBy ? 208 : 0 }}
                       >
                         {viewList.length !== 0 ? (
                           <>
@@ -306,38 +316,49 @@ function Home() {
                             </p>
                             <ListDetail status={'Nearby'} data={viewList} />
                           </>
-                        ) :
+                        ) : (
                           <>
-                            {!loadingNearBy &&
-                              <div className="flex flex-col items-center">
-                                <img className='w-[223px] h-[223px] object-cover object-center' src="/Route_search.svg" alt="" />
+                            {!loadingNearBy && (
+                              <div className='flex flex-col items-center'>
+                                <img
+                                  className='w-[223px] h-[223px] object-cover object-center'
+                                  src='/Route_search.svg'
+                                  alt=''
+                                />
                                 <p className='text-center text-[15px] font-normal leading-6 text-black opacity-50 px-3'>
-                                  No discoveries shared yet, you're the pioneer here—share your first discovery and start shaping the map!
+                                  No discoveries shared yet, you're the pioneer
+                                  here—share your first discovery and start
+                                  shaping the map!
                                 </p>
-                                <Button className='flex gap-2 items-center justify-center border-none rounded-3xl bg-black text-white text-base font-semibold w-full h-auto mt-4 py-3'
+                                <Button
+                                  className='flex gap-2 items-center justify-center border-none rounded-3xl bg-black text-white text-base font-semibold w-full h-auto mt-4 py-3'
                                   onClick={async () => {
                                     if (user.id) {
                                       navigate('/check-in/upload-image');
                                     } else {
-                                      setLoading(true);
+                                      // setLoading(true);
                                       await init();
-                                      setLoading(false);
+                                      // setLoading(false);
                                     }
-                                  }}>
+                                  }}
+                                >
                                   <FaPlus size={24} />
                                   <span>Drop a new experience</span>
                                 </Button>
                               </div>
-                            }
+                            )}
                           </>
-                        }
+                        )}
                       </Spin>
                     </>
                   </div>
                   <Button
-                    className={
-                      `fixed bottom-0 right-2 w-[56px] h-[56px] rounded-full border-0 opacity-0 duration-500 transition-all ${nearBy.length !== 0 && !loadingNearBy && showAdd && 'opacity-100 bottom-[12%]'}`
-                    }
+                    className={`fixed bottom-0 right-2 w-[56px] h-[56px] rounded-full border-0 opacity-0 duration-500 transition-all ${
+                      nearBy.length !== 0 &&
+                      !loadingNearBy &&
+                      showAdd &&
+                      'opacity-100 bottom-[12%]'
+                    }`}
                     style={{ backgroundColor: 'rgba(148, 255, 65, 0.80)' }}
                     onClick={async () => {
                       if (user.id) {
@@ -352,7 +373,7 @@ function Home() {
                     <FaPlus size={24} className='text-black' />
                   </Button>
                 </>
-              }
+              )}
             </>
           ) : (
             <>
@@ -398,34 +419,48 @@ function Home() {
             </>
           )}
         </div>
-        {currentView === 'following' &&
+        {currentView === 'following' && (
           <>
             <div className='mt-9'>
               <Spin
                 tip='Loading Follow'
                 spinning={loadingFollow}
                 className='flex items-center mt-10 text-black font-semibold'
-                style={{ top: (loadingFollow ? 208 : 0) }}
+                style={{ top: loadingFollow ? 208 : 0 }}
               >
-                {Object.entries(follow).length > 0 && Object.entries(follow).map(([key, data]: any, dataIdx) => (
-                  <Fragment key={dataIdx}>
-                    {data.map((item: any, itemIdx: number) => (
-                      <Fragment key={itemIdx}>
-                        <Feed wrapperData={follow} data={data} dataIdx={dataIdx} item={item} itemIdx={itemIdx} />
-                      </Fragment>
-                    ))}
-                  </Fragment>
-                ))
-                }
+                {Object.entries(follow).length > 0 &&
+                  Object.entries(follow).map(([key, data]: any, dataIdx) => (
+                    <Fragment key={dataIdx}>
+                      {data.map((item: any, itemIdx: number) => (
+                        <Fragment key={itemIdx}>
+                          <Feed
+                            wrapperData={follow}
+                            data={data}
+                            dataIdx={dataIdx}
+                            item={item}
+                            itemIdx={itemIdx}
+                          />
+                        </Fragment>
+                      ))}
+                    </Fragment>
+                  ))}
               </Spin>
-              {!loadingFollow && Object.entries(follow).length === 0 &&
+              {!loadingFollow && Object.entries(follow).length === 0 && (
                 <div className='absolute top-[106px] bottom-0 left-0 right-0 flex flex-col justify-center items-center z-[-1] px-[11.736%]'>
-                  <img src="/bubble-with-a-cross.svg" alt="" className='w-[152px] h-[158px] object-cover object-center mb-4' />
-                  <p className='text-[13px] font-medium leading-[18.2px] text-[#707070CC] text-center'>Your Following list is empty. Start connecting! Follow people or add friends to see their updates here.</p>
-                </div>}
+                  <img
+                    src='/bubble-with-a-cross.svg'
+                    alt=''
+                    className='w-[152px] h-[158px] object-cover object-center mb-4'
+                  />
+                  <p className='text-[13px] font-medium leading-[18.2px] text-[#707070CC] text-center'>
+                    Your Following list is empty. Start connecting! Follow
+                    people or add friends to see their updates here.
+                  </p>
+                </div>
+              )}
             </div>
           </>
-        }
+        )}
         {/* <Drawer onClose={() => setOpenDrawer(false)} open={openDrawer} placement='bottom'
         height={windowSize.height * 0.9}>
         aaa
