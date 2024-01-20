@@ -9,7 +9,7 @@ export const createDrop = async ({
 }: {
   drop: IDrop;
   user?: any;
-  onSuccess?: (data: any) => void;
+  onSuccess?: (data: any, weeklyPoint: any) => void;
   onError?: (error: any) => void;
 }) => {
   const newDrop = {
@@ -20,7 +20,7 @@ export const createDrop = async ({
   if (searchedUser && searchedUser.length > 0) {
     await supabase
       .from('user')
-      .update({ point: searchedUser[0].point + 200, weekly_point: (searchedUser[0].weekly_point || 0) + 200 })
+      .update({ point: searchedUser[0].point + 200, weeklyPoint: (searchedUser[0].weeklyPoint || 0) + 200 })
       .eq('id', user.id);
   }
 
@@ -30,7 +30,13 @@ export const createDrop = async ({
     .select('*, user(*)');
 
   if (!error) {
-    onSuccess(data);
+    onSuccess(
+      data,
+      {
+        point: (((searchedUser && searchedUser.length > 0 && searchedUser[0].point) || 0)) + 200,
+        weeklyPoint: (((searchedUser && searchedUser.length > 0 && searchedUser[0].weeklyPoint) || 0)) + 200
+      }
+    );
   } else {
     onError('');
   }

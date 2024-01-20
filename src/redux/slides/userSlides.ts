@@ -21,14 +21,15 @@ export const userSlide = createSlice({
   initialState,
   reducers: {
     updateUser: (state, action) => {
-      const { name, email, address, profileImage, point, id, description } =
-        action.payload;
+      const { name, email, address, profileImage, point, id, description, weeklyPoint } =
+      action.payload;
       state.id = id ? id : state.id;
       state.name = name ? name : state.name;
       state.email = email ? email : state.email;
       state.address = address ? address : state.address;
       state.profileImage = profileImage ? profileImage : state.profileImage;
       state.point = point ? point : state.point;
+      state.weeklyPoint = weeklyPoint ? weeklyPoint : state.weeklyPoint;
       state.description = description ? description : state.description;
 
       localStorage.setItem("user", JSON.stringify(state));
