@@ -13,8 +13,9 @@ export default function Reward() {
   const [isOpen, setIsOpen] = useState(false);
   const [currentView, setCurrentView] = useState('award')
   const [wallet, setWallet] = useState('')
-  const [userList, setUserList] = useState([]);
+  const [userList, setUserList] = useState<any[]>([]);
   const navigate = useNavigate();
+  const placeData = ['/1st.svg', '/2nd.svg', '/3rd.svg']
   const smokeType = 'nft'
   const body = {
     nft: {
@@ -40,16 +41,17 @@ export default function Reward() {
     setWallet('');
   }
 
-  useEffect(()=>{
-    (async()=>{
+  useEffect(() => {
+    (async () => {
       const userList = await getAllUserList();
-      console.log(userList);
+      setUserList(userList || []);
     })()
-  },[])
+  }, [])
+
   return (
     <div
-      className="px-4 bg-cover bg-center bg-[#606060] pb-24"
-      style={{ backgroundImage: 'url(./bg-award.png)' }}
+      className="px-4 bg-cover bg-center min-h-screen bg-[#606060] pb-24"
+      style={{ backgroundImage: 'url(/bg-award.png)' }}
     >
       <div className="flex flex-row py-7 gap-x-3">
         <div className="rounded-xl w-[100px] h-[100px] p-0.5 flex items-center justify-center" style={{ backgroundImage: 'linear-gradient(to bottom, #3CFF38, #FFC329)' }}>
@@ -67,7 +69,7 @@ export default function Reward() {
 
           <div className='mt-auto' onClick={() => setIsOpen(true)}>
             <p style={{ fontFamily: 'Handjet' }} className='text-white text-base leading-4 text-center animate-bounce'>Open it</p>
-            <img src='./treasury.svg' alt='' className='w-[56px] h-[38px] mt-1' />
+            <img src='/treasury.svg' alt='' className='w-[56px] h-[38px] mt-1' />
           </div>
         </div>
       </div>
@@ -102,62 +104,27 @@ export default function Reward() {
           This week Leaderboard
         </p>
         <div className="flex-col flex gap-4">
-          <div className="flex flex-row justify-between items-center">
-            <div className="flex flex-row item-center gap-[11px]">
-              <img src="./1st.svg" alt="" />
-              <div className="flex flex-row items-center gap-2">
-                <img src={user.profileImage} alt='' className='border border-white w-12 h-12 object-cover object-center' />
-                <p style={{ fontFamily: 'Handjet' }} className='text-white text-[20px] font-semibold leading-5'>{user.name}</p>
-              </div>
-            </div>
-            <div className="flex flex-row items-center gap-2">
-              <img src="/token.png" alt="" className='w-5 h-5' />
-              <p style={{ fontFamily: 'Handjet' }} className='text-white text-[20px] leading-4'>3200</p>
-            </div>
-          </div>
-          <div className="flex flex-row justify-between items-center">
-            <div className="flex flex-row item-center gap-[11px]">
-              <img src="./2nd.svg" alt="" />
-              <div className="flex flex-row items-center gap-2">
-                <img src={user.profileImage} alt='' className='border border-white w-12 h-12 object-cover object-center' />
-                <p style={{ fontFamily: 'Handjet' }} className='text-white text-[20px] font-semibold leading-5'>{user.name}</p>
-              </div>
-            </div>
-            <div className="flex flex-row items-center gap-2">
-              <img src="/token.png" alt="" className='w-5 h-5' />
-              <p style={{ fontFamily: 'Handjet' }} className='text-white text-[20px] leading-4'>3200</p>
-            </div>
-          </div>
-          <div className="flex flex-row justify-between items-center">
-            <div className="flex flex-row item-center gap-[11px]">
-              <img src="./3rd.svg" alt="" />
-              <div className="flex flex-row items-center gap-2">
-                <img src={user.profileImage} alt='' className='border border-white w-12 h-12 object-cover object-center' />
-                <p style={{ fontFamily: 'Handjet' }} className='text-white text-[20px] font-semibold leading-5'>{user.name}</p>
-              </div>
-            </div>
-            <div className="flex flex-row items-center gap-2">
-              <img src="/token.png" alt="" className='w-5 h-5' />
-              <p style={{ fontFamily: 'Handjet' }} className='text-white text-[20px] leading-4'>3200</p>
-            </div>
-          </div>
-          {[4, 5].map((item, idx) => (
-            <div className="flex flex-row justify-between items-center" key={idx}>
-              <div className="flex flex-row items-center gap-[11px]">
-                <div className="flex-row flex items-center justify-center w-6 h-6 rounded-full bg-[#606060]">
-                  <p style={{ fontFamily: 'Handjet' }} className='text-white text-[13px] font-medium leading-[13px]'>{item}</p>
-                </div>
+          {userList.map((item: any, idx: number) =>
+            <div className="flex flex-row justify-between items-center">
+              <div className="flex flex-row item-center gap-[11px]">
+                {idx < 3 ?
+                  <img src={placeData[idx]} alt="" />
+                  :
+                  <div className="flex-row flex items-center justify-center w-6 h-6 rounded-full bg-[#606060]">
+                    <p style={{ fontFamily: 'Handjet' }} className='text-white text-[13px] font-medium leading-[13px]'>{idx + 1}</p>
+                  </div>
+                }
                 <div className="flex flex-row items-center gap-2">
-                  <img src={user.profileImage} alt='' className='border border-white w-12 h-12 object-cover object-center' />
-                  <p style={{ fontFamily: 'Handjet' }} className='text-white text-[20px] font-semibold leading-5'>{user.name}</p>
+                  <img src={item.profileImage} alt='' className='border border-white w-12 h-12 object-cover object-center' />
+                  <p style={{ fontFamily: 'Handjet' }} className='text-white text-[20px] font-semibold leading-5'>{item.name}</p>
                 </div>
               </div>
               <div className="flex flex-row items-center gap-2">
                 <img src="/token.png" alt="" className='w-5 h-5' />
-                <p style={{ fontFamily: 'Handjet' }} className='text-white text-[20px] leading-4 font-medium'>3200</p>
+                <p style={{ fontFamily: 'Handjet' }} className='text-white text-[20px] leading-4'>{item.weeklyPoint}</p>
               </div>
             </div>
-          ))}
+          )}
         </div>
       </div>
       <Drawer
@@ -222,7 +189,7 @@ export default function Reward() {
                 <>
                   <div className="mt-5">
                     <div className="py-2 px-3 bg-[#3A3A3A] flex flex-row items-center gap-x-2 w-fit rounded-xl">
-                      <img src='./solana.png' alt='' className='w-6 h-6' />
+                      <img src='/solana.png' alt='' className='w-6 h-6' />
                       <p className='text-[13px] leading-[120%] text-white italic'>Network: Solana</p>
                     </div>
                     <div className="mt-6">
@@ -248,6 +215,9 @@ export default function Reward() {
           }
         </div>
       </Drawer>
+      <div className="fixed bg-[#3a3a3ab3] top-0 left-0 right-0 bottom-0">
+
+      </div>
     </div>
   )
 }
