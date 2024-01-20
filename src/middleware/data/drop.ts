@@ -80,7 +80,7 @@ export const getDropByID = async ({
 }) => {
   const { data, error } = await supabase
     .from('drop')
-    .select('*, user(*), minted(*, user(*), reaction(*))')
+    .select('*, user(*), minted(*, user(*), reaction(*)), reaction(*)')
 
     .eq('id', dropId);
 
