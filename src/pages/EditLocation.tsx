@@ -10,6 +10,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import { useAuthContext } from '../context/AuthContext';
 import { Button, Spin } from 'antd';
 import Map, { Layer, Marker, Source, ViewStateChangeEvent } from 'react-map-gl';
+import provinceList from '../constant/country.json'
 import axios from 'axios';
 
 export default function EditLocation() {
@@ -28,6 +29,7 @@ export default function EditLocation() {
     subDistrict?: string;
   }>({});
   const [dataList, setDataList] = useState<Array<any>>([]);
+  const [citiesOfState, setCitiesOfState] = useState([]);
   const [filteredDataList, setFilteredDataList] = useState<Array<any>>([]);
   const [currentCode, setCurrentCode] = useState(null);
   const [addressLocation, setAddressLocation] = useState<any>(null);
@@ -97,12 +99,11 @@ export default function EditLocation() {
       } else {
         switch (currentEdit) {
           case 'state':
-            const { data: _data } = await apiService.post('https://countriesnow.space/api/v0.1/countries/states', { country: user.country });
-            data = _data.states;
+            const stateList = (provinceList as any).filter((province: any) => province.name === user.country)[0]?.states;
+            data = stateList;
             break;
           case 'cities':
-            const { data: citiesList } = await apiService.post('https://countriesnow.space/api/v0.1/countries/state/cities', { country: user.country, state: addressForm?.state });
-            data = citiesList;
+            data = citiesOfState;
             break;
           default:
         }
@@ -125,6 +126,9 @@ export default function EditLocation() {
       ...prev,
       [currentEdit === 'cities' ? 'city' : currentEdit]: item.name || item,
     }));
+    if (user.country !== 'Vietnam') {
+      setCitiesOfState(item.cities);
+    }
     setCurrentCode(item.code);
     setDataList([]);
     setFilteredDataList([]);
@@ -310,21 +314,23 @@ export default function EditLocation() {
                     : user.country === 'Vietnam' ? 'Tên đường, Tòa nhà, Số nhà' : 'Address'}
                 </div>
               </div>
-              <div
-                className="text-[#99FF48] font-medium text-[13px] leading-4 mt-6"
-                onClick={() => {
-                  setMetadata({
-                    ...metadata,
-                    location: address,
-                    location_name: address,
-                    lat: user.lat,
-                    lng: user.lng,
-                  });
-                  navigate('/check-in/enter-info');
-                }}
-              >
-                Use my current location
-              </div>
+              {user.lat && user.lng && address &&
+                <div
+                  className="text-[#99FF48] font-medium text-[13px] leading-4 mt-6"
+                  onClick={() => {
+                    setMetadata({
+                      ...metadata,
+                      location: address,
+                      location_name: address,
+                      lat: user.lat,
+                      lng: user.lng,
+                    });
+                    navigate('/check-in/enter-info');
+                  }}
+                >
+                  Use my current location
+                </div>
+              }
             </>
           )}
 
