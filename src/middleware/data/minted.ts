@@ -5,8 +5,8 @@ export const createMinted = async ({
   drop,
   image,
   description,
-  onSuccess = () => {},
-  onError = () => {},
+  onSuccess = () => { },
+  onError = () => { },
 }: {
   userId: any;
   drop: any;
@@ -29,10 +29,15 @@ export const createMinted = async ({
     // check if user is owned of this drop
     if (userId !== drop.user.id) {
       // increase the owner of drop
-      await supabase
-        .from('user')
-        .update({ point: drop.user.point + 100 })
-        .eq('id', drop.user.id);
+      const { data: user } = await supabase.from('user').select('*').eq('id', userId);
+      if (user && user.length > 0) {
+        await supabase
+          .from('user')
+          .update({
+            point: user[0].point + 100, weekly_point: (user[0].weekly_point || 0) + 100
+          })
+          .eq('id', userId);
+      }
     }
     // increase the collected of drop
     await supabase
@@ -48,8 +53,8 @@ export const createMinted = async ({
 
 export const getMintedByUserAddress = async ({
   userId,
-  onSuccess = () => {},
-  onError = () => {},
+  onSuccess = () => { },
+  onError = () => { },
 }: {
   userId: Array<number>;
   onSuccess?: (data: any) => void;
@@ -69,8 +74,8 @@ export const getMintedByUserAddress = async ({
 
 export const getMintedById = async ({
   mintedId,
-  onSuccess = () => {},
-  onError = () => {},
+  onSuccess = () => { },
+  onError = () => { },
 }: {
   mintedId: string;
   onSuccess?: (data: any, count: number) => void;
