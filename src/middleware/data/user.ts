@@ -163,3 +163,10 @@ export const getListUser = async (userId: Array<number>) => {
     return data;
   }
 };
+
+export const getAllUserList = async () => {
+  const { data, error } = await supabase.from('user').select('*').order('weeklyPoint', { ascending: false }).limit(20);
+  if (!error) {
+    return data;
+  }
+}
