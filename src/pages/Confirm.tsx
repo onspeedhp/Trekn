@@ -9,6 +9,7 @@ import { FaCheckCircle, FaImage, FaUpload, FaInfoCircle } from 'react-icons/fa';
 
 import { supabase } from '../utils/supabaseClients';
 import { addNewReadyToCollect } from '../redux/slides/locationSlides';
+import { updateUser } from '../redux/slides/userSlides';
 
 export const Confirm: React.FC = () => {
   const navigate = useNavigate();
@@ -441,8 +442,10 @@ export const Confirm: React.FC = () => {
                   author_id: user.id,
                 },
                 user: user,
-                onSuccess: (data) => {
+                onSuccess: (data, weeklyPoint) => {
                   const drop = data[0];
+                  console.log(weeklyPoint);
+                  dispatch(updateUser({weeklyPoint}))
                   dispatch(
                     addNewReadyToCollect({
                       newReadyToCollect: {

@@ -1,10 +1,11 @@
 import { Drawer } from 'antd';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaMapPin, FaPlusCircle } from 'react-icons/fa';
 import { useSelector } from 'react-redux'
 import { Navigate, useNavigate } from 'react-router';
 import { useAuthContext } from '../context/AuthContext';
 import CustomiseInput from '../components/CustomiseInput';
+import { getAllUserList } from '../middleware/data/user';
 
 export default function Reward() {
   const user = useSelector((state: any) => state.user);
@@ -12,6 +13,7 @@ export default function Reward() {
   const [isOpen, setIsOpen] = useState(false);
   const [currentView, setCurrentView] = useState('award')
   const [wallet, setWallet] = useState('')
+  const [userList, setUserList] = useState([]);
   const navigate = useNavigate();
   const smokeType = 'nft'
   const body = {
@@ -37,6 +39,13 @@ export default function Reward() {
     setCurrentView('success');
     setWallet('');
   }
+
+  useEffect(()=>{
+    (async()=>{
+      const userList = await getAllUserList();
+      console.log(userList);
+    })()
+  },[])
   return (
     <div
       className="px-4 bg-cover bg-center bg-[#606060] pb-24"
@@ -51,7 +60,7 @@ export default function Reward() {
             <p style={{ fontFamily: 'Handjet' }} className='text-2xl text-white leading-4'>You have</p>
             <div className="flex flex-row items-center gap-x-2">
               <img src="/token.png" alt="" className='w-6 h-6' />
-              <p style={{ fontFamily: 'Handjet' }} className='text-white text-[32px] leading-5 font-medium'>3456</p>
+              <p style={{ fontFamily: 'Handjet' }} className='text-white text-[32px] leading-5 font-medium'>{user.weeklyPoint || 0}</p>
             </div>
             <p style={{ fontFamily: 'Handjet' }} className='text-white underline text-base leading-4'>Learn more</p>
           </div>

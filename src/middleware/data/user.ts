@@ -133,7 +133,7 @@ export const getFollowerById = async ({
 export const getUserAccountData = async ({ userId }: { userId: number }) => {
   const { data, error }: any = await supabase
     .from("user")
-    .select("*,drop(*,user(*)), minted(*,drop(*,user(*)),user(*))")
+    .select("*,drop(*,user(*), reaction(*)), minted(*,drop(*, user(*), reaction(*)), user(*))")
     .eq("id", userId);
 
   const { data: followerData, followerError }: any = await supabase
@@ -163,3 +163,10 @@ export const getListUser = async (userId: Array<number>) => {
     return data;
   }
 };
+
+export const getAllUserList = async () => {
+  const { data, error } = await supabase.from('user').select('*').order('weeklyPoint', { ascending: false }).limit(20);
+  if (!error) {
+    return data;
+  }
+}

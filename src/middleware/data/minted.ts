@@ -5,14 +5,14 @@ export const createMinted = async ({
   drop,
   image,
   description,
-  onSuccess = () => {},
-  onError = () => {},
+  onSuccess = () => { },
+  onError = () => { },
 }: {
   userId: any;
   drop: any;
   image?: string;
   description?: string;
-  onSuccess?: (data: any) => void;
+  onSuccess?: (data: any, userData: any) => void;
   onError?: (error: any) => void;
 }) => {
   const { data, error } = await supabase
@@ -27,20 +27,31 @@ export const createMinted = async ({
 
   if (!error) {
     // check if user is owned of this drop
-    if (userId !== drop.user.id) {
+    // if (userId !== drop.user.id) {
       // increase the owner of drop
-      await supabase
-        .from('user')
-        .update({ point: drop.user.point + 100 })
-        .eq('id', drop.user.id);
-    }
+      const { data: user } = await supabase.from('user').select('*').eq('id', userId);
+      if (user && user.length > 0) {
+        await supabase
+          .from('user')
+          .update({
+            point: user[0].point + 100, weeklyPoint: (user[0].weeklyPoint || 0) + 100
+          })
+          .eq('id', userId);
+      }
+    // }
     // increase the collected of drop
     await supabase
       .from('drop')
       .update({ collected: drop.collected + 1 })
       .eq('author_id', drop.user.id);
 
-    onSuccess(data[0]);
+    onSuccess(
+      data[0],
+      {
+        point: (((user && user.length > 0 && user[0].point) || 0)) + 100,
+        weeklyPoint: (((user && user.length > 0 && user[0].weeklyPoint) || 0)) + 100
+      }
+    );
   } else {
     onError('');
   }
@@ -48,8 +59,8 @@ export const createMinted = async ({
 
 export const getMintedByUserAddress = async ({
   userId,
-  onSuccess = () => {},
-  onError = () => {},
+  onSuccess = () => { },
+  onError = () => { },
 }: {
   userId: Array<number>;
   onSuccess?: (data: any) => void;
@@ -69,8 +80,8 @@ export const getMintedByUserAddress = async ({
 
 export const getMintedById = async ({
   mintedId,
-  onSuccess = () => {},
-  onError = () => {},
+  onSuccess = () => { },
+  onError = () => { },
 }: {
   mintedId: string;
   onSuccess?: (data: any, count: number) => void;

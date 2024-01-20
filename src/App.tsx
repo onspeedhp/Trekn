@@ -7,6 +7,9 @@ import './index.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUserAccountData } from './middleware/data/user';
+import { updateUser } from './redux/slides/userSlides';
 
 function App({
   header,
@@ -24,6 +27,8 @@ function App({
   const Header: any = header;
   const mobileMaxWidth = 748;
   const [isMobile, setIsMobile] = useState(window.innerWidth <= mobileMaxWidth);
+  const user = useSelector((state: any) => state.user);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     function handleResize() {
@@ -40,6 +45,13 @@ function App({
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      const userData = await getUserAccountData({ userId: user.id });
+      dispatch(updateUser(userData));
+    })()
+  }, [user.id])
 
   return (
     <>

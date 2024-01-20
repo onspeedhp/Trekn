@@ -9,6 +9,7 @@ import { createDrop } from '../middleware/data/drop';
 import { addNewReadyToCollect } from '../redux/slides/locationSlides';
 import CustomSelect from '../components/crud/CustomSelect';
 import { setAccountData } from '../redux/slides/accountSlice';
+import { updateUser } from '../redux/slides/userSlides';
 
 export const EnterDropInfo = () => {
   const navigate = useNavigate();
@@ -165,8 +166,9 @@ export const EnterDropInfo = () => {
                   author_id: user.id,
                 },
                 user: user,
-                onSuccess: (data) => {
+                onSuccess: (data, { point, weeklyPoint }) => {
                   const drop = data[0];
+                  dispatch(updateUser({ point, weeklyPoint }))
                   dispatch(
                     addNewReadyToCollect({
                       newReadyToCollect: {
@@ -176,7 +178,7 @@ export const EnterDropInfo = () => {
                       },
                     })
                   );
-                  
+
                   if (user.id === userAccountData.id) {
                     dispatch(setAccountData({
                       ...userAccountData, drop: [...userAccountData.drop,

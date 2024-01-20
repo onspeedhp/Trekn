@@ -11,6 +11,7 @@ import { getDropByID } from '../middleware/data/drop';
 import { PublicKey } from '@solana/web3.js';
 import { supabase } from '../utils/supabaseClients';
 import { setAccountData } from '../redux/slides/accountSlice';
+import { updateUser } from '../redux/slides/userSlides';
 
 export default function CheckinWPhoto() {
   const { id: dropId } = useParams();
@@ -63,7 +64,7 @@ export default function CheckinWPhoto() {
         userId: user.id,
         ...(imageUrl && { image: imageUrl }),
         ...(desc && { description: desc }),
-        onSuccess: (data: any, sig: any) => {
+        onSuccess: (data: any, sig: any, { point, weeklyPoint }) => {
           setMetadata({
             sig,
             ...selectedLocation,
@@ -82,6 +83,7 @@ export default function CheckinWPhoto() {
               }]
             }))
           }
+          dispatch(updateUser({ point, weeklyPoint }))
           navigate('/collect-success');
         },
         onError: (error) => {

@@ -17,14 +17,14 @@ export const mintCompressedNFT = async ({
   description,
   onSuccess,
   userId,
-  onError = () => {},
+  onError = () => { },
 }: {
   drop: any;
   userAddress: PublicKey;
   userId: any;
   image?: string;
   description?: string;
-  onSuccess: (data: any, sig: any) => void;
+  onSuccess: (data: any, sig: any, userData: any) => void;
   onError: (error: any) => void;
 }) => {
   // check if user is already mint
@@ -69,7 +69,7 @@ export const mintCompressedNFT = async ({
       ...(image && { image }),
       ...(description && { description }),
 
-      onSuccess: async (data: any) => {
+      onSuccess: async (data: any, { point, weeklyPoint }) => {
         let uri = `${process.env.REACT_APP_BACKEND}/drop/get-uri/${data.id}`;
 
         const nftArgs = {
@@ -101,7 +101,7 @@ export const mintCompressedNFT = async ({
 
           // web 2 side
           if (sig) {
-            onSuccess(data,sig);
+            onSuccess(data, sig, { point, weeklyPoint });
           } else {
             onError('Cannot mint this NFT');
           }

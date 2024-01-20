@@ -4,22 +4,25 @@ import { supabase } from '../../utils/supabaseClients';
 export const createDrop = async ({
   drop,
   user,
-  onSuccess = () => {},
-  onError = () => {},
+  onSuccess = () => { },
+  onError = () => { },
 }: {
   drop: IDrop;
   user?: any;
-  onSuccess?: (data: any) => void;
+  onSuccess?: (data: any, weeklyPoint: any) => void;
   onError?: (error: any) => void;
 }) => {
   const newDrop = {
     ...drop,
     collected: 0,
   };
-  await supabase
-    .from('user')
-    .update({ point: user.point + 200 })
-    .eq('id', user.id);
+  const { data: searchedUser } = await supabase.from('user').select('*').eq('id', user.id);
+  if (searchedUser && searchedUser.length > 0) {
+    await supabase
+      .from('user')
+      .update({ point: searchedUser[0].point + 200, weeklyPoint: (searchedUser[0].weeklyPoint || 0) + 200 })
+      .eq('id', user.id);
+  }
 
   const { data, error } = await supabase
     .from('drop')
@@ -27,15 +30,21 @@ export const createDrop = async ({
     .select('*, user(*)');
 
   if (!error) {
-    onSuccess(data);
+    onSuccess(
+      data,
+      {
+        point: (((searchedUser && searchedUser.length > 0 && searchedUser[0].point) || 0)) + 200,
+        weeklyPoint: (((searchedUser && searchedUser.length > 0 && searchedUser[0].weeklyPoint) || 0)) + 200
+      }
+    );
   } else {
     onError('');
   }
 };
 
 export const getAllDrops = async ({
-  onSuccess = () => {},
-  onError = () => {},
+  onSuccess = () => { },
+  onError = () => { },
 }: {
   onSuccess?: (data: any) => void;
   onError?: (error: any) => void;
@@ -50,8 +59,8 @@ export const getAllDrops = async ({
 
 export const getDropByUserAddress = async ({
   userId,
-  onSuccess = () => {},
-  onError = () => {},
+  onSuccess = () => { },
+  onError = () => { },
 }: {
   userId: Array<number>;
   onSuccess?: (data: any) => void;
@@ -71,8 +80,8 @@ export const getDropByUserAddress = async ({
 
 export const getDropByID = async ({
   dropId,
-  onSuccess = () => {},
-  onError = () => {},
+  onSuccess = () => { },
+  onError = () => { },
 }: {
   dropId: string;
   onSuccess?: (data: any) => void;
@@ -80,7 +89,7 @@ export const getDropByID = async ({
 }) => {
   const { data, error } = await supabase
     .from('drop')
-    .select('*, user(*), minted(*, user(*), reaction(*))')
+    .select('*, user(*), minted(*, user(*), reaction(*)), reaction(*)')
 
     .eq('id', dropId);
 
@@ -95,8 +104,8 @@ export const updateDrop = async ({
   value,
   drop,
   userId,
-  onSuccess = () => {},
-  onError = () => {},
+  onSuccess = () => { },
+  onError = () => { },
 }: {
   userId: number;
   value: string;
@@ -126,8 +135,8 @@ export const updateDrop = async ({
 };
 
 export const getDropType = async ({
-  onSuccess = () => {},
-  onError = () => {},
+  onSuccess = () => { },
+  onError = () => { },
 }: {
   onSuccess?: (data: any) => void;
   onError?: (error: any) => void;
