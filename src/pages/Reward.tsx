@@ -132,7 +132,7 @@ export default function Reward() {
         </p>
         <div className="flex-col flex gap-4">
           {userList.map((item: any, idx: number) =>
-            <div className="flex flex-row justify-between items-center">
+            <div className="flex flex-row justify-between items-center" key={idx}>
               <div className="flex flex-row item-center gap-[11px]">
                 {idx < 3 ?
                   <img src={placeData[idx]} alt="" />
