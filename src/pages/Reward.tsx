@@ -48,10 +48,37 @@ export default function Reward() {
     })()
   }, [])
 
+  const calculateTimeLeft = () => {
+    const targetTime = new Date('2024-01-30T13:00:00Z').getTime();
+    const now = new Date().getTime();
+    const difference = targetTime - now;
+
+    if (difference <= 0) {
+      return { hours: 0, minutes: 0, seconds: 0 };
+    }
+
+    const hours = Math.floor(difference / (1000 * 60 * 60 ));
+    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+    return { hours, minutes, seconds };
+  };
+
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+
   return (
     <div
-      className="px-4 bg-cover bg-center min-h-screen bg-[#606060] pb-24"
-      style={{ backgroundImage: 'url(/bg-award.png)' }}
+      className="px-4 bg-cover bg-center min-h-screen pb-24"
+      style={{ background: 'linear-gradient(14deg, #212121 14.53%, rgba(140, 255, 50, 0.28) 80.23%), #4E4E4E' }}
     >
       <div className="flex flex-row py-7 gap-x-3">
         <div className="rounded-xl w-[100px] h-[100px] p-0.5 flex items-center justify-center" style={{ backgroundImage: 'linear-gradient(to bottom, #3CFF38, #FFC329)' }}>
@@ -215,8 +242,22 @@ export default function Reward() {
           }
         </div>
       </Drawer>
-      <div className="fixed bg-[#3a3a3ab3] top-0 left-0 right-0 bottom-0">
-
+      <div
+        className="fixed bg-[#3a3a3ab3] top-0 left-0 right-0 bottom-0"
+        style={{ background: 'linear-gradient(14deg, #212121 14.53%, rgba(140, 255, 50, 0.28) 80.23%), #4E4E4E' }}
+      >
+        <div
+          className="flex flex-col items-center justify-center"
+          style={{ height: 'calc(100vh - 81px)' }}
+        >
+          <p
+            style={{ fontFamily: 'Handjet' }}
+            className='text-[60px] leading-[60px] text-white tracking-[-0.301px] mb-3'
+          >
+            {timeLeft.hours}:{timeLeft.minutes}:{timeLeft.seconds}
+          </p>
+          <img src='/treasury.svg' alt='' className='w-[210px] h-[140px]' />
+        </div>
       </div>
     </div>
   )
