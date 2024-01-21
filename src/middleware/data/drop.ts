@@ -20,7 +20,7 @@ export const createDrop = async ({
   if (searchedUser && searchedUser.length > 0) {
     await supabase
       .from('user')
-      .update({ point: searchedUser[0].point + 200, weeklyPoint: (searchedUser[0].weeklyPoint || 0) + 200 })
+      .update({ point: searchedUser[0].point + 200, weeklyPoint: (searchedUser[0].weeklyPoint) + 200 })
       .eq('id', user.id);
   }
 
@@ -33,8 +33,8 @@ export const createDrop = async ({
     onSuccess(
       data,
       {
-        point: (((searchedUser && searchedUser.length > 0 && searchedUser[0].point) || 0)) + 200,
-        weeklyPoint: (((searchedUser && searchedUser.length > 0 && searchedUser[0].weeklyPoint) || 0)) + 200
+        point: ((searchedUser && searchedUser.length > 0 && searchedUser[0].point)) + 200,
+        weeklyPoint: ((searchedUser && searchedUser.length > 0 && searchedUser[0].weeklyPoint)) + 200
       }
     );
   } else {
