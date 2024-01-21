@@ -314,7 +314,7 @@ export default function EditLocation() {
                     : user.country === 'Vietnam' ? 'Tên đường, Tòa nhà, Số nhà' : 'Address'}
                 </div>
               </div>
-              {user.lat && user.lng && address &&
+              {user.lat && user.lng && address && addressProperties?.suburb && addressProperties?.city && addressProperties?.housenumber && addressProperties?.street &&
                 <div
                   className="text-[#99FF48] font-medium text-[13px] leading-4 mt-6"
                   onClick={() => {
