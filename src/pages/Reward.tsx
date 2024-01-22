@@ -6,12 +6,14 @@ import { Navigate, useNavigate } from 'react-router';
 import { useAuthContext } from '../context/AuthContext';
 import CustomiseInput from '../components/CustomiseInput';
 import { getAllUserList } from '../middleware/data/user';
+import { getWeeklyWinner } from '../middleware/data/weeklyWinner';
 
 export default function Reward() {
   const user = useSelector((state: any) => state.user);
   const { windowSize } = useAuthContext();
   const [isOpen, setIsOpen] = useState(false);
   const [currentView, setCurrentView] = useState('award')
+  const [isWin, setIsWin] = useState<any>(null);
   const [wallet, setWallet] = useState('')
   const [userList, setUserList] = useState<any[]>([]);
   const navigate = useNavigate();
@@ -44,6 +46,8 @@ export default function Reward() {
   useEffect(() => {
     (async () => {
       const userList = await getAllUserList();
+      const winner = await getWeeklyWinner(user.id);
+      setIsWin(winner);
       setUserList(userList || []);
     })()
   }, [])
@@ -97,11 +101,12 @@ export default function Reward() {
             </div>
             <p style={{ fontFamily: 'Handjet' }} className='text-white underline text-base leading-4'>Learn more</p>
           </div>
-
-          <div className='mt-auto' onClick={() => setIsOpen(true)}>
-            <p style={{ fontFamily: 'Handjet' }} className='text-white text-base leading-4 text-center animate-bounce'>Open it</p>
-            <img src='/treasury.svg' alt='' className='w-[56px] h-[38px] mt-1' />
-          </div>
+          {isWin &&
+            <div className='mt-auto' onClick={() => setIsOpen(true)}>
+              <p style={{ fontFamily: 'Handjet' }} className='text-white text-base leading-4 text-center animate-bounce'>Open it</p>
+              <img src='/treasury.svg' alt='' className='w-[56px] h-[38px] mt-1' />
+            </div>
+          }
         </div>
       </div>
       <div className="mt-6 p-6 bg-[#2C2C2C] rounded-xl flex flex-row gap-4">
