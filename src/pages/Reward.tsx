@@ -6,18 +6,20 @@ import { Navigate, useNavigate } from 'react-router';
 import { useAuthContext } from '../context/AuthContext';
 import CustomiseInput from '../components/CustomiseInput';
 import { getAllUserList } from '../middleware/data/user';
+import { getWeeklyWinner } from '../middleware/data/weeklyWinner';
 
 export default function Reward() {
   const user = useSelector((state: any) => state.user);
   const { windowSize } = useAuthContext();
   const [isOpen, setIsOpen] = useState(false);
   const [currentView, setCurrentView] = useState('award')
+  const [isWin, setIsWin] = useState<any>(null);
+  const [type, setType] = useState<string | null>(null)
   const [wallet, setWallet] = useState('')
   const [userList, setUserList] = useState<any[]>([]);
   const navigate = useNavigate();
   const placeData = ['/1st.svg', '/2nd.svg', '/3rd.svg']
-  const smokeType = 'nft'
-  const body = {
+  const body: any = {
     nft: {
       header: 'You\'ve Got a Trekn NFT',
       desc: 'Congratulations! You\'ve just received a unique Trekn NFT. Check it out in your collection now and see what makes it special.'
@@ -44,6 +46,15 @@ export default function Reward() {
   useEffect(() => {
     (async () => {
       const userList = await getAllUserList();
+      const winner = await getWeeklyWinner(user.id);
+      if (winner) {
+        setIsWin(winner);
+        if (winner.place > 3) {
+          setType('nft');
+        } else {
+          setType('whitelist');
+        }
+      }
       setUserList(userList || []);
     })()
   }, [])
@@ -97,11 +108,12 @@ export default function Reward() {
             </div>
             <p style={{ fontFamily: 'Handjet' }} className='text-white underline text-base leading-4'>Learn more</p>
           </div>
-
-          <div className='mt-auto' onClick={() => setIsOpen(true)}>
-            <p style={{ fontFamily: 'Handjet' }} className='text-white text-base leading-4 text-center animate-bounce'>Open it</p>
-            <img src='/treasury.svg' alt='' className='w-[56px] h-[38px] mt-1' />
-          </div>
+          {isWin &&
+            <div className='mt-auto' onClick={() => setIsOpen(true)}>
+              <p style={{ fontFamily: 'Handjet' }} className='text-white text-base leading-4 text-center animate-bounce'>Open it</p>
+              <img src='/treasury.svg' alt='' className='w-[56px] h-[38px] mt-1' />
+            </div>
+          }
         </div>
       </div>
       <div className="mt-6 p-6 bg-[#2C2C2C] rounded-xl flex flex-row gap-4">
@@ -158,94 +170,96 @@ export default function Reward() {
           )}
         </div>
       </div>
-      <Drawer
-        placement='bottom'
-        closable={false}
-        open={isOpen}
-        onClose={handleClose}
-        height={windowSize.height * 0.9}
-        className='rounded-t-3xl'
-        style={{ background: '#2C2C2C' }}
-      >
-        <div className="flex flex-col h-full">
-          <div className="flex flex-row justify-end">
-            <div onClick={handleClose}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
-                <g filter="url(#filter0_b_3234_15933)">
-                  <rect width="30" height="30" rx="15" fill="#545454" />
-                  <path d="M10.0474 19.1811C9.73633 19.4921 9.72998 20.0444 10.0537 20.3681C10.3838 20.6918 10.936 20.6855 11.2407 20.3808L14.9985 16.623L18.75 20.3745C19.0674 20.6918 19.6133 20.6918 19.937 20.3681C20.2607 20.038 20.2607 19.4985 19.9434 19.1811L16.1919 15.4296L19.9434 11.6718C20.2607 11.3544 20.2671 10.8085 19.937 10.4848C19.6133 10.1611 19.0674 10.1611 18.75 10.4785L14.9985 14.2299L11.2407 10.4785C10.936 10.1674 10.3774 10.1547 10.0537 10.4848C9.72998 10.8085 9.73633 11.3671 10.0474 11.6718L13.7988 15.4296L10.0474 19.1811Z" fill="white" />
-                </g>
-                <defs>
-                  <filter id="filter0_b_3234_15933" x="-54.3656" y="-54.3656" width="138.731" height="138.731" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
-                    <feGaussianBlur in="BackgroundImageFix" stdDeviation="27.1828" />
-                    <feComposite in2="SourceAlpha" operator="in" result="effect1_backgroundBlur_3234_15933" />
-                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_backgroundBlur_3234_15933" result="shape" />
-                  </filter>
-                </defs>
-              </svg>
+      {isWin && type &&
+        <Drawer
+          placement='bottom'
+          closable={false}
+          open={isOpen}
+          onClose={handleClose}
+          height={windowSize.height * 0.9}
+          className='rounded-t-3xl'
+          style={{ background: '#2C2C2C' }}
+        >
+          <div className="flex flex-col h-full">
+            <div className="flex flex-row justify-end">
+              <div onClick={handleClose}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
+                  <g filter="url(#filter0_b_3234_15933)">
+                    <rect width="30" height="30" rx="15" fill="#545454" />
+                    <path d="M10.0474 19.1811C9.73633 19.4921 9.72998 20.0444 10.0537 20.3681C10.3838 20.6918 10.936 20.6855 11.2407 20.3808L14.9985 16.623L18.75 20.3745C19.0674 20.6918 19.6133 20.6918 19.937 20.3681C20.2607 20.038 20.2607 19.4985 19.9434 19.1811L16.1919 15.4296L19.9434 11.6718C20.2607 11.3544 20.2671 10.8085 19.937 10.4848C19.6133 10.1611 19.0674 10.1611 18.75 10.4785L14.9985 14.2299L11.2407 10.4785C10.936 10.1674 10.3774 10.1547 10.0537 10.4848C9.72998 10.8085 9.73633 11.3671 10.0474 11.6718L13.7988 15.4296L10.0474 19.1811Z" fill="white" />
+                  </g>
+                  <defs>
+                    <filter id="filter0_b_3234_15933" x="-54.3656" y="-54.3656" width="138.731" height="138.731" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                      <feGaussianBlur in="BackgroundImageFix" stdDeviation="27.1828" />
+                      <feComposite in2="SourceAlpha" operator="in" result="effect1_backgroundBlur_3234_15933" />
+                      <feBlend mode="normal" in="SourceGraphic" in2="effect1_backgroundBlur_3234_15933" result="shape" />
+                    </filter>
+                  </defs>
+                </svg>
+              </div>
             </div>
+            {currentView === 'success' ?
+              <>
+                <div>
+                  <p className='font-bold text-2xl leading-[40px] italic text-white'>Collect successful</p>
+                  <p className='text-[#FFFFFFB2] leading-[140%] italic'>Congrats! You've secured a coveted whitelist slot. Your journey with us is just beginning</p>
+                </div>
+                <div
+                  className="w-full h-10 bg-black rounded-3xl mt-auto flex flex-row items-center justify-center"
+                  onClick={handleClose}
+                >
+                  <p className='text-white leading-6 font-semibold italic'>Done</p>
+                </div>
+              </>
+              :
+              <>
+                <div className="mb-5">
+                  <p className='font-bold text-2xl leading-[40px] italic text-white'>{body[type].header}</p>
+                  <p className='text-[#FFFFFFB2] leading-[140%] italic'>{body[type].desc}</p>
+                </div>
+                {currentView === 'award' &&
+                  <>
+                    <img src='' alt='' className='bg-white h-[339px] rounded-xl' />
+                    <div
+                      className="w-full h-10 bg-black rounded-3xl mt-auto flex flex-row items-center justify-center"
+                      onClick={() => setCurrentView('claim')}
+                    >
+                      <p className='text-white leading-6 font-semibold italic'>Collect this</p>
+                    </div>
+                  </>
+                }
+                {currentView === 'claim' &&
+                  <>
+                    <div className="mt-5">
+                      <div className="py-2 px-3 bg-[#3A3A3A] flex flex-row items-center gap-x-2 w-fit rounded-xl">
+                        <img src='/solana.png' alt='' className='w-6 h-6' />
+                        <p className='text-[13px] leading-[120%] text-white italic'>Network: Solana</p>
+                      </div>
+                      <div className="mt-6">
+                        <p className='text-[13px] text-[#BDBDBA] leading-[120%] italic'>Enter the recipent wallet address</p>
+                      </div>
+                      <input
+                        onChange={(e) => { setWallet(e.currentTarget.value) }}
+                        type="text"
+                        value={wallet}
+                        placeholder='Wallet address'
+                        className='py-4 px-3 w-full focus-visible:outline-none text-white placeholder:text-[#FFFFFF80] text-base font-medium leading-[120%] bg-[#212121DE] mt-6 rounded-xl'
+                      />
+                    </div>
+                    <div
+                      className="w-full h-10 bg-black rounded-3xl mt-auto flex flex-row items-center justify-center"
+                      onClick={handleConfirm}
+                    >
+                      <p className='text-white leading-6 font-semibold italic'>Confirm</p>
+                    </div>
+                  </>
+                }
+              </>
+            }
           </div>
-          {currentView === 'success' ?
-            <>
-              <div>
-                <p className='font-bold text-2xl leading-[40px] italic text-white'>Collect successful</p>
-                <p className='text-[#FFFFFFB2] leading-[140%] italic'>Congrats! You've secured a coveted whitelist slot. Your journey with us is just beginning</p>
-              </div>
-              <div
-                className="w-full h-10 bg-black rounded-3xl mt-auto flex flex-row items-center justify-center"
-                onClick={handleClose}
-              >
-                <p className='text-white leading-6 font-semibold italic'>Done</p>
-              </div>
-            </>
-            :
-            <>
-              <div className="mb-5">
-                <p className='font-bold text-2xl leading-[40px] italic text-white'>{body[smokeType].header}</p>
-                <p className='text-[#FFFFFFB2] leading-[140%] italic'>{body[smokeType].desc}</p>
-              </div>
-              {currentView === 'award' &&
-                <>
-                  <img src='' alt='' className='bg-white h-[339px] rounded-xl' />
-                  <div
-                    className="w-full h-10 bg-black rounded-3xl mt-auto flex flex-row items-center justify-center"
-                    onClick={() => setCurrentView('claim')}
-                  >
-                    <p className='text-white leading-6 font-semibold italic'>Collect this</p>
-                  </div>
-                </>
-              }
-              {currentView === 'claim' &&
-                <>
-                  <div className="mt-5">
-                    <div className="py-2 px-3 bg-[#3A3A3A] flex flex-row items-center gap-x-2 w-fit rounded-xl">
-                      <img src='/solana.png' alt='' className='w-6 h-6' />
-                      <p className='text-[13px] leading-[120%] text-white italic'>Network: Solana</p>
-                    </div>
-                    <div className="mt-6">
-                      <p className='text-[13px] text-[#BDBDBA] leading-[120%] italic'>Enter the recipent wallet address</p>
-                    </div>
-                    <input
-                      onChange={(e) => { setWallet(e.currentTarget.value) }}
-                      type="text"
-                      value={wallet}
-                      placeholder='Wallet address'
-                      className='py-4 px-3 w-full focus-visible:outline-none text-white placeholder:text-[#FFFFFF80] text-base font-medium leading-[120%] bg-[#212121DE] mt-6 rounded-xl'
-                    />
-                  </div>
-                  <div
-                    className="w-full h-10 bg-black rounded-3xl mt-auto flex flex-row items-center justify-center"
-                    onClick={handleConfirm}
-                  >
-                    <p className='text-white leading-6 font-semibold italic'>Confirm</p>
-                  </div>
-                </>
-              }
-            </>
-          }
-        </div>
-      </Drawer>
+        </Drawer>
+      }
       <div
         className="fixed bg-[#3a3a3ab3] top-0 left-0 right-0 bottom-0"
         style={{ background: 'linear-gradient(14deg, #212121 14.53%, rgba(140, 255, 50, 0.28) 80.23%), #4E4E4E' }}
