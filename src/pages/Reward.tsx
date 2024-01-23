@@ -55,7 +55,7 @@ export default function Reward() {
           setType('whitelist');
         }
       }
-      setUserList(userList || []);
+      setUserList(userList?.filter((user) => user.id !== winner?.userId) || []);
     })()
   }, [])
 
@@ -89,7 +89,6 @@ export default function Reward() {
     return () => clearInterval(timer);
   }, []);
 
-
   return (
     <div
       className="px-4 bg-cover bg-center min-h-screen pb-24"
@@ -104,11 +103,11 @@ export default function Reward() {
             <p style={{ fontFamily: 'Handjet' }} className='text-2xl text-white leading-4'>You have</p>
             <div className="flex flex-row items-center gap-x-2">
               <img src="/token.png" alt="" className='w-6 h-6' />
-              <p style={{ fontFamily: 'Handjet' }} className='text-white text-[32px] leading-5 font-medium'>{user.weeklyPoint || 0}</p>
+              <p style={{ fontFamily: 'Handjet' }} className='text-white text-[32px] leading-5 font-medium'>{user.point || 0}</p>
             </div>
             <p style={{ fontFamily: 'Handjet' }} className='text-white underline text-base leading-4'>Learn more</p>
           </div>
-          {isWin &&
+          {isWin && !isWin.walletAddress &&
             <div className='mt-auto' onClick={() => setIsOpen(true)}>
               <p style={{ fontFamily: 'Handjet' }} className='text-white text-base leading-4 text-center animate-bounce'>Open it</p>
               <img src='/treasury.svg' alt='' className='w-[56px] h-[38px] mt-1' />
