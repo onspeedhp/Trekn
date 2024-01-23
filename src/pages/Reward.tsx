@@ -22,11 +22,13 @@ export default function Reward() {
   const body: any = {
     nft: {
       header: 'You\'ve Got a Trekn NFT',
-      desc: 'Congratulations! You\'ve just received a unique Trekn NFT. Check it out in your collection now and see what makes it special.'
+      desc: 'Congratulations! You\'ve just received a unique Trekn NFT. Check it out in your collection now and see what makes it special.',
+      img: '/nft-placeholder.png'
     },
     whitelist: {
       header: 'Welcome to the Whitelist',
-      desc: 'Congrats! You\'ve secured a coveted whitelist slot. Your journey with us is just beginning'
+      desc: 'Congrats! You\'ve secured a coveted whitelist slot. Your journey with us is just beginning',
+      img: '/whitelist.png'
     }
   }
 
@@ -49,7 +51,7 @@ export default function Reward() {
       const winner = await getWeeklyWinner(user.id);
       if (winner) {
         setIsWin(winner);
-        if (winner.place > 3) {
+        if (winner.place < 3) {
           setType('nft');
         } else {
           setType('whitelist');
@@ -219,7 +221,7 @@ export default function Reward() {
                 </div>
                 {currentView === 'award' &&
                   <>
-                    <img src='' alt='' className='bg-white h-[339px] rounded-xl' />
+                    <img src={body[type].img} alt='' className='h-[339px] rounded-xl object-cover object-center' />
                     <div
                       className="w-full h-10 bg-black rounded-3xl mt-auto flex flex-row items-center justify-center"
                       onClick={() => setCurrentView('claim')}
