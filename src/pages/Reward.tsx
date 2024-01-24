@@ -6,7 +6,7 @@ import { Navigate, useNavigate } from 'react-router';
 import { useAuthContext } from '../context/AuthContext';
 import CustomiseInput from '../components/CustomiseInput';
 import { getAllUserList } from '../middleware/data/user';
-import { getWeeklyWinner } from '../middleware/data/weeklyWinner';
+import { getWeeklyWinner, updateWeeklyWinner } from '../middleware/data/weeklyWinner';
 
 export default function Reward() {
   const user = useSelector((state: any) => state.user);
@@ -40,7 +40,8 @@ export default function Reward() {
     }, 200)
   }
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
+    await updateWeeklyWinner(isWin, { wallet });
     setCurrentView('success');
     setWallet('');
   }
