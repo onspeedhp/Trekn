@@ -16,6 +16,7 @@ export default function Reward() {
   const [isWin, setIsWin] = useState<any>(null);
   const [type, setType] = useState<string | null>(null)
   const [wallet, setWallet] = useState('')
+  const [discordId, setDiscordId] = useState('')
   const [userList, setUserList] = useState<any[]>([]);
   const navigate = useNavigate();
   const placeData = ['/1st.svg', '/2nd.svg', '/3rd.svg']
@@ -41,7 +42,7 @@ export default function Reward() {
   }
 
   const handleConfirm = async () => {
-    await updateWeeklyWinner(isWin, { wallet });
+    await updateWeeklyWinner(isWin, { walletAddress: wallet, discordId });
     setCurrentView('success');
     setWallet('');
   }
@@ -247,6 +248,13 @@ export default function Reward() {
                         value={wallet}
                         placeholder='Wallet address'
                         className='py-4 px-3 w-full focus-visible:outline-none text-white placeholder:text-[#FFFFFF80] text-base font-medium leading-[120%] bg-[#212121DE] mt-6 rounded-xl'
+                      />
+                      <input
+                        onChange={(e) => { setDiscordId(e.currentTarget.value) }}
+                        type="text"
+                        value={discordId}
+                        placeholder='Discord Id'
+                        className=' mt-2 py-4 px-3 w-full focus-visible:outline-none text-white placeholder:text-[#FFFFFF80] text-base font-medium leading-[120%] bg-[#212121DE] mt-6 rounded-xl'
                       />
                     </div>
                     <div
