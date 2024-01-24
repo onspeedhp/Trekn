@@ -203,21 +203,21 @@ export default function Reward() {
             {currentView === 'success' ?
               <>
                 <div>
-                  <p className='font-bold text-2xl leading-[40px] italic text-white'>Collect successful</p>
-                  <p className='text-[#FFFFFFB2] leading-[140%] italic'>Congrats! You've secured a coveted whitelist slot. Your journey with us is just beginning</p>
+                  <p className='font-bold text-2xl leading-[40px] text-white'>Collect successful</p>
+                  <p className='text-[#FFFFFFB2] leading-[140%]'>Congrats! You've secured a coveted whitelist slot. Your journey with us is just beginning</p>
                 </div>
                 <div
                   className="w-full h-10 bg-black rounded-3xl mt-auto flex flex-row items-center justify-center"
                   onClick={handleClose}
                 >
-                  <p className='text-white leading-6 font-semibold italic'>Done</p>
+                  <p className='text-white leading-6 font-semibold'>Done</p>
                 </div>
               </>
               :
               <>
                 <div className="mb-5">
-                  <p className='font-bold text-2xl leading-[40px] italic text-white'>{body[type].header}</p>
-                  <p className='text-[#FFFFFFB2] leading-[140%] italic'>{body[type].desc}</p>
+                  <p className='font-bold text-2xl leading-[40px] text-white'>{body[type].header}</p>
+                  <p className='text-[#FFFFFFB2] leading-[140%]'>{body[type].desc}</p>
                 </div>
                 {currentView === 'award' &&
                   <>
@@ -226,7 +226,7 @@ export default function Reward() {
                       className="w-full h-10 bg-black rounded-3xl mt-auto flex flex-row items-center justify-center"
                       onClick={() => setCurrentView('claim')}
                     >
-                      <p className='text-white leading-6 font-semibold italic'>Collect this</p>
+                      <p className='text-white leading-6 font-semibold'>Collect this</p>
                     </div>
                   </>
                 }
@@ -235,10 +235,10 @@ export default function Reward() {
                     <div className="mt-5">
                       <div className="py-2 px-3 bg-[#3A3A3A] flex flex-row items-center gap-x-2 w-fit rounded-xl">
                         <img src='/solana.png' alt='' className='w-6 h-6' />
-                        <p className='text-[13px] leading-[120%] text-white italic'>Network: Solana</p>
+                        <p className='text-[13px] leading-[120%] text-white'>Network: Solana</p>
                       </div>
                       <div className="mt-6">
-                        <p className='text-[13px] text-[#BDBDBA] leading-[120%] italic'>Enter the recipent wallet address</p>
+                        <p className='text-[13px] text-[#BDBDBA] leading-[120%]'>Enter the recipent wallet address</p>
                       </div>
                       <input
                         onChange={(e) => { setWallet(e.currentTarget.value) }}
@@ -252,7 +252,7 @@ export default function Reward() {
                       className="w-full h-10 bg-black rounded-3xl mt-auto flex flex-row items-center justify-center"
                       onClick={handleConfirm}
                     >
-                      <p className='text-white leading-6 font-semibold italic'>Confirm</p>
+                      <p className='text-white leading-6 font-semibold'>Confirm</p>
                     </div>
                   </>
                 }
