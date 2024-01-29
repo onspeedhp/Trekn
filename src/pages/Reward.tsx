@@ -270,7 +270,7 @@ export default function Reward() {
           </div>
         </Drawer>
       }
-      <div
+      {/* <div
         className="fixed bg-[#3a3a3ab3] top-0 left-0 right-0 bottom-0"
         style={{ background: 'linear-gradient(14deg, #212121 14.53%, rgba(140, 255, 50, 0.28) 80.23%), #4E4E4E' }}
       >
@@ -286,7 +286,7 @@ export default function Reward() {
           </p>
           <img src='/treasury.svg' alt='' className='w-[210px] h-[140px]' />
         </div>
-      </div>
+      </div> */}
     </div>
   )
 }
