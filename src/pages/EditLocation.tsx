@@ -189,12 +189,16 @@ export default function EditLocation() {
     (async () => {
       try {
         setLocationLoading(true);
-        const response = await axios.get(
-          `https://api.geoapify.com/v1/geocode/reverse?lat=${user.lat}&lon=${user.lng}&apiKey=${process.env.REACT_APP_GEOAPIFY}`
-        );
-        console.log(response.data.features[0].properties)
-        setAddressProperties(response.data.features[0].properties)
-        setAddress(response.data.features[0].properties.formatted);
+        // const response = await axios.get(
+        //   `https://api.geoapify.com/v1/geocode/reverse?lat=${user.lat}&lon=${user.lng}&apiKey=${process.env.REACT_APP_GEOAPIFY}`
+        // );
+        const { data: newReverse } = await axios.get(
+          `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${user.lat},${user.lng
+          }&apiKey=68EoUSty8tADbG5alGwihFJqUp6lUrr_DsAy1CWTq5s`
+        )
+        console.log(newReverse.items[0])
+        setAddressProperties(newReverse.items[0].address)
+        setAddress(newReverse.items[0].title);
         setLocationLoading(false)
       } catch (error) {
         console.error('Error fetching address: ', error);
@@ -294,9 +298,9 @@ export default function EditLocation() {
                   {Object.entries(addressForm)?.length > 0
                     ? selectedState()
                     :
-                    (addressProperties?.suburb && addressProperties?.city ?
+                    (addressProperties?.district && addressProperties?.city && addressProperties.county ?
                       <p className='text-base font-semibold leading-[120%] text-[#ffffff]'>
-                        {addressProperties.suburb}, {addressProperties.city}
+                        {addressProperties.district}, {addressProperties.city}, {addressProperties.county}
                       </p>
                       :
                       user.country === 'Vietnam' ? 'Quận/Huyện, Phường/Xã' : 'State'
@@ -307,9 +311,9 @@ export default function EditLocation() {
                   className='text-base font-semibold leading-[120%] text-[#ffffff50] rounded-xl bg-[#33333387] py-4 px-3'
                   onClick={() => setCurrentEdit('address')}
                 >
-                  {addressProperties?.housenumber && addressProperties?.street ?
+                  {addressProperties?.houseNumber && addressProperties?.street ?
                     <p className='text-base font-semibold leading-[120%] text-[#ffffff]'>
-                      {addressProperties.name && `${addressProperties.name}, `}{addressProperties.housenumber} {addressProperties.street}
+                      {addressProperties.name && `${addressProperties.name}, `}{addressProperties.houseNumber} {addressProperties.street}
                     </p>
                     : user.country === 'Vietnam' ? 'Tên đường, Tòa nhà, Số nhà' : 'Address'}
                 </div>

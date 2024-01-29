@@ -45,11 +45,13 @@ function App({
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-
+  
   useEffect(() => {
     (async () => {
-      const userData = await getUserAccountData({ userId: user.id });
-      dispatch(updateUser(userData));
+      if(user.id) {
+        const userData = await getUserAccountData({ userId: user.id });
+        dispatch(updateUser(userData));
+      }
     })()
   }, [user.id])
 
