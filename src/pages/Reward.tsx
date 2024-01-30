@@ -1,4 +1,4 @@
-import { Drawer } from 'antd';
+import { Drawer, Spin } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { FaMapPin, FaPlusCircle } from 'react-icons/fa';
 import { useSelector } from 'react-redux'
@@ -17,6 +17,7 @@ export default function Reward() {
   const [type, setType] = useState<string | null>(null)
   const [wallet, setWallet] = useState('')
   const [discordId, setDiscordId] = useState('')
+  const [loading, setLoading] = useState(false)
   const [userList, setUserList] = useState<any[]>([]);
   const navigate = useNavigate();
   const placeData = ['/1st.svg', '/2nd.svg', '/3rd.svg']
@@ -24,12 +25,14 @@ export default function Reward() {
     nft: {
       header: 'You\'ve Got a Trekn NFT',
       desc: 'Congratulations! You\'ve just received a unique Trekn NFT. Check it out in your collection now and see what makes it special.',
-      img: '/nft-placeholder.png'
+      img: '/nft-placeholder.png',
+      done: 'Congrats! You\'ve earned an exclusive NFT reward from Trekn. This reward will be sent to you after collection launch date.'
     },
     whitelist: {
       header: 'Welcome to the Whitelist',
       desc: 'Congrats! You\'ve secured a coveted whitelist slot. Your journey with us is just beginning',
-      img: '/whitelist.png'
+      img: '/whitelist.png',
+      done: 'Congrats! You\'ve secured a coveted whitelist slot. Your journey with us is just beginning.'
     }
   }
 
@@ -44,22 +47,26 @@ export default function Reward() {
   const handleConfirm = async () => {
     await updateWeeklyWinner(isWin, { walletAddress: wallet, discordId });
     setCurrentView('success');
+    setIsWin((prev: any) => ({ ...prev, walletAddress: wallet, discordId }))
     setWallet('');
+    setDiscordId('');
   }
 
   useEffect(() => {
     (async () => {
+      setLoading(true)
       const userList = await getAllUserList();
       const winner = await getWeeklyWinner(user.id);
       if (winner) {
         setIsWin(winner);
-        if (winner.place < 3) {
+        if (winner.place === 1) {
           setType('nft');
         } else {
           setType('whitelist');
         }
       }
       setUserList(userList?.filter((user) => user.id !== winner?.userId) || []);
+      setLoading(false)
     })()
   }, [])
 
@@ -100,7 +107,7 @@ export default function Reward() {
     >
       <div className="flex flex-row py-7 gap-x-3">
         <div className="rounded-xl w-[100px] h-[100px] p-0.5 flex items-center justify-center" style={{ backgroundImage: 'linear-gradient(to bottom, #3CFF38, #FFC329)' }}>
-          <img src={user.profileImage} className='rounded-xl w-[96px] h-[96px] bg-cyan-300' alt='' />
+          <img src={user.profileImage} className='rounded-xl w-[96px] h-[96px] bg-cyan-300 object-cover object-center' alt='' />
         </div>
         <div className="flex-1 flex flex-row justify-between py-2">
           <div className="flex flex-col justify-between">
@@ -111,7 +118,7 @@ export default function Reward() {
             </div>
             <p style={{ fontFamily: 'Handjet' }} className='text-white underline text-base leading-4'>Learn more</p>
           </div>
-          {isWin && !isWin.walletAddress &&
+          {isWin && !isWin.walletAddress && !isWin.discordId &&
             <div className='mt-auto' onClick={() => setIsOpen(true)}>
               <p style={{ fontFamily: 'Handjet' }} className='text-white text-base leading-4 text-center animate-bounce'>Open it</p>
               <img src='/treasury.svg' alt='' className='w-[56px] h-[38px] mt-1' />
@@ -142,44 +149,65 @@ export default function Reward() {
         </div>
       </div>
       <div className="my-6 h-2 rounded-full bg-[#F5F5F51A]" />
-      <div className="mt-6 py-3 px-4 bg-[#2C2C2C] rounded-xl">
-        <p
-          style={{ fontFamily: 'Handjet' }}
-          className='text-[24px] text-white font-medium leading-[32px] mb-6'
-        >
-          This week Leaderboard
-        </p>
-        <div className="flex-col flex gap-4">
-          {userList.map((item: any, idx: number) =>
-            <div className="flex flex-row justify-between items-center" key={idx}>
-              <div className="flex flex-row item-center gap-[11px]">
-                {idx < 3 ?
-                  <img src={placeData[idx]} alt="" />
-                  :
-                  <div className="flex-row flex items-center justify-center w-6 h-6 rounded-full bg-[#606060]">
-                    <p style={{ fontFamily: 'Handjet' }} className='text-white text-[13px] font-medium leading-[13px]'>{idx + 1}</p>
-                  </div>
-                }
-                <div className="flex flex-row items-center gap-2">
-                  <img src={item.profileImage} alt='' className='border border-white w-12 h-12 object-cover object-center' />
-                  <p style={{ fontFamily: 'Handjet' }} className='text-white text-[20px] font-semibold leading-5'>{item.name}</p>
-                </div>
-              </div>
-              <div className="flex flex-row items-center gap-2">
-                <img src="/token.png" alt="" className='w-5 h-5' />
-                <p style={{ fontFamily: 'Handjet' }} className='text-white text-[20px] leading-4'>{item.weeklyPoint}</p>
-              </div>
-            </div>
-          )}
+      {isWin &&
+        <div className="mt-6 py-3 px-4 bg-[#2C2C2C] rounded-xl">
+          <p
+            className='mb-1 text-white font-semibold text-2xl leading-8 tracking-[-0.08px]'
+            style={{ fontFamily: 'Handjet' }}
+          >
+            Reward already received!
+          </p>
+          <p
+            className='text-white font-semibold leading-[26px] font-base tracking-[-0.08px]'
+            style={{ fontFamily: 'Handjet' }}
+          >
+            You've received this challenge's reward and can't participate further. But don't worry, your points still count for more benefits in the Trekn ecosystem. Keep exploring!
+          </p>
         </div>
-      </div>
+      }
+      <div className="my-6 h-2 rounded-full bg-[#F5F5F51A]" />
+      {loading ? <Spin className='flex items-center justify-center' /> :
+        <div className="mt-6 py-3 px-4 bg-[#2C2C2C] rounded-xl">
+          <p
+            style={{ fontFamily: 'Handjet' }}
+            className='text-[24px] text-white font-medium leading-[32px] mb-6'
+          >
+            This week Leaderboard
+          </p>
+          <div className="flex-col flex gap-4">
+            {
+              userList.map((item: any, idx: number) =>
+                <div className="flex flex-row justify-between items-center" key={idx}>
+                  <div className="flex flex-row item-center gap-[11px]">
+                    {idx < 3 ?
+                      <img src={placeData[idx]} alt="" />
+                      :
+                      <div className="flex-row flex items-center justify-center w-6 h-6 rounded-full bg-[#606060]">
+                        <p style={{ fontFamily: 'Handjet' }} className='text-white text-[13px] font-medium leading-[13px]'>{idx + 1}</p>
+                      </div>
+                    }
+                    <div className="flex flex-row items-center gap-2">
+                      <img src={item.profileImage} alt='' className='border border-white w-12 h-12 object-cover object-center' />
+                      <p style={{ fontFamily: 'Handjet' }} className='text-white text-[20px] font-semibold leading-5'>{item.name}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-row items-center gap-2">
+                    <img src="/token.png" alt="" className='w-5 h-5' />
+                    <p style={{ fontFamily: 'Handjet' }} className='text-white text-[20px] leading-4'>{item.weeklyPoint}</p>
+                  </div>
+                </div>
+              )
+            }
+          </div>
+        </div>
+      }
       {isWin && type &&
         <Drawer
           placement='bottom'
           closable={false}
           open={isOpen}
           onClose={handleClose}
-          height={windowSize.height * 0.9}
+          height={currentView === 'success' ? windowSize.height * 0.4 : windowSize.height * 0.9}
           className='rounded-t-3xl'
           style={{ background: '#2C2C2C' }}
         >
@@ -204,9 +232,10 @@ export default function Reward() {
             </div>
             {currentView === 'success' ?
               <>
+                <img src='/reward-close.png' className='w-16 h-16 mb-2' alt='' />
                 <div>
                   <p className='font-bold text-2xl leading-[40px] text-white'>Collect successful</p>
-                  <p className='text-[#FFFFFFB2] leading-[140%]'>Congrats! You've secured a coveted whitelist slot. Your journey with us is just beginning</p>
+                  <p className='text-[#FFFFFFB2] leading-[140%]'>{body[type].done}</p>
                 </div>
                 <div
                   className="w-full h-10 bg-black rounded-3xl mt-auto flex flex-row items-center justify-center"
@@ -258,7 +287,7 @@ export default function Reward() {
                       />
                     </div>
                     <div
-                      className="w-full h-10 bg-black rounded-3xl mt-auto flex flex-row items-center justify-center"
+                      className={`w-full h-10 bg-black rounded-3xl mt-auto flex flex-row items-center justify-center ${!wallet || !discordId && 'select-none bg-gray-400'}`}
                       onClick={handleConfirm}
                     >
                       <p className='text-white leading-6 font-semibold'>Confirm</p>
@@ -270,7 +299,7 @@ export default function Reward() {
           </div>
         </Drawer>
       }
-      <div
+      {/* <div
         className="fixed bg-[#3a3a3ab3] top-0 left-0 right-0 bottom-0"
         style={{ background: 'linear-gradient(14deg, #212121 14.53%, rgba(140, 255, 50, 0.28) 80.23%), #4E4E4E' }}
       >
@@ -286,7 +315,7 @@ export default function Reward() {
           </p>
           <img src='/treasury.svg' alt='' className='w-[210px] h-[140px]' />
         </div>
-      </div>
+      </div> */}
     </div>
   )
 }
