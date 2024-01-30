@@ -12,7 +12,7 @@ export const getWeeklyWinner = async (userId: number) => {
 }
 
 export const updateWeeklyWinner = async (winner: any, updateData: any) => {
-    const { error } = await supabase.from('weekly_winner').update({ ...winner, ...updateData }).eq('id', winner.id)
+    const { error } = await supabase.from('weekly_winner').upsert({ ...winner, ...updateData }).eq('id', winner.id)
 
     if (error) {
         console.log(error);
