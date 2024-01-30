@@ -53,7 +53,7 @@ export default function Reward() {
       const winner = await getWeeklyWinner(user.id);
       if (winner) {
         setIsWin(winner);
-        if (winner.place < 3) {
+        if (winner.place === 1) {
           setType('nft');
         } else {
           setType('whitelist');
@@ -258,7 +258,7 @@ export default function Reward() {
                       />
                     </div>
                     <div
-                      className="w-full h-10 bg-black rounded-3xl mt-auto flex flex-row items-center justify-center"
+                      className={`w-full h-10 bg-black rounded-3xl mt-auto flex flex-row items-center justify-center ${!wallet && !discordId && 'select-none bg-gray-400'}`}
                       onClick={handleConfirm}
                     >
                       <p className='text-white leading-6 font-semibold'>Confirm</p>
