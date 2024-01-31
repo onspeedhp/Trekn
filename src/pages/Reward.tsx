@@ -148,22 +148,24 @@ export default function Reward() {
           </div>
         </div>
       </div>
-      <div className="my-6 h-2 rounded-full bg-[#F5F5F51A]" />
       {isWin &&
-        <div className="mt-6 py-3 px-4 bg-[#2C2C2C] rounded-xl">
-          <p
-            className='mb-1 text-white font-semibold text-2xl leading-8 tracking-[-0.08px]'
-            style={{ fontFamily: 'Handjet' }}
-          >
-            Reward already received!
-          </p>
-          <p
-            className='text-white font-semibold leading-[26px] font-base tracking-[-0.08px]'
-            style={{ fontFamily: 'Handjet' }}
-          >
-            You've received this challenge's reward and can't participate further. But don't worry, your points still count for more benefits in the Trekn ecosystem. Keep exploring!
-          </p>
-        </div>
+        <>
+          <div className="my-6 h-2 rounded-full bg-[#F5F5F51A]" />
+          <div className="mt-6 py-3 px-4 bg-[#2C2C2C] rounded-xl">
+            <p
+              className='mb-1 text-white font-semibold text-2xl leading-8 tracking-[-0.08px]'
+              style={{ fontFamily: 'Handjet' }}
+            >
+              Reward already received!
+            </p>
+            <p
+              className='text-white font-semibold leading-[26px] font-base tracking-[-0.08px]'
+              style={{ fontFamily: 'Handjet' }}
+            >
+              You've received this challenge's reward and can't participate further. But don't worry, your points still count for more benefits in the Trekn ecosystem. Keep exploring!
+            </p>
+          </div>
+        </>
       }
       <div className="my-6 h-2 rounded-full bg-[#F5F5F51A]" />
       {loading ? <Spin className='flex items-center justify-center' /> :
