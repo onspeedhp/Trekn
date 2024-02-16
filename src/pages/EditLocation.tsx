@@ -80,17 +80,17 @@ export default function EditLocation() {
       if (user.country === 'Vietnam') {
         switch (currentEdit) {
           case 'cities':
-            data = await apiService.get('https://provinces.open-api.vn/api/p/');
+            data = await apiService.get('https://vn-provinces-one.vercel.app/api/p/');
             break;
           case 'district':
             const p: any = await apiService.get(
-              `https://provinces.open-api.vn/api/p/${currentCode}?depth=2`
+              `https://vn-provinces-one.vercel.app/api/p/${currentCode}?depth=2`
             );
             data = p.districts;
             break;
           case 'subDistrict':
             const d: any = await apiService.get(
-              `https://provinces.open-api.vn/api/d/${currentCode}?depth=2`
+              `https://vn-provinces-one.vercel.app/api/d/${currentCode}?depth=2`
             );
             data = d.wards;
             break;
