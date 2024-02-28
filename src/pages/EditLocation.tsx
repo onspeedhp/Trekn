@@ -197,6 +197,10 @@ export default function EditLocation() {
           }&apiKey=68EoUSty8tADbG5alGwihFJqUp6lUrr_DsAy1CWTq5s`
         )
         console.log(newReverse.items[0])
+        if (newReverse?.items?.length <= 0) {
+          setLocationLoading(false)
+          return;
+        }
         setAddressProperties(newReverse.items[0].address)
         setAddress(newReverse.items[0].title);
         setLocationLoading(false)
