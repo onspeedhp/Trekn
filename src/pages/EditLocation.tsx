@@ -35,6 +35,7 @@ export default function EditLocation() {
   const [addressLocation, setAddressLocation] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
+  const [isHaveLocation, setIsHaveLocation] = useState(true);
   const stepList =
     user.country === 'Vietnam'
       ? ['cities', 'district', 'subDistrict']
@@ -196,9 +197,9 @@ export default function EditLocation() {
           `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${user.lat},${user.lng
           }&apiKey=68EoUSty8tADbG5alGwihFJqUp6lUrr_DsAy1CWTq5s`
         )
-        console.log(newReverse.items[0])
         if (newReverse?.items?.length <= 0) {
-          setLocationLoading(false)
+          setLocationLoading(false);
+          setIsHaveLocation(false);
           return;
         }
         setAddressProperties(newReverse.items[0].address)
@@ -287,30 +288,32 @@ export default function EditLocation() {
                 <div className='font-medium text-[13px] text-[#FFFFFF70] leading-[120%]'>
                   Location address
                 </div>
-                <div
-                  className='text-base font-semibold leading-[120%] text-[#ffffff50] rounded-xl bg-[#33333387] py-4 px-3 flex items-center justify-between gap-4'
-                  onClick={() =>
-                    Object.entries(addressForm)?.length > 0
-                      ? handleChangeAddress(
-                        user.country === 'Vietnam' ? 'cities' : 'state'
-                      )
-                      : setCurrentEdit(
-                        user.country === 'Vietnam' ? 'cities' : 'state'
-                      )
-                  }
-                >
-                  {Object.entries(addressForm)?.length > 0
-                    ? selectedState()
-                    :
-                    (addressProperties?.district && addressProperties?.city && addressProperties.county ?
-                      <p className='text-base font-semibold leading-[120%] text-[#ffffff]'>
-                        {addressProperties.district}, {addressProperties.city}, {addressProperties.county}
-                      </p>
+                {isHaveLocation &&
+                  <div
+                    className='text-base font-semibold leading-[120%] text-[#ffffff50] rounded-xl bg-[#33333387] py-4 px-3 flex items-center justify-between gap-4'
+                    onClick={() =>
+                      Object.entries(addressForm)?.length > 0
+                        ? handleChangeAddress(
+                          user.country === 'Vietnam' ? 'cities' : 'state'
+                        )
+                        : setCurrentEdit(
+                          user.country === 'Vietnam' ? 'cities' : 'state'
+                        )
+                    }
+                  >
+                    {Object.entries(addressForm)?.length > 0
+                      ? selectedState()
                       :
-                      user.country === 'Vietnam' ? 'Quận/Huyện, Phường/Xã' : 'State'
-                    )}
-                  <FaChevronRight size={16} className='text-[#ffffff70]' />
-                </div>
+                      (addressProperties?.district && addressProperties?.city && addressProperties.county ?
+                        <p className='text-base font-semibold leading-[120%] text-[#ffffff]'>
+                          {addressProperties.district}, {addressProperties.city}, {addressProperties.county}
+                        </p>
+                        :
+                        user.country === 'Vietnam' ? 'Quận/Huyện, Phường/Xã' : 'State'
+                      )}
+                    <FaChevronRight size={16} className='text-[#ffffff70]' />
+                  </div>
+                }
                 <div
                   className='text-base font-semibold leading-[120%] text-[#ffffff50] rounded-xl bg-[#33333387] py-4 px-3'
                   onClick={() => setCurrentEdit('address')}
