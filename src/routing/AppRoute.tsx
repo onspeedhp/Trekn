@@ -23,6 +23,7 @@ import FollowPage from '../pages/FollowPage';
 import PrivateRoute from '../pages/PrivateRoute';
 import { Search } from '../pages/Search';
 import Reward from '../pages/Reward';
+import Links from '../pages/Links';
 
 const AppRoutes = () => (
   <BrowserRouter basename='/'>
@@ -72,6 +73,10 @@ const AppRoutes = () => (
       <Route
         path='/account/:id'
         element={<App header={Header} hideHeader={true} layout={Account} />}
+      ></Route>
+      <Route
+        path='/links/:id'
+        element={<App header={Header} hideHeader={true} layout={Links} />}
       ></Route>
 
       <Route

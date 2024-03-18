@@ -23,7 +23,6 @@ function App({
   hideHeader?: boolean;
 }) {
   const Layout: any = layout;
-
   const Header: any = header;
   const mobileMaxWidth = 748;
   const [isMobile, setIsMobile] = useState(window.innerWidth <= mobileMaxWidth);
@@ -45,10 +44,10 @@ function App({
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-  
+
   useEffect(() => {
     (async () => {
-      if(user.id) {
+      if (user.id) {
         const userData = await getUserAccountData({ userId: user.id });
         dispatch(updateUser(userData));
       }
